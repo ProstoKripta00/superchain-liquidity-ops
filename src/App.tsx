@@ -181,7 +181,7 @@ function App() {
           <aside className="grantPanel">
             <span>Grant ask</span>
             <strong>$15,000 equivalent in OP</strong>
-            <p>$10,500 allocated to founder/developer implementation work.</p>
+            <p>For live DEX data adapters, reviewer reports, methodology docs and a public MVP demo.</p>
           </aside>
         </section>
 
