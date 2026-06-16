@@ -2,70 +2,79 @@
 
 ## Summary
 
-Superchain Liquidity Ops is an open-source analytics and monitoring tool that helps protocols, LPs, and grant reviewers track DEX TVL, fees, liquidity depth, and measurable outcomes across Superchain priority pairs.
+Superchain Liquidity Ops is an open-source analytics and monitoring tool that helps protocols, LPs, and grant reviewers track Superchain DEX volume, fees, chain TVL, market health, and measurable outcomes.
 
-The tool is designed to answer a practical grant question: are liquidity incentives actually increasing Superchain DEX TVL, fee generation, and capital efficiency?
+The tool is designed to answer a practical grant question: are liquidity programs producing measurable Superchain DEX activity and fee generation?
 
 ## Problem
 
-Optimism / Superchain grants and incentive programs need measurable impact. DEX TVL and DEX fees are important metrics, but teams often track them manually across explorers, dashboards, subgraphs, and protocol-specific reports.
+Optimism / Superchain grants and incentive programs need measurable impact. DEX TVL, DEX volume, and DEX fees are important metrics, but teams often track them manually across explorers, dashboards, public endpoints, subgraphs, and protocol-specific reports.
 
 This makes it harder for protocols, LPs, and reviewers to understand:
 
-- which pools are growing TVL
-- which pools generate meaningful fees
-- where liquidity is deep but inefficient
+- which markets are generating meaningful volume
+- which markets generate fees
+- where fee output is weak relative to activity
 - where incentives may be underperforming
-- whether priority pairs are improving over time
+- whether evidence can be exported and reproduced
 
 ## Solution
 
-Superchain Liquidity Ops provides an open-source dashboard and reporting layer for Superchain DEX liquidity.
+Superchain Liquidity Ops provides an open-source dashboard and reporting layer for Superchain DEX markets.
 
-Core MVP:
+Current proof-of-work:
 
-- OP Mainnet and Base support
-- tracked priority pairs
-- TVL, volume, and fee metrics
-- 7d and 30d trend windows
-- pool health and watchlist labels
-- fee efficiency analysis
-- exportable reviewer reports
-- public GitHub repository and hosted demo
+- hosted public dashboard
+- live DefiLlama data layer
+- OP Mainnet, Base, Unichain, Mode, and Zora support
+- chain TVL, DEX volume, and fee metrics
+- market health and watchlist labels
+- source audit cards
+- CSV exports with source URLs and timestamps
+- methodology and grant reviewer pack
+
+Grant-funded scope:
+
+- Optimism priority-pair configuration
+- pool-level ingestion through backend or scheduled static adapters
+- 7d and 30d trend windows for selected priority markets
+- CSV/JSON reviewer reports
+- testing, validation notes, and final grant report
 
 ## Why This Matters
 
 The project directly supports measurable Superchain outcomes:
 
-- better visibility into DEX TVL
+- better visibility into DEX activity
 - clearer reporting on DEX fees
-- faster detection of underperforming pools
+- faster detection of underperforming markets
 - better liquidity allocation decisions
 - more transparent grant and incentive review workflows
 
 ## Milestones
 
-### Milestone 1: Prototype and Methodology
+### Milestone 1: Live Proof-of-Work and Methodology
 
 Budget: `$2,000 equivalent in OP`
 
 Deliverables:
 
-- public dashboard prototype
-- typed data model for pools, chains, and priority pairs
-- initial methodology for TVL, fee efficiency, and pool health
-- GitHub repository and grant documentation
+- hosted dashboard
+- live source audit
+- CSV export
+- methodology update
+- grant reviewer pack
 
-### Milestone 2: Working Data MVP
+### Milestone 2: Priority-Pair and Pool-Level Data MVP
 
 Budget: `$8,000 equivalent in OP`
 
 Deliverables:
 
-- live data adapters for OP Mainnet and Base
-- DEX pool ingestion for selected priority pairs
-- 7d/30d TVL, volume, and fee tracking
-- pool detail pages and health scoring
+- Optimism priority-pair configuration
+- pool-level ingestion for selected priority markets
+- 7d/30d TVL, volume, and fee tracking where sources allow it
+- market detail panels and health scoring
 - exportable CSV/JSON reports
 
 ### Milestone 3: Launch Package and Reporting
@@ -74,10 +83,10 @@ Budget: `$5,000 equivalent in OP`
 
 Deliverables:
 
-- hosted public demo
-- methodology documentation
+- final hosted public demo
 - deployment docs
-- testing and data validation
+- source limitation notes
+- testing and validation notes
 - final grant report with example reviewer outputs
 
 ## Budget
@@ -86,11 +95,11 @@ Total requested: `$15,000 equivalent in OP`
 
 Breakdown:
 
-- Founder/developer compensation: `$10,500`
-- Backend/indexing development: `$1,500`
-- Frontend analytics dashboard: `$1,200`
-- Infrastructure, RPC, hosting, and data APIs: `$900`
-- Testing, documentation, and reporting: `$900`
+- Founder/developer implementation compensation: `$10,500`
+- Backend/static ingestion and data adapters: `$1,500`
+- Frontend reviewer workflow and reporting: `$1,200`
+- Infrastructure, RPC, hosting, and data services: `$900`
+- Testing, methodology, docs, and final reporting: `$900`
 
 ## Timeline
 

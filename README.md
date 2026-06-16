@@ -16,6 +16,12 @@ Superchain Liquidity Ops helps protocols, LPs, and grant reviewers track measura
 
 The public app is live-data first. It loads DEX volume, fee, and chain TVL data from DefiLlama public endpoints. If an endpoint is unavailable, the app surfaces the source error instead of silently substituting a local dataset.
 
+## Reviewer Materials
+
+- `GRANT_REVIEWER_PACK.md`: reviewer summary, OP grant fit, current evidence, budget, milestones, risks, and five-minute review flow.
+- `METHODOLOGY.md`: measurement model, current data sources, health scoring, and data limitations.
+- `OPTIMISM_APPLICATION.md`: application copy for Optimism / Superchain funding opportunities.
+
 ## Grant Fit
 
 Target ecosystem: Optimism / Superchain

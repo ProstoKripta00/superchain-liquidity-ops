@@ -7,6 +7,7 @@ import {
   CircleDollarSign,
   DatabaseZap,
   ExternalLink,
+  FileCheck2,
   Gauge,
   GitBranch,
   Layers3,
@@ -14,6 +15,8 @@ import {
   Network,
   Radar,
   RefreshCcw,
+  Route,
+  ShieldCheck,
   SlidersHorizontal,
   Target,
   TrendingUp,
@@ -222,6 +225,7 @@ function App() {
         <nav className="topNav" aria-label="Product areas">
           <a href="#markets">Live markets</a>
           <a href="#networks">Chain metrics</a>
+          <a href="#reviewer-pack">Reviewer pack</a>
           <a href="#sources">Sources</a>
           <a href="#exports">Exports</a>
         </nav>
@@ -430,6 +434,72 @@ function App() {
           </div>
         </section>
 
+        <section className="reviewerPack" id="reviewer-pack">
+          <div className="sectionHeader">
+            <div>
+              <p className="sectionKicker">Grant reviewer pack</p>
+              <h2>How to evaluate this tool against OP outcomes</h2>
+            </div>
+            <span>Evidence-first</span>
+          </div>
+
+          <div className="packHero">
+            <div>
+              <strong>Reviewer question</strong>
+              <h2>Does this help Optimism measure DEX liquidity and fee outcomes?</h2>
+              <p>
+                The product maps live Superchain DEX data into a repeatable review workflow:
+                inspect chain coverage, identify markets with weak fee output, export evidence,
+                and compare results against TVL, fee and volume goals.
+              </p>
+            </div>
+            <a href="https://www.opgrants.io/seasons/current/season-9/" target="_blank" rel="noreferrer">
+              OP grant criteria <ExternalLink size={16} />
+            </a>
+          </div>
+
+          <div className="packGrid">
+            <PackCard
+              icon={<Target />}
+              title="Outcome fit"
+              text="Maps directly to OP grant metrics: DEX liquidity, fee generation, volume efficiency and priority-market monitoring."
+            />
+            <PackCard
+              icon={<DatabaseZap />}
+              title="Verifiable data"
+              text="Uses public DefiLlama endpoints and exposes source status, timestamps and live protocol links."
+            />
+            <PackCard
+              icon={<FileCheck2 />}
+              title="Review workflow"
+              text="Reviewer can filter by Superchain network, inspect watchlists and export CSV evidence for offline analysis."
+            />
+            <PackCard
+              icon={<ShieldCheck />}
+              title="No hidden assumptions"
+              text="Unavailable metrics are marked unavailable instead of being replaced with manual numbers."
+            />
+          </div>
+
+          <div className="milestoneGrid">
+            <PackStep
+              label="Now"
+              title="Live proof-of-work"
+              text="Hosted dashboard, open-source repo, live Superchain DEX market data, source audit and CSV export."
+            />
+            <PackStep
+              label="Next"
+              title="Priority-pair adapter"
+              text="Add OP priority-pair configuration, pair-level metadata and pool-specific ingestion where browser APIs are insufficient."
+            />
+            <PackStep
+              label="Launch"
+              title="Reviewer reports"
+              text="Produce repeatable before/after grant reports with 7d and 30d windows, methodology docs and JSON exports."
+            />
+          </div>
+        </section>
+
         <section className="impactStrip" id="exports">
           <Impact icon={<LineChart />} title="Live outcome metrics" text="DEX market volume, chain TVL and fee totals are refreshed from public endpoints." />
           <Impact icon={<DatabaseZap />} title="No hidden spreadsheet" text="The app does not import a local metric dataset; unavailable endpoints are surfaced as source errors." />
@@ -471,6 +541,27 @@ function Impact({ icon, title, text }: { icon: ReactNode; title: string; text: s
       <h2>{title}</h2>
       <p>{text}</p>
       <ArrowUpRight size={18} />
+    </section>
+  );
+}
+
+function PackCard({ icon, title, text }: { icon: ReactNode; title: string; text: string }) {
+  return (
+    <section className="packCard">
+      <div>{icon}</div>
+      <h3>{title}</h3>
+      <p>{text}</p>
+    </section>
+  );
+}
+
+function PackStep({ label, title, text }: { label: string; title: string; text: string }) {
+  return (
+    <section className="packStep">
+      <span>{label}</span>
+      <Route size={18} />
+      <h3>{title}</h3>
+      <p>{text}</p>
     </section>
   );
 }
