@@ -5,6 +5,8 @@ export type SuperchainNetwork =
   | "Mode"
   | "Zora";
 
+export type NetworkScope = "All" | SuperchainNetwork;
+
 export type OutcomeTarget =
   | "Grow TVL"
   | "Improve fee efficiency"
@@ -101,6 +103,19 @@ export type ChainMetric = {
   fees7dUsd: number | null;
   fees30dUsd: number | null;
   sourceUrl: string;
+};
+
+export type MarketScopeMetrics = {
+  volume24h: number;
+  volume30d: number;
+  fees30d: number | null;
+  feeToVolume: number | null;
+  weightedChange7d: number;
+  watchCount: number;
+};
+
+export type ChainCoverageRow = ChainMetric & {
+  width: number;
 };
 
 export type LiquiditySnapshot = {

@@ -22,11 +22,12 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { loadLiquiditySnapshot } from "./api";
+import { buildChainCoverageRows, buildMarketScopeMetrics } from "./dataEngine";
 import { SUPERCHAIN_NETWORKS } from "./sources";
 import type {
-  ChainMetric,
   DexMarket,
   LiquiditySnapshot,
+  NetworkScope,
   OutcomeTarget,
   ProtocolScan,
   SourceStatus,
@@ -56,7 +57,7 @@ const targets: Array<"All" | OutcomeTarget> = [
 ];
 
 function App() {
-  const [network, setNetwork] = useState<(typeof networks)[number]>("All");
+  const [network, setNetwork] = useState<NetworkScope>("All");
   const [target, setTarget] = useState<(typeof targets)[number]>("All");
   const [selectedMarketId, setSelectedMarketId] = useState<string | null>(null);
   const [selectedProtocolId, setSelectedProtocolId] = useState<string | null>(null);
@@ -110,45 +111,15 @@ function App() {
     protocolScans[0] ??
     null;
 
-  const totals = useMemo(() => {
-    const volume24h = filteredMarkets.reduce(
-      (sum, market) => sum + market.volume24hUsd,
-      0,
-    );
-    const volume30d = sumNullableMarkets(filteredMarkets, "volume30dUsd") ?? 0;
-    const marketFees30d = sumNullableMarkets(filteredMarkets, "fees30dUsd");
-    const chainScope = chains.filter(
-      (chain) => network === "All" || chain.network === network,
-    );
-    const chainFees30d = sumNullableChains(chainScope, "fees30dUsd");
-    const weightedChange7d =
-      volume30d === 0
-        ? 0
-        : filteredMarkets.reduce(
-            (sum, market) =>
-              sum + (market.change7dPct ?? 0) * (market.volume30dUsd ?? 0),
-            0,
-          ) / volume30d;
+  const totals = useMemo(
+    () => buildMarketScopeMetrics(filteredMarkets, chains, network),
+    [chains, filteredMarkets, network],
+  );
 
-    return {
-      volume24h,
-      volume30d,
-      fees30d: marketFees30d ?? chainFees30d,
-      feeToVolume:
-        marketFees30d === null || volume30d === 0 ? null : (marketFees30d / volume30d) * 100,
-      weightedChange7d,
-      watchCount: filteredMarkets.filter((market) => market.health !== "Strong").length,
-    };
-  }, [chains, filteredMarkets, network]);
-
-  const chainRows = useMemo(() => {
-    const rows = chains.filter((chain) => network === "All" || chain.network === network);
-    const maxTvl = Math.max(...rows.map((row) => row.tvlUsd ?? 0), 1);
-    return rows.map((row) => ({
-      ...row,
-      width: Math.max(8, ((row.tvlUsd ?? 0) / maxTvl) * 100),
-    }));
-  }, [chains, network]);
+  const chainRows = useMemo(
+    () => buildChainCoverageRows(chains, network),
+    [chains, network],
+  );
 
   const liveState = useMemo(() => getLiveState(snapshot, loadError), [loadError, snapshot]);
   const lastUpdated = snapshot?.updatedAt
@@ -297,7 +268,7 @@ function App() {
             Network
             <select
               value={network}
-              onChange={(event) => setNetwork(event.target.value as typeof network)}
+              onChange={(event) => setNetwork(event.target.value as NetworkScope)}
             >
               {networks.map((item) => (
                 <option key={item}>{item}</option>
@@ -730,40 +701,6 @@ function getLiveState(snapshot: LiquiditySnapshot | null, error: string | null) 
     label: "Live status",
     title: "All sources live",
   };
-}
-
-type NullableChainMetricKey =
-  | "tvlUsd"
-  | "dexVolume24hUsd"
-  | "dexVolume7dUsd"
-  | "dexVolume30dUsd"
-  | "fees24hUsd"
-  | "fees7dUsd"
-  | "fees30dUsd";
-
-type NullableMarketMetricKey =
-  | "volume7dUsd"
-  | "volume30dUsd"
-  | "fees24hUsd"
-  | "fees7dUsd"
-  | "fees30dUsd"
-  | "change1dPct"
-  | "change7dPct"
-  | "change30dPct"
-  | "feeToVolume30dPct";
-
-function sumNullableChains(rows: ChainMetric[], key: NullableChainMetricKey): number | null {
-  const values = rows
-    .map((row) => row[key])
-    .filter((value): value is number => typeof value === "number");
-  return values.length === 0 ? null : values.reduce((sum, value) => sum + value, 0);
-}
-
-function sumNullableMarkets(rows: DexMarket[], key: NullableMarketMetricKey): number | null {
-  const values = rows
-    .map((row) => row[key])
-    .filter((value): value is number => typeof value === "number");
-  return values.length === 0 ? null : values.reduce((sum, value) => sum + value, 0);
 }
 
 function formatOptionalUsd(value: number | null) {

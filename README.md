@@ -25,6 +25,7 @@ The current app is live-data first. It does not display local metric fixtures.
 What works today:
 
 - live DEX market rows for `OP Mainnet`, `Base`, `Unichain`, `Mode`, and `Zora`
+- shared data engine for numeric normalization, ratios, weighted trends, market health, outcome labels, and scope totals
 - protocol scanner for monetizable report targets such as Uniswap, Aerodrome, Velodrome, Curve, PancakeSwap, SushiSwap, Balancer, and KIM Exchange
 - chain-level TVL, DEX volume, and fee totals
 - protocol-level fee attribution when the public feed exposes it
@@ -66,6 +67,7 @@ Unavailable values are shown as unavailable. The app does not silently substitut
 | Fees | Chain fees and protocol fees where available | Live |
 | Chain coverage | TVL and DEX totals by Superchain network | Live |
 | Market health | Strong / Watch / At risk labels | Live |
+| Data engine | Shared normalization, aggregation, ratios, weighted trends | Live |
 | Protocol scanner | Protocol-level report readiness score and next action | Live |
 | Reviewer evidence | CSV export with source URLs and timestamps | Live |
 | Priority pairs | Official OP pair mapping and pool-level ingestion | Planned |
@@ -95,7 +97,10 @@ Live data adapters
         +-- DefiLlama fees endpoint
         |
         v
-Market scoring, protocol scanner, source audit, CSV export
+Data engine: normalization, ratios, weighted trends, market scoring
+        |
+        v
+Protocol scanner, scope totals, chain coverage, source audit, CSV export
         |
         v
 Dashboard state and reviewer workflow
@@ -123,6 +128,7 @@ Current stack:
 
 ```text
 src/api.ts                   Live data loading, market scoring, scanner orchestration
+src/dataEngine.ts            Shared metric normalization, aggregation and scoring rules
 src/protocols.ts             Tracked protocol profiles and slug matchers
 src/scanner.ts               Protocol readiness scoring and next-action logic
 src/sources.ts               Supported chains and public endpoint URLs

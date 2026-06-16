@@ -1,4 +1,5 @@
 import { TRACKED_PROTOCOLS } from "./protocols";
+import { ratioPct, sumNullable, weightedAverage } from "./dataEngine";
 import type {
   DexMarket,
   ProtocolProfile,
@@ -27,8 +28,7 @@ function buildProtocolScan(
   const volume24hUsd = matchedMarkets.reduce((sum, market) => sum + market.volume24hUsd, 0);
   const volume30dUsd = sumNullable(matchedMarkets.map((market) => market.volume30dUsd)) ?? 0;
   const fees30dUsd = sumNullable(matchedMarkets.map((market) => market.fees30dUsd));
-  const feeToVolume30dPct =
-    fees30dUsd === null || volume30dUsd === 0 ? null : (fees30dUsd / volume30dUsd) * 100;
+  const feeToVolume30dPct = ratioPct(fees30dUsd, volume30dUsd);
   const weightedChange7dPct = weightedAverage(
     matchedMarkets.map((market) => ({
       value: market.change7dPct,
@@ -182,22 +182,4 @@ function uniqueNetworks(markets: DexMarket[]): SuperchainNetwork[] {
   }
 
   return [...networks].sort();
-}
-
-function sumNullable(values: Array<number | null>) {
-  const numbers = values.filter((value): value is number => typeof value === "number");
-  return numbers.length === 0 ? null : numbers.reduce((sum, value) => sum + value, 0);
-}
-
-function weightedAverage(values: Array<{ value: number | null; weight: number }>) {
-  const valid = values.filter((item): item is { value: number; weight: number } =>
-    typeof item.value === "number" && item.weight > 0,
-  );
-  const weightSum = valid.reduce((sum, item) => sum + item.weight, 0);
-
-  if (weightSum === 0) {
-    return null;
-  }
-
-  return valid.reduce((sum, item) => sum + item.value * item.weight, 0) / weightSum;
 }

@@ -12,6 +12,24 @@ Pool-level adapters such as GeckoTerminal can be added through a backend or sche
 
 Each exported market row includes the source URL and refresh timestamp.
 
+## Data Engine
+
+The app now separates data processing from the React UI.
+
+`src/dataEngine.ts` is responsible for:
+
+- numeric normalization from public API payloads
+- nullable metric handling
+- sum aggregation without fake replacements
+- fee-to-volume ratio calculation
+- weighted 7d trend calculation
+- market health labels
+- outcome target labels
+- network-scoped totals
+- chain coverage rows
+
+This matters because reports, protocol scanner output, CSV exports, and future automation should use the same calculation rules. The UI should not become the source of truth for analytics logic.
+
 ## Core Metrics
 
 ### TVL
