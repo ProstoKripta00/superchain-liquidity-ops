@@ -28,6 +28,7 @@ What works today:
 - shared data engine for numeric normalization, ratios, weighted trends, market health, outcome labels, and scope totals
 - protocol scanner for monetizable report targets such as Uniswap, Aerodrome, Velodrome, Curve, PancakeSwap, SushiSwap, Balancer, and KIM Exchange
 - protocol health score with grade, confidence, component breakdown, strengths, risks, and recommendation
+- mini report generator for reviewer-ready Markdown reports per selected protocol
 - chain-level TVL, DEX volume, and fee totals
 - protocol-level fee attribution when the public feed exposes it
 - source audit for every public endpoint
@@ -41,12 +42,13 @@ What works today:
 1. Open the public dashboard.
 2. Confirm the live status panel shows data sources loaded.
 3. Open `Protocol scanner` and identify targets marked `Ready for report`.
-4. Copy the scanner summary for outreach or report preparation.
-5. Filter to `OP Mainnet` or `Base`.
-6. Review DEX market rows for 24h volume, 30d volume, 30d fees, and health labels.
-7. Open `Source audit` and verify the public endpoints.
-8. Export the CSV report.
-9. Compare the exported evidence against the target outcomes: DEX activity, fee generation, and market health.
+4. Generate a mini-report for the selected protocol.
+5. Copy the Markdown report or download the `.md` file.
+6. Filter to `OP Mainnet` or `Base`.
+7. Review DEX market rows for 24h volume, 30d volume, 30d fees, and health labels.
+8. Open `Source audit` and verify the public endpoints.
+9. Export the CSV report.
+10. Compare the exported evidence against the target outcomes: DEX activity, fee generation, and market health.
 
 ## Data Sources
 
@@ -71,6 +73,7 @@ Unavailable values are shown as unavailable. The app does not silently substitut
 | Data engine | Shared normalization, aggregation, ratios, weighted trends | Live |
 | Protocol scanner | Protocol-level report readiness score and next action | Live |
 | Protocol health score | Activity, fee capture, trend, coverage, quality, confidence | Live |
+| Mini report generator | Markdown report with summary, metrics, score, markets, risks, next actions | Live |
 | Reviewer evidence | CSV export with source URLs and timestamps | Live |
 | Priority pairs | Official OP pair mapping and pool-level ingestion | Planned |
 
@@ -102,7 +105,7 @@ Live data adapters
 Data engine: normalization, ratios, weighted trends, market scoring
         |
         v
-Protocol scanner, protocol health score, scope totals, chain coverage, source audit, CSV export
+Protocol scanner, protocol health score, mini reports, scope totals, chain coverage, source audit, CSV export
         |
         v
 Dashboard state and reviewer workflow
@@ -133,6 +136,7 @@ src/api.ts                   Live data loading, market scoring, scanner orchestr
 src/dataEngine.ts            Shared metric normalization, aggregation and scoring rules
 src/protocols.ts             Tracked protocol profiles and slug matchers
 src/scanner.ts               Protocol readiness scoring and next-action logic
+src/reportGenerator.ts       Markdown mini-report generation for selected protocols
 src/sources.ts               Supported chains and public endpoint URLs
 src/App.tsx                  Dashboard, protocol scanner, filters, reviewer pack UI, export flow
 src/styles.css               OP-inspired product UI

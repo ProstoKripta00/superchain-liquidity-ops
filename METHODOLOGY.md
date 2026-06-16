@@ -164,10 +164,27 @@ The MVP should produce grant-review artifacts:
 
 - CSV export by market
 - protocol scanner and health score summary for outreach and report preparation
+- Markdown mini-report for a selected protocol
 - chain-level TVL and fee summaries
 - watchlist of underperforming markets
 - 7d/30d trend reports
 - notes explaining why a market is marked Strong, Watch, or At Risk
+
+## Mini Report Generator
+
+The mini-report generator converts the selected protocol scan into a Markdown artifact. It includes:
+
+- executive summary
+- protocol snapshot
+- health score breakdown
+- strengths and risks
+- matched Superchain market table
+- outreach angle
+- recommendation
+- next actions
+- methodology notes
+
+The generated report is intended for outreach, public examples, grant updates, and protocol growth conversations. It uses the same live scanner output and matched market rows shown in the dashboard.
 
 ## Initial Live Data Scope
 

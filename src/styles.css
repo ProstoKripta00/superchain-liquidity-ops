@@ -701,6 +701,91 @@ select {
   line-height: 1.2;
 }
 
+.miniReport {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding: 16px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border-radius: 16px;
+}
+
+.miniReportHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.miniReportHeader span,
+.miniReportHeader strong,
+.miniReportHeader small {
+  display: block;
+}
+
+.miniReportHeader span {
+  color: #ff0421;
+  font-size: 12px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.miniReportHeader strong {
+  margin-top: 5px;
+  font-size: 18px;
+  line-height: 1.15;
+}
+
+.miniReportHeader small {
+  color: #6a6a6a;
+  font-size: 12px;
+  font-weight: 850;
+  text-align: right;
+}
+
+.miniReport p {
+  margin-bottom: 0;
+  color: #4d4d4d;
+  line-height: 1.5;
+}
+
+.miniReport pre {
+  max-height: 230px;
+  margin: 0;
+  overflow: auto;
+  padding: 14px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border-radius: 12px;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.miniReportActions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.miniReportActions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border: 0;
+  border-radius: 12px;
+  font-weight: 950;
+}
+
+.miniReportActions button:first-child {
+  background: #ff0421;
+}
+
 .scannerAction {
   display: grid;
   gap: 8px;
@@ -1300,7 +1385,8 @@ select {
   .dataPanelStats,
   .packGrid,
   .milestoneGrid,
-  .healthTags {
+  .healthTags,
+  .miniReportActions {
     grid-template-columns: 1fr;
   }
 }

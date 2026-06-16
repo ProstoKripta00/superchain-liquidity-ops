@@ -47,6 +47,15 @@ export type ProtocolHealthScore = {
   recommendation: string;
 };
 
+export type ProtocolMiniReport = {
+  protocolId: string;
+  title: string;
+  fileName: string;
+  markdown: string;
+  summary: string;
+  generatedAt: string;
+};
+
 export type SourceStatus = {
   id: string;
   name: string;

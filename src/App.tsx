@@ -23,12 +23,14 @@ import {
 } from "lucide-react";
 import { loadLiquiditySnapshot } from "./api";
 import { buildChainCoverageRows, buildMarketScopeMetrics } from "./dataEngine";
+import { buildProtocolMiniReport } from "./reportGenerator";
 import { SUPERCHAIN_NETWORKS } from "./sources";
 import type {
   DexMarket,
   LiquiditySnapshot,
   NetworkScope,
   OutcomeTarget,
+  ProtocolMiniReport,
   ProtocolScan,
   SourceStatus,
   SuperchainNetwork,
@@ -62,6 +64,10 @@ function App() {
   const [selectedMarketId, setSelectedMarketId] = useState<string | null>(null);
   const [selectedProtocolId, setSelectedProtocolId] = useState<string | null>(null);
   const [copyFeedback, setCopyFeedback] = useState<{
+    label: string;
+    protocolId: string;
+  } | null>(null);
+  const [reportFeedback, setReportFeedback] = useState<{
     label: string;
     protocolId: string;
   } | null>(null);
@@ -113,6 +119,20 @@ function App() {
     protocolScans.find((scan) => scan.id === selectedProtocolId) ??
     protocolScans[0] ??
     null;
+  const selectedProtocolMarkets = useMemo(
+    () =>
+      selectedProtocol
+        ? markets.filter((market) => selectedProtocol.marketIds.includes(market.id))
+        : [],
+    [markets, selectedProtocol],
+  );
+  const miniReport = useMemo(
+    () =>
+      selectedProtocol
+        ? buildProtocolMiniReport(selectedProtocol, selectedProtocolMarkets)
+        : null,
+    [selectedProtocol, selectedProtocolMarkets],
+  );
 
   const totals = useMemo(
     () => buildMarketScopeMetrics(filteredMarkets, chains, network),
@@ -209,6 +229,32 @@ function App() {
 
     window.setTimeout(() => {
       setCopyFeedback((current) => (current?.protocolId === scan.id ? null : current));
+    }, 1600);
+  };
+
+  const copyMiniReport = async (report: ProtocolMiniReport) => {
+    try {
+      await writeClipboardText(report.markdown);
+      setReportFeedback({ protocolId: report.protocolId, label: "Copied" });
+    } catch {
+      setReportFeedback({ protocolId: report.protocolId, label: "Markdown ready" });
+    }
+
+    window.setTimeout(() => {
+      setReportFeedback((current) =>
+        current?.protocolId === report.protocolId ? null : current,
+      );
+    }, 1600);
+  };
+
+  const downloadMiniReport = (report: ProtocolMiniReport) => {
+    downloadTextFile(report.fileName, report.markdown, "text/markdown;charset=utf-8");
+    setReportFeedback({ protocolId: report.protocolId, label: "Downloaded" });
+
+    window.setTimeout(() => {
+      setReportFeedback((current) =>
+        current?.protocolId === report.protocolId ? null : current,
+      );
     }, 1600);
   };
 
@@ -384,6 +430,19 @@ function App() {
                   </div>
 
                   <HealthScoreBreakdown scan={selectedProtocol} />
+
+                  {miniReport ? (
+                    <MiniReportPanel
+                      feedback={
+                        reportFeedback?.protocolId === miniReport.protocolId
+                          ? reportFeedback.label
+                          : null
+                      }
+                      onCopy={() => void copyMiniReport(miniReport)}
+                      onDownload={() => downloadMiniReport(miniReport)}
+                      report={miniReport}
+                    />
+                  ) : null}
 
                   <div className="scannerAction">
                     <span>Opportunity</span>
@@ -674,6 +733,46 @@ function HealthScoreBreakdown({ scan }: { scan: ProtocolScan }) {
   );
 }
 
+function MiniReportPanel({
+  feedback,
+  onCopy,
+  onDownload,
+  report,
+}: {
+  feedback: string | null;
+  onCopy: () => void;
+  onDownload: () => void;
+  report: ProtocolMiniReport;
+}) {
+  const preview = report.markdown.split("\n").slice(0, 20).join("\n");
+
+  return (
+    <section className="miniReport">
+      <div className="miniReportHeader">
+        <div>
+          <span>Mini report generator</span>
+          <strong>{report.title}</strong>
+        </div>
+        <small>{new Date(report.generatedAt).toLocaleString()}</small>
+      </div>
+      <p>{report.summary}</p>
+      <pre>{preview}</pre>
+      <div className="miniReportActions">
+        <button onClick={onCopy}>
+          <FileCheck2 size={17} />
+          {feedback === "Copied" || feedback === "Markdown ready"
+            ? feedback
+            : "Copy markdown"}
+        </button>
+        <button onClick={onDownload}>
+          <ArrowDownToLine size={17} />
+          {feedback === "Downloaded" ? feedback : "Download .md"}
+        </button>
+      </div>
+    </section>
+  );
+}
+
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div className="stat">
@@ -829,6 +928,16 @@ async function writeClipboardText(text: string) {
   } finally {
     document.body.removeChild(textArea);
   }
+}
+
+function downloadTextFile(fileName: string, text: string, type: string) {
+  const blob = new Blob([text], { type });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = fileName;
+  link.click();
+  URL.revokeObjectURL(url);
 }
 
 export default App;
