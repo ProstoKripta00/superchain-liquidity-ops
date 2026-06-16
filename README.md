@@ -29,6 +29,7 @@ What works today:
 - protocol scanner for monetizable report targets such as Uniswap, Aerodrome, Velodrome, Curve, PancakeSwap, SushiSwap, Balancer, and KIM Exchange
 - protocol health score with grade, confidence, component breakdown, strengths, risks, and recommendation
 - mini report generator for reviewer-ready Markdown reports per selected protocol
+- public sample reports generated from top scanner-selected protocols
 - chain-level TVL, DEX volume, and fee totals
 - protocol-level fee attribution when the public feed exposes it
 - source audit for every public endpoint
@@ -42,13 +43,14 @@ What works today:
 1. Open the public dashboard.
 2. Confirm the live status panel shows data sources loaded.
 3. Open `Protocol scanner` and identify targets marked `Ready for report`.
-4. Generate a mini-report for the selected protocol.
-5. Copy the Markdown report or download the `.md` file.
-6. Filter to `OP Mainnet` or `Base`.
-7. Review DEX market rows for 24h volume, 30d volume, 30d fees, and health labels.
-8. Open `Source audit` and verify the public endpoints.
-9. Export the CSV report.
-10. Compare the exported evidence against the target outcomes: DEX activity, fee generation, and market health.
+4. Open `Public Sample Reports` and inspect the generated examples.
+5. Generate a mini-report for the selected protocol.
+6. Copy the Markdown report or download the `.md` file.
+7. Filter to `OP Mainnet` or `Base`.
+8. Review DEX market rows for 24h volume, 30d volume, 30d fees, and health labels.
+9. Open `Source audit` and verify the public endpoints.
+10. Export the CSV report.
+11. Compare the exported evidence against the target outcomes: DEX activity, fee generation, and market health.
 
 ## Data Sources
 
@@ -74,6 +76,7 @@ Unavailable values are shown as unavailable. The app does not silently substitut
 | Protocol scanner | Protocol-level report readiness score and next action | Live |
 | Protocol health score | Activity, fee capture, trend, coverage, quality, confidence | Live |
 | Mini report generator | Markdown report with summary, metrics, score, markets, risks, next actions | Live |
+| Public sample reports | Three scanner-selected protocol examples with copy and download actions | Live |
 | Reviewer evidence | CSV export with source URLs and timestamps | Live |
 | Priority pairs | Official OP pair mapping and pool-level ingestion | Planned |
 
@@ -105,7 +108,7 @@ Live data adapters
 Data engine: normalization, ratios, weighted trends, market scoring
         |
         v
-Protocol scanner, protocol health score, mini reports, scope totals, chain coverage, source audit, CSV export
+Protocol scanner, protocol health score, sample reports, mini reports, scope totals, chain coverage, source audit, CSV export
         |
         v
 Dashboard state and reviewer workflow
@@ -121,13 +124,12 @@ Current stack:
 
 ## Roadmap
 
-1. Publish public mini-reports for three scanner-selected protocols.
-2. Add official Optimism priority-pair configuration.
-3. Add pool-level adapters through backend or scheduled static ingestion for sources that do not support reliable browser fetches.
-4. Add 7d/30d before-after reviewer reports.
-5. Add JSON exports and a small public API surface.
-6. Add alerting for markets with declining liquidity, weak fee output, or source degradation.
-7. Publish example final grant reports.
+1. Add official Optimism priority-pair configuration.
+2. Add pool-level adapters through backend or scheduled static ingestion for sources that do not support reliable browser fetches.
+3. Add 7d/30d before-after reviewer reports.
+4. Add JSON exports and a small public API surface.
+5. Add alerting for markets with declining liquidity, weak fee output, or source degradation.
+6. Publish example final grant reports.
 
 ## Repository Map
 

@@ -186,6 +186,18 @@ The mini-report generator converts the selected protocol scan into a Markdown ar
 
 The generated report is intended for outreach, public examples, grant updates, and protocol growth conversations. It uses the same live scanner output and matched market rows shown in the dashboard.
 
+## Public Sample Reports
+
+The public sample report section turns the highest-signal protocol scans into visible examples on the dashboard.
+
+Current selection rule:
+
+- prefer protocols marked `Ready for report`
+- fall back to the top scanner scores when fewer than three protocols are ready
+- generate each report from the same live protocol scan and matched markets used by the selected mini-report workflow
+
+These reports are examples for outreach and reviewer inspection. They are not manually curated endorsements, and they regenerate when the live snapshot changes.
+
 ## Initial Live Data Scope
 
 Current adapters cover:

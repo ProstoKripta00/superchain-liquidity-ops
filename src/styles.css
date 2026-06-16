@@ -786,6 +786,146 @@ select {
   background: #ff0421;
 }
 
+.sampleReports {
+  margin-bottom: 20px;
+  padding: 22px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border-radius: 22px;
+  box-shadow: 0 16px 40px rgba(15, 15, 15, 0.08);
+}
+
+.sampleReports .sectionKicker {
+  color: #ff5a6d;
+}
+
+.sampleReports .sectionHeader span {
+  color: #0f0f0f;
+  background: #ffffff;
+}
+
+.sampleReportGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.sampleReportCard {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  padding: 18px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border-radius: 16px;
+}
+
+.sampleReportHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.sampleReportHeader span,
+.sampleReportHeader h3,
+.sampleReportHeader small {
+  display: block;
+}
+
+.sampleReportHeader span {
+  color: #ff0421;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.sampleReportHeader h3 {
+  margin: 6px 0 4px;
+  font-size: 22px;
+  line-height: 1.1;
+}
+
+.sampleReportHeader small {
+  color: #6a6a6a;
+  font-size: 13px;
+  font-weight: 850;
+  line-height: 1.35;
+}
+
+.sampleReportSummary {
+  margin-bottom: 0;
+  color: #4d4d4d;
+  line-height: 1.5;
+}
+
+.sampleReportStats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.sampleReportStats div {
+  min-width: 0;
+  padding: 12px;
+  background: #f4f4f4;
+  border-radius: 12px;
+}
+
+.sampleReportStats span,
+.sampleReportStats strong {
+  display: block;
+}
+
+.sampleReportStats span {
+  color: #6a6a6a;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.sampleReportStats strong {
+  margin-top: 5px;
+  font-size: 14px;
+  line-height: 1.25;
+}
+
+.sampleReportPreview {
+  max-height: 170px;
+  margin: 0;
+  overflow: auto;
+  padding: 14px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border-radius: 12px;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.sampleReportActions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.sampleReportActions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border: 0;
+  border-radius: 12px;
+  font-weight: 950;
+}
+
+.sampleReportActions button:first-child {
+  background: #ff0421;
+}
+
 .scannerAction {
   display: grid;
   gap: 8px;
@@ -1318,6 +1458,7 @@ select {
   .hero,
   .workbench,
   .scannerGrid,
+  .sampleReportGrid,
   .impactStrip,
   .packHero {
     grid-template-columns: 1fr;
@@ -1383,6 +1524,8 @@ select {
 
   .sourceGrid,
   .dataPanelStats,
+  .sampleReportStats,
+  .sampleReportActions,
   .packGrid,
   .milestoneGrid,
   .healthTags,

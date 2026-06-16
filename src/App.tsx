@@ -133,6 +133,23 @@ function App() {
         : null,
     [selectedProtocol, selectedProtocolMarkets],
   );
+  const sampleReports = useMemo(() => {
+    const readyScans = protocolScans.filter(
+      (scan) => scan.status === "Ready for report",
+    );
+    const selectedScans = (readyScans.length >= 3 ? readyScans : protocolScans).slice(
+      0,
+      3,
+    );
+
+    return selectedScans.map((scan) => {
+      const scanMarkets = markets.filter((market) => scan.marketIds.includes(market.id));
+      return {
+        scan,
+        report: buildProtocolMiniReport(scan, scanMarkets),
+      };
+    });
+  }, [markets, protocolScans]);
 
   const totals = useMemo(
     () => buildMarketScopeMetrics(filteredMarkets, chains, network),
@@ -270,6 +287,7 @@ function App() {
         </div>
         <nav className="topNav" aria-label="Product areas">
           <a href="#protocol-scanner">Protocol scanner</a>
+          <a href="#sample-reports">Sample reports</a>
           <a href="#markets">Live markets</a>
           <a href="#networks">Chain metrics</a>
           <a href="#reviewer-pack">Reviewer pack</a>
@@ -463,6 +481,18 @@ function App() {
             </aside>
           </div>
         </section>
+
+        <SampleReportsSection
+          feedbackFor={(report) =>
+            reportFeedback?.protocolId === report.protocolId
+              ? reportFeedback.label
+              : null
+          }
+          isLoading={isLoading}
+          items={sampleReports}
+          onCopy={(report) => void copyMiniReport(report)}
+          onDownload={downloadMiniReport}
+        />
 
         <section className="workbench" id="markets">
           <section className="poolMatrix">
@@ -667,6 +697,99 @@ function App() {
         </section>
       </main>
     </div>
+  );
+}
+
+function SampleReportsSection({
+  feedbackFor,
+  isLoading,
+  items,
+  onCopy,
+  onDownload,
+}: {
+  feedbackFor: (report: ProtocolMiniReport) => string | null;
+  isLoading: boolean;
+  items: Array<{ scan: ProtocolScan; report: ProtocolMiniReport }>;
+  onCopy: (report: ProtocolMiniReport) => void;
+  onDownload: (report: ProtocolMiniReport) => void;
+}) {
+  return (
+    <section className="sampleReports" id="sample-reports">
+      <div className="sectionHeader">
+        <div>
+          <p className="sectionKicker">Public Sample Reports</p>
+          <h2>Ready examples clients can inspect before they talk to us</h2>
+        </div>
+        <span>{items.length > 0 ? `${items.length} generated` : "Waiting for data"}</span>
+      </div>
+
+      <div className="sampleReportGrid">
+        {items.length > 0 ? (
+          items.map(({ scan, report }) => {
+            const feedback = feedbackFor(report);
+            const preview = report.markdown.split("\n").slice(0, 13).join("\n");
+
+            return (
+              <article className="sampleReportCard" key={scan.id}>
+                <div className="sampleReportHeader">
+                  <div>
+                    <span>{scan.status}</span>
+                    <h3>{scan.name}</h3>
+                    <small>{scan.segment}</small>
+                  </div>
+                  <div className={`scorePill grade-${scan.healthScore.grade.toLowerCase()}`}>
+                    <strong>{scan.score}</strong>
+                    <small>{scan.healthScore.grade}</small>
+                  </div>
+                </div>
+
+                <p className="sampleReportSummary">{report.summary}</p>
+
+                <div className="sampleReportStats">
+                  <div>
+                    <span>Networks</span>
+                    <strong>{scan.networks.join(", ")}</strong>
+                  </div>
+                  <div>
+                    <span>30d volume</span>
+                    <strong>{compactUsd.format(scan.volume30dUsd)}</strong>
+                  </div>
+                  <div>
+                    <span>30d fees</span>
+                    <strong>{formatOptionalUsd(scan.fees30dUsd)}</strong>
+                  </div>
+                  <div>
+                    <span>Confidence</span>
+                    <strong>{scan.healthScore.confidence}/100</strong>
+                  </div>
+                </div>
+
+                <pre className="sampleReportPreview">{preview}</pre>
+
+                <div className="sampleReportActions">
+                  <button onClick={() => onCopy(report)}>
+                    <FileCheck2 size={17} />
+                    {feedback === "Copied" || feedback === "Markdown ready"
+                      ? feedback
+                      : "Copy report"}
+                  </button>
+                  <button onClick={() => onDownload(report)}>
+                    <ArrowDownToLine size={17} />
+                    {feedback === "Downloaded" ? feedback : "Download .md"}
+                  </button>
+                </div>
+              </article>
+            );
+          })
+        ) : (
+          <div className="emptyState">
+            {isLoading
+              ? "Generating public report examples from live protocol scans..."
+              : "No protocol scans are available for public examples yet."}
+          </div>
+        )}
+      </div>
+    </section>
   );
 }
 
