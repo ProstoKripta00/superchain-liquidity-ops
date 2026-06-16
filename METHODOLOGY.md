@@ -89,11 +89,38 @@ Market has mixed signals, such as meaningful volume with weaker fees, rising act
 
 Market has low volume, declining activity, weak fee output, or signs that incentives may not be producing measurable impact.
 
+## Protocol Scanner
+
+The protocol scanner groups live DEX market rows by tracked protocol slug. It is designed to answer a commercial question before manual research starts:
+
+```text
+Is this protocol active enough on the Superchain to justify a paid report or outreach?
+```
+
+Current tracked profiles include Uniswap, Aerodrome, Velodrome, Curve, PancakeSwap, SushiSwap, Balancer, and KIM Exchange.
+
+The scanner score is derived from:
+
+- 30d DEX volume
+- 30d fees when protocol fee attribution is available
+- number of Superchain networks where the protocol has matched live markets
+- weighted 7d trend
+- share of matched markets labeled Strong
+
+Scanner statuses:
+
+- `Ready for report`: enough visible activity to prepare a public mini-report and outreach.
+- `Monitor`: visible activity, but weak trends, incomplete fee data, or mixed market quality.
+- `Low signal`: not enough public activity to justify manual sales effort yet.
+
+This score is not a security audit or investment rating. It is an operational filter for deciding which protocols are worth testing, reporting on, and pitching.
+
 ## Reviewer Outputs
 
 The MVP should produce grant-review artifacts:
 
 - CSV export by market
+- protocol scanner summary for outreach and report preparation
 - chain-level TVL and fee summaries
 - watchlist of underperforming markets
 - 7d/30d trend reports

@@ -25,6 +25,7 @@ The current app is live-data first. It does not display local metric fixtures.
 What works today:
 
 - live DEX market rows for `OP Mainnet`, `Base`, `Unichain`, `Mode`, and `Zora`
+- protocol scanner for monetizable report targets such as Uniswap, Aerodrome, Velodrome, Curve, PancakeSwap, SushiSwap, Balancer, and KIM Exchange
 - chain-level TVL, DEX volume, and fee totals
 - protocol-level fee attribution when the public feed exposes it
 - source audit for every public endpoint
@@ -37,11 +38,13 @@ What works today:
 
 1. Open the public dashboard.
 2. Confirm the live status panel shows data sources loaded.
-3. Filter to `OP Mainnet` or `Base`.
-4. Review DEX market rows for 24h volume, 30d volume, 30d fees, and health labels.
-5. Open `Source audit` and verify the public endpoints.
-6. Export the CSV report.
-7. Compare the exported evidence against the target outcomes: DEX activity, fee generation, and market health.
+3. Open `Protocol scanner` and identify targets marked `Ready for report`.
+4. Copy the scanner summary for outreach or report preparation.
+5. Filter to `OP Mainnet` or `Base`.
+6. Review DEX market rows for 24h volume, 30d volume, 30d fees, and health labels.
+7. Open `Source audit` and verify the public endpoints.
+8. Export the CSV report.
+9. Compare the exported evidence against the target outcomes: DEX activity, fee generation, and market health.
 
 ## Data Sources
 
@@ -63,6 +66,7 @@ Unavailable values are shown as unavailable. The app does not silently substitut
 | Fees | Chain fees and protocol fees where available | Live |
 | Chain coverage | TVL and DEX totals by Superchain network | Live |
 | Market health | Strong / Watch / At risk labels | Live |
+| Protocol scanner | Protocol-level report readiness score and next action | Live |
 | Reviewer evidence | CSV export with source URLs and timestamps | Live |
 | Priority pairs | Official OP pair mapping and pool-level ingestion | Planned |
 
@@ -91,7 +95,10 @@ Live data adapters
         +-- DefiLlama fees endpoint
         |
         v
-Dashboard state, market scoring, source audit, CSV export
+Market scoring, protocol scanner, source audit, CSV export
+        |
+        v
+Dashboard state and reviewer workflow
 ```
 
 Current stack:
@@ -104,19 +111,22 @@ Current stack:
 
 ## Roadmap
 
-1. Add official Optimism priority-pair configuration.
-2. Add pool-level adapters through backend or scheduled static ingestion for sources that do not support reliable browser fetches.
-3. Add 7d/30d before-after reviewer reports.
-4. Add JSON exports and a small public API surface.
-5. Add alerting for markets with declining liquidity, weak fee output, or source degradation.
-6. Publish example final grant reports.
+1. Publish public mini-reports for three scanner-selected protocols.
+2. Add official Optimism priority-pair configuration.
+3. Add pool-level adapters through backend or scheduled static ingestion for sources that do not support reliable browser fetches.
+4. Add 7d/30d before-after reviewer reports.
+5. Add JSON exports and a small public API surface.
+6. Add alerting for markets with declining liquidity, weak fee output, or source degradation.
+7. Publish example final grant reports.
 
 ## Repository Map
 
 ```text
-src/api.ts                   Live data loading and market scoring
+src/api.ts                   Live data loading, market scoring, scanner orchestration
+src/protocols.ts             Tracked protocol profiles and slug matchers
+src/scanner.ts               Protocol readiness scoring and next-action logic
 src/sources.ts               Supported chains and public endpoint URLs
-src/App.tsx                  Dashboard, filters, reviewer pack UI, export flow
+src/App.tsx                  Dashboard, protocol scanner, filters, reviewer pack UI, export flow
 src/styles.css               OP-inspired product UI
 GRANT_REVIEWER_PACK.md       Reviewer summary, evidence, milestones, budget
 OP_GRANT_SUBMISSION_READY.md Copy-paste grant form answers and checklist

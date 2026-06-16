@@ -28,6 +28,7 @@ import type {
   DexMarket,
   LiquiditySnapshot,
   OutcomeTarget,
+  ProtocolScan,
   SourceStatus,
   SuperchainNetwork,
 } from "./types";
@@ -58,6 +59,8 @@ function App() {
   const [network, setNetwork] = useState<(typeof networks)[number]>("All");
   const [target, setTarget] = useState<(typeof targets)[number]>("All");
   const [selectedMarketId, setSelectedMarketId] = useState<string | null>(null);
+  const [selectedProtocolId, setSelectedProtocolId] = useState<string | null>(null);
+  const [copiedProtocolId, setCopiedProtocolId] = useState<string | null>(null);
   const [snapshot, setSnapshot] = useState<LiquiditySnapshot | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -70,6 +73,9 @@ function App() {
       const nextSnapshot = await loadLiquiditySnapshot();
       setSnapshot(nextSnapshot);
       setSelectedMarketId((current) => current ?? nextSnapshot.markets[0]?.id ?? null);
+      setSelectedProtocolId(
+        (current) => current ?? nextSnapshot.protocolScans[0]?.id ?? null,
+      );
     } catch (error) {
       setLoadError(error instanceof Error ? error.message : "Failed to load live data");
     } finally {
@@ -83,6 +89,7 @@ function App() {
 
   const markets = snapshot?.markets ?? [];
   const chains = snapshot?.chains ?? [];
+  const protocolScans = snapshot?.protocolScans ?? [];
 
   const filteredMarkets = useMemo(
     () =>
@@ -97,6 +104,10 @@ function App() {
   const selectedMarket =
     filteredMarkets.find((market) => market.id === selectedMarketId) ??
     filteredMarkets[0] ??
+    null;
+  const selectedProtocol =
+    protocolScans.find((scan) => scan.id === selectedProtocolId) ??
+    protocolScans[0] ??
     null;
 
   const totals = useMemo(() => {
@@ -212,6 +223,20 @@ function App() {
     URL.revokeObjectURL(url);
   };
 
+  const copyProtocolSummary = async (scan: ProtocolScan) => {
+    const summary = buildProtocolSummary(scan);
+
+    try {
+      await writeClipboardText(summary);
+      setCopiedProtocolId(scan.id);
+      window.setTimeout(() => {
+        setCopiedProtocolId((current) => (current === scan.id ? null : current));
+      }, 1600);
+    } catch {
+      setLoadError("Clipboard is unavailable in this browser session.");
+    }
+  };
+
   return (
     <div className="app">
       <header className="opHeader">
@@ -223,6 +248,7 @@ function App() {
           <span>Live liquidity intelligence for Superchain DEX outcomes</span>
         </div>
         <nav className="topNav" aria-label="Product areas">
+          <a href="#protocol-scanner">Protocol scanner</a>
           <a href="#markets">Live markets</a>
           <a href="#networks">Chain metrics</a>
           <a href="#reviewer-pack">Reviewer pack</a>
@@ -250,6 +276,7 @@ function App() {
             </div>
             <div className="dataPanelStats">
               <Stat label="Markets loaded" value={isLoading ? "..." : String(markets.length)} />
+              <Stat label="Protocols scanned" value={String(protocolScans.length)} />
               <Stat label="Sources checked" value={String(snapshot?.sources.length ?? 0)} />
               <Stat label="Last refresh" value={lastUpdated} />
               <Stat label="No local dataset" value="Live-first" />
@@ -303,6 +330,94 @@ function App() {
           <Metric icon={<Gauge />} label="Fee / volume" value={formatOptionalPct(totals.feeToVolume)} />
           <Metric icon={<TrendingUp />} label="7d market trend" value={`${pct.format(totals.weightedChange7d)}%`} />
           <Metric icon={<Radar />} label="Watchlist markets" value={String(totals.watchCount)} />
+        </section>
+
+        <section className="protocolScanner" id="protocol-scanner">
+          <div className="sectionHeader">
+            <div>
+              <p className="sectionKicker">Protocol Scanner</p>
+              <h2>Find protocols worth testing, reporting and pitching</h2>
+            </div>
+            <span>{isLoading ? "Scanning" : `${protocolScans.length} protocol targets`}</span>
+          </div>
+
+          <div className="scannerGrid">
+            <div className="scannerList">
+              <div className="scannerHead">
+                <span>Score</span>
+                <span>Protocol</span>
+                <span>30d volume</span>
+                <span>30d fees</span>
+                <span>Status</span>
+              </div>
+              {protocolScans.length > 0 ? (
+                protocolScans.map((scan) => (
+                  <button
+                    className={`protocolRow ${scan.id === selectedProtocol?.id ? "selected" : ""}`}
+                    key={scan.id}
+                    onClick={() => setSelectedProtocolId(scan.id)}
+                  >
+                    <span className="scorePill">{scan.score}</span>
+                    <span>
+                      <strong>{scan.name}</strong>
+                      <small>
+                        {scan.networks.join(", ")} / {scan.marketCount} markets
+                      </small>
+                    </span>
+                    <strong>{compactUsd.format(scan.volume30dUsd)}</strong>
+                    <strong>{formatOptionalUsd(scan.fees30dUsd)}</strong>
+                    <ProtocolStatus value={scan.status} />
+                  </button>
+                ))
+              ) : (
+                <div className="emptyState">
+                  {isLoading ? "Scanning live protocols..." : "No tracked protocol matched live markets."}
+                </div>
+              )}
+            </div>
+
+            <aside className="scannerDetail">
+              {selectedProtocol ? (
+                <>
+                  <div className="scannerDetailHead">
+                    <div>
+                      <p className="sectionKicker">Selected target</p>
+                      <h2>{selectedProtocol.name}</h2>
+                      <span>{selectedProtocol.segment}</span>
+                    </div>
+                    <div className="scoreDial">
+                      <span>Score</span>
+                      <strong>{selectedProtocol.score}</strong>
+                    </div>
+                  </div>
+
+                  <p className="scannerThesis">{selectedProtocol.thesis}</p>
+
+                  <div className="focusGrid">
+                    <Stat label="Networks" value={selectedProtocol.networks.join(", ")} />
+                    <Stat label="Markets" value={String(selectedProtocol.marketCount)} />
+                    <Stat label="7d trend" value={formatOptionalPct(selectedProtocol.weightedChange7dPct)} />
+                    <Stat label="Fee / volume" value={formatOptionalPct(selectedProtocol.feeToVolume30dPct)} />
+                    <Stat label="Strong markets" value={String(selectedProtocol.strongMarkets)} />
+                    <Stat label="Risk markets" value={String(selectedProtocol.atRiskMarkets)} />
+                  </div>
+
+                  <div className="scannerAction">
+                    <span>Opportunity</span>
+                    <strong>{selectedProtocol.status}</strong>
+                    <p>{selectedProtocol.opportunity}</p>
+                    <p>{selectedProtocol.nextAction}</p>
+                    <button onClick={() => void copyProtocolSummary(selectedProtocol)}>
+                      <FileCheck2 size={17} />
+                      {copiedProtocolId === selectedProtocol.id ? "Copied" : "Copy protocol summary"}
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <div className="emptyState">Select a protocol scan to inspect the monetization angle.</div>
+              )}
+            </aside>
+          </div>
         </section>
 
         <section className="workbench" id="markets">
@@ -525,6 +640,14 @@ function Health({ value }: { value: DexMarket["health"] }) {
   return <span className={`health ${value.toLowerCase().replace(" ", "-")}`}>{value}</span>;
 }
 
+function ProtocolStatus({ value }: { value: ProtocolScan["status"] }) {
+  return (
+    <span className={`protocolStatus ${value.toLowerCase().replace(/\s+/g, "-")}`}>
+      {value}
+    </span>
+  );
+}
+
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div className="stat">
@@ -661,6 +784,48 @@ function csvCell(value: string) {
   }
 
   return `"${value.replace(/"/g, '""')}"`;
+}
+
+function buildProtocolSummary(scan: ProtocolScan) {
+  return [
+    `Protocol: ${scan.name}`,
+    `Scanner score: ${scan.score}/100 (${scan.status})`,
+    `Segment: ${scan.segment}`,
+    `Networks: ${scan.networks.join(", ")}`,
+    `Markets matched: ${scan.marketCount}`,
+    `30d volume: ${compactUsd.format(scan.volume30dUsd)}`,
+    `30d fees: ${formatOptionalUsd(scan.fees30dUsd)}`,
+    `7d weighted trend: ${formatOptionalPct(scan.weightedChange7dPct)}`,
+    `Fee / volume: ${formatOptionalPct(scan.feeToVolume30dPct)}`,
+    `Opportunity: ${scan.opportunity}`,
+    `Next action: ${scan.nextAction}`,
+  ].join("\n");
+}
+
+async function writeClipboardText(text: string) {
+  const clipboard = globalThis.navigator?.clipboard;
+
+  if (clipboard?.writeText) {
+    await clipboard.writeText(text);
+    return;
+  }
+
+  const textArea = document.createElement("textarea");
+  textArea.value = text;
+  textArea.setAttribute("readonly", "");
+  textArea.style.position = "fixed";
+  textArea.style.left = "-9999px";
+  document.body.appendChild(textArea);
+  textArea.select();
+
+  try {
+    const copied = document.execCommand("copy");
+    if (!copied) {
+      throw new Error("Copy command failed");
+    }
+  } finally {
+    document.body.removeChild(textArea);
+  }
 }
 
 export default App;

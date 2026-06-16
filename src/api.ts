@@ -4,6 +4,7 @@ import {
   llamaOverviewUrl,
   llamaProtocolUrl,
 } from "./sources";
+import { scanProtocols } from "./scanner";
 import type {
   ChainMetric,
   DexMarket,
@@ -362,6 +363,7 @@ export async function loadLiquiditySnapshot(): Promise<LiquiditySnapshot> {
     ...bundleStatuses,
   ];
   const degraded = sources.some((source) => source.state !== "ok");
+  const protocolScans = scanProtocols(markets, updatedAt);
 
   if (markets.length === 0 && chains.length === 0) {
     throw new Error("No live DEX or chain metrics could be loaded.");
@@ -369,6 +371,7 @@ export async function loadLiquiditySnapshot(): Promise<LiquiditySnapshot> {
 
   return {
     markets,
+    protocolScans,
     chains,
     sources,
     updatedAt,

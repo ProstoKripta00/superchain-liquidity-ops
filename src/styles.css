@@ -370,6 +370,227 @@ select {
   line-height: 1.05;
 }
 
+.protocolScanner {
+  margin-bottom: 20px;
+  padding: 22px;
+  background: #ffffff;
+  border: 1px solid #e6e6e6;
+  border-radius: 22px;
+  box-shadow: 0 16px 40px rgba(15, 15, 15, 0.08);
+}
+
+.scannerGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 420px;
+  gap: 20px;
+  align-items: start;
+}
+
+.scannerList {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.scannerHead,
+.protocolRow {
+  display: grid;
+  grid-template-columns: 54px minmax(190px, 1fr) 120px 110px 140px;
+  gap: 12px;
+  align-items: center;
+}
+
+.scannerHead {
+  padding: 0 14px 8px;
+  color: #6a6a6a;
+  font-size: 12px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.protocolRow {
+  width: 100%;
+  min-height: 82px;
+  padding: 12px 14px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border: 1px solid #e6e6e6;
+  border-left: 6px solid transparent;
+  border-radius: 16px;
+  text-align: left;
+}
+
+.protocolRow.selected,
+.protocolRow:hover {
+  border-left-color: #ff0421;
+  background: #fff4f5;
+}
+
+.protocolRow strong,
+.protocolRow small {
+  display: block;
+}
+
+.protocolRow small {
+  margin-top: 4px;
+  color: #6a6a6a;
+  line-height: 1.35;
+}
+
+.scorePill {
+  display: inline-grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  color: #ffffff;
+  background: #0f0f0f;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 950;
+}
+
+.protocolStatus {
+  display: inline-flex;
+  justify-content: center;
+  min-height: 30px;
+  align-items: center;
+  padding: 0 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 950;
+  text-align: center;
+}
+
+.protocolStatus.ready-for-report {
+  color: #ffffff;
+  background: #ff0421;
+}
+
+.protocolStatus.monitor {
+  color: #724900;
+  background: #fff0c4;
+}
+
+.protocolStatus.low-signal {
+  color: #4d4d4d;
+  background: #ededed;
+}
+
+.scannerDetail {
+  padding: 20px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border-radius: 18px;
+}
+
+.scannerDetailHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 16px;
+}
+
+.scannerDetailHead h2 {
+  color: #ffffff;
+}
+
+.scannerDetailHead span:not(.sectionKicker) {
+  display: block;
+  color: #bdbdbd;
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.scoreDial {
+  display: grid;
+  flex: 0 0 auto;
+  width: 86px;
+  height: 86px;
+  place-items: center;
+  color: #0f0f0f;
+  background: #ffffff;
+  border-radius: 999px;
+}
+
+.scoreDial span,
+.scoreDial strong {
+  display: block;
+}
+
+.scoreDial span {
+  align-self: end;
+  color: #666666;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.scoreDial strong {
+  align-self: start;
+  font-size: 28px;
+  line-height: 1;
+}
+
+.scannerThesis {
+  margin-bottom: 14px;
+  color: #d4d4d4;
+  line-height: 1.55;
+}
+
+.scannerDetail .stat {
+  background: #1d1d1d;
+}
+
+.scannerDetail .stat span {
+  color: #929292;
+}
+
+.scannerDetail .stat strong {
+  color: #ffffff;
+  font-size: 14px;
+}
+
+.scannerAction {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+  background: #1d1d1d;
+  border: 1px solid #303030;
+  border-radius: 16px;
+}
+
+.scannerAction span {
+  color: #ff5a6d;
+  font-size: 12px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.scannerAction strong {
+  font-size: 18px;
+}
+
+.scannerAction p {
+  margin-bottom: 0;
+  color: #d4d4d4;
+  line-height: 1.5;
+}
+
+.scannerAction button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  margin-top: 8px;
+  color: #ffffff;
+  background: #ff0421;
+  border: 0;
+  border-radius: 12px;
+  font-weight: 950;
+}
+
 .workbench {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 420px;
@@ -861,6 +1082,7 @@ select {
 @media (max-width: 1180px) {
   .hero,
   .workbench,
+  .scannerGrid,
   .impactStrip,
   .packHero {
     grid-template-columns: 1fr;
@@ -911,7 +1133,12 @@ select {
     display: none;
   }
 
-  .poolRow {
+  .scannerHead {
+    display: none;
+  }
+
+  .poolRow,
+  .protocolRow {
     grid-template-columns: 1fr;
   }
 

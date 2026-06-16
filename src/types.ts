@@ -15,6 +15,8 @@ export type PoolHealth = "Strong" | "Watch" | "At risk";
 
 export type SourceState = "ok" | "degraded" | "error";
 
+export type ProtocolScanStatus = "Ready for report" | "Monitor" | "Low signal";
+
 export type SourceStatus = {
   id: string;
   name: string;
@@ -55,6 +57,39 @@ export type DexMarket = {
   note: string;
 };
 
+export type ProtocolProfile = {
+  id: string;
+  name: string;
+  slugs: string[];
+  segment: string;
+  thesis: string;
+};
+
+export type ProtocolScan = {
+  id: string;
+  name: string;
+  segment: string;
+  thesis: string;
+  slugs: string[];
+  networks: SuperchainNetwork[];
+  marketIds: string[];
+  marketCount: number;
+  volume24hUsd: number;
+  volume30dUsd: number;
+  fees30dUsd: number | null;
+  feeToVolume30dPct: number | null;
+  weightedChange7dPct: number | null;
+  strongMarkets: number;
+  watchMarkets: number;
+  atRiskMarkets: number;
+  score: number;
+  status: ProtocolScanStatus;
+  opportunity: string;
+  nextAction: string;
+  sourceUrls: string[];
+  updatedAt: string;
+};
+
 export type ChainMetric = {
   network: SuperchainNetwork;
   chainId: number;
@@ -70,6 +105,7 @@ export type ChainMetric = {
 
 export type LiquiditySnapshot = {
   markets: DexMarket[];
+  protocolScans: ProtocolScan[];
   chains: ChainMetric[];
   sources: SourceStatus[];
   updatedAt: string;
