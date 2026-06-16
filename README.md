@@ -7,6 +7,7 @@ Superchain Liquidity Ops helps protocols, LPs, and grant reviewers inspect wheth
 ## Live Demo
 
 - Public dashboard: https://prostokripta00.github.io/superchain-liquidity-ops/
+- Submission-ready application: `OP_GRANT_SUBMISSION_READY.md`
 - Reviewer pack: `GRANT_REVIEWER_PACK.md`
 - Methodology: `METHODOLOGY.md`
 - Application copy: `OPTIMISM_APPLICATION.md`
@@ -118,6 +119,7 @@ src/sources.ts               Supported chains and public endpoint URLs
 src/App.tsx                  Dashboard, filters, reviewer pack UI, export flow
 src/styles.css               OP-inspired product UI
 GRANT_REVIEWER_PACK.md       Reviewer summary, evidence, milestones, budget
+OP_GRANT_SUBMISSION_READY.md Copy-paste grant form answers and checklist
 METHODOLOGY.md               Metrics, source limitations, health scoring
 OPTIMISM_APPLICATION.md      Application-ready grant copy
 OPTIMISM_GRANT_PROPOSAL.md   Full proposal draft
