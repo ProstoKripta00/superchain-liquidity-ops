@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import {
   ArrowDownToLine,
@@ -6,18 +6,28 @@ import {
   BarChart3,
   CircleDollarSign,
   DatabaseZap,
+  ExternalLink,
   Gauge,
   GitBranch,
   Layers3,
   LineChart,
   Network,
   Radar,
+  RefreshCcw,
   SlidersHorizontal,
   Target,
   TrendingUp,
 } from "lucide-react";
-import { pools } from "./data";
-import type { LiquidityPool, OutcomeTarget, SuperchainNetwork } from "./types";
+import { loadLiquiditySnapshot } from "./api";
+import { SUPERCHAIN_NETWORKS } from "./sources";
+import type {
+  ChainMetric,
+  DexMarket,
+  LiquiditySnapshot,
+  OutcomeTarget,
+  SourceStatus,
+  SuperchainNetwork,
+} from "./types";
 
 const compactUsd = new Intl.NumberFormat("en-US", {
   notation: "compact",
@@ -31,14 +41,7 @@ const pct = new Intl.NumberFormat("en-US", {
   signDisplay: "exceptZero",
 });
 
-const networks: Array<"All" | SuperchainNetwork> = [
-  "All",
-  "OP Mainnet",
-  "Base",
-  "Unichain",
-  "Mode",
-  "Zora",
-];
+const networks: Array<"All" | SuperchainNetwork> = ["All", ...SUPERCHAIN_NETWORKS];
 
 const targets: Array<"All" | OutcomeTarget> = [
   "All",
@@ -51,93 +54,149 @@ const targets: Array<"All" | OutcomeTarget> = [
 function App() {
   const [network, setNetwork] = useState<(typeof networks)[number]>("All");
   const [target, setTarget] = useState<(typeof targets)[number]>("All");
-  const [selectedPoolId, setSelectedPoolId] = useState(pools[0].id);
+  const [selectedMarketId, setSelectedMarketId] = useState<string | null>(null);
+  const [snapshot, setSnapshot] = useState<LiquiditySnapshot | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
-  const filteredPools = useMemo(
-    () =>
-      pools.filter((pool) => {
-        const matchesNetwork = network === "All" || pool.network === network;
-        const matchesTarget = target === "All" || pool.outcomeTarget === target;
-        return matchesNetwork && matchesTarget;
-      }),
-    [network, target],
-  );
+  const refreshData = useCallback(async () => {
+    setIsLoading(true);
+    setLoadError(null);
 
-  const selectedPool =
-    filteredPools.find((pool) => pool.id === selectedPoolId) ??
-    filteredPools[0] ??
-    pools[0];
-
-  const totals = useMemo(() => {
-    const tvl = filteredPools.reduce((sum, pool) => sum + pool.tvlUsd, 0);
-    const fees = filteredPools.reduce((sum, pool) => sum + pool.fees30dUsd, 0);
-    const volume = filteredPools.reduce((sum, pool) => sum + pool.volume30dUsd, 0);
-    const priority = filteredPools.filter((pool) => pool.priority).length;
-    const weightedChange =
-      tvl === 0
-        ? 0
-        : filteredPools.reduce(
-            (sum, pool) => sum + pool.tvlChange7dPct * pool.tvlUsd,
-            0,
-          ) / tvl;
-
-    return {
-      tvl,
-      fees,
-      volume,
-      priority,
-      feeEfficiency: tvl === 0 ? 0 : (fees / tvl) * 100,
-      weightedChange,
-      watchCount: filteredPools.filter((pool) => pool.health !== "Strong").length,
-    };
-  }, [filteredPools]);
-
-  const chainRows = useMemo(() => {
-    const rows = networks
-      .filter((item): item is SuperchainNetwork => item !== "All")
-      .map((item) => {
-        const chainPools = pools.filter((pool) => pool.network === item);
-        return {
-          network: item,
-          tvl: chainPools.reduce((sum, pool) => sum + pool.tvlUsd, 0),
-          fees: chainPools.reduce((sum, pool) => sum + pool.fees30dUsd, 0),
-          count: chainPools.length,
-        };
-      });
-    const maxTvl = Math.max(...rows.map((row) => row.tvl), 1);
-    return rows.map((row) => ({ ...row, width: Math.max(8, (row.tvl / maxTvl) * 100) }));
+    try {
+      const nextSnapshot = await loadLiquiditySnapshot();
+      setSnapshot(nextSnapshot);
+      setSelectedMarketId((current) => current ?? nextSnapshot.markets[0]?.id ?? null);
+    } catch (error) {
+      setLoadError(error instanceof Error ? error.message : "Failed to load live data");
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
+  useEffect(() => {
+    void refreshData();
+  }, [refreshData]);
+
+  const markets = snapshot?.markets ?? [];
+  const chains = snapshot?.chains ?? [];
+
+  const filteredMarkets = useMemo(
+    () =>
+      markets.filter((market) => {
+        const matchesNetwork = network === "All" || market.network === network;
+        const matchesTarget = target === "All" || market.outcomeTarget === target;
+        return matchesNetwork && matchesTarget;
+      }),
+    [markets, network, target],
+  );
+
+  const selectedMarket =
+    filteredMarkets.find((market) => market.id === selectedMarketId) ??
+    filteredMarkets[0] ??
+    null;
+
+  const totals = useMemo(() => {
+    const volume24h = filteredMarkets.reduce(
+      (sum, market) => sum + market.volume24hUsd,
+      0,
+    );
+    const volume30d = sumNullableMarkets(filteredMarkets, "volume30dUsd") ?? 0;
+    const marketFees30d = sumNullableMarkets(filteredMarkets, "fees30dUsd");
+    const chainScope = chains.filter(
+      (chain) => network === "All" || chain.network === network,
+    );
+    const chainFees30d = sumNullableChains(chainScope, "fees30dUsd");
+    const weightedChange7d =
+      volume30d === 0
+        ? 0
+        : filteredMarkets.reduce(
+            (sum, market) =>
+              sum + (market.change7dPct ?? 0) * (market.volume30dUsd ?? 0),
+            0,
+          ) / volume30d;
+
+    return {
+      volume24h,
+      volume30d,
+      fees30d: marketFees30d ?? chainFees30d,
+      feeToVolume:
+        marketFees30d === null || volume30d === 0 ? null : (marketFees30d / volume30d) * 100,
+      weightedChange7d,
+      watchCount: filteredMarkets.filter((market) => market.health !== "Strong").length,
+    };
+  }, [chains, filteredMarkets, network]);
+
+  const chainRows = useMemo(() => {
+    const rows = chains.filter((chain) => network === "All" || chain.network === network);
+    const maxTvl = Math.max(...rows.map((row) => row.tvlUsd ?? 0), 1);
+    return rows.map((row) => ({
+      ...row,
+      width: Math.max(8, ((row.tvlUsd ?? 0) / maxTvl) * 100),
+    }));
+  }, [chains, network]);
+
+  const liveState = useMemo(() => getLiveState(snapshot, loadError), [loadError, snapshot]);
+  const lastUpdated = snapshot?.updatedAt
+    ? new Intl.DateTimeFormat("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        day: "2-digit",
+        month: "short",
+      }).format(new Date(snapshot.updatedAt))
+    : "Not loaded";
+
   const exportCsv = () => {
+    if (filteredMarkets.length === 0) {
+      return;
+    }
+
     const header = [
       "network",
       "dex",
-      "pair",
+      "slug",
+      "category",
       "priority",
-      "tvlUsd",
-      "tvlChange7dPct",
+      "volume24hUsd",
+      "volume7dUsd",
       "volume30dUsd",
+      "fees24hUsd",
+      "fees7dUsd",
       "fees30dUsd",
-      "feeAprPct",
-      "utilizationPct",
+      "change1dPct",
+      "change7dPct",
+      "change30dPct",
+      "feeToVolume30dPct",
       "health",
       "outcomeTarget",
+      "sourceUrl",
+      "updatedAt",
     ];
-    const rows = filteredPools.map((pool) =>
+    const rows = filteredMarkets.map((market) =>
       [
-        pool.network,
-        pool.dex,
-        pool.pair,
-        String(pool.priority),
-        String(pool.tvlUsd),
-        String(pool.tvlChange7dPct),
-        String(pool.volume30dUsd),
-        String(pool.fees30dUsd),
-        String(pool.feeAprPct),
-        String(pool.utilizationPct),
-        pool.health,
-        pool.outcomeTarget,
-      ].join(","),
+        market.network,
+        market.dex,
+        market.slug,
+        market.category,
+        String(market.priority),
+        String(market.volume24hUsd),
+        nullableCell(market.volume7dUsd),
+        nullableCell(market.volume30dUsd),
+        nullableCell(market.fees24hUsd),
+        nullableCell(market.fees7dUsd),
+        nullableCell(market.fees30dUsd),
+        nullableCell(market.change1dPct),
+        nullableCell(market.change7dPct),
+        nullableCell(market.change30dPct),
+        nullableCell(market.feeToVolume30dPct),
+        market.health,
+        market.outcomeTarget,
+        market.sourceUrl,
+        market.updatedAt,
+      ]
+        .map(csvCell)
+        .join(","),
     );
     const blob = new Blob([[header.join(","), ...rows].join("\n")], {
       type: "text/csv;charset=utf-8",
@@ -145,7 +204,7 @@ function App() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = "superchain-liquidity-impact.csv";
+    link.download = "superchain-dex-market-impact.csv";
     link.click();
     URL.revokeObjectURL(url);
   };
@@ -153,16 +212,18 @@ function App() {
   return (
     <div className="app">
       <header className="opHeader">
-        <div className="opMark" aria-hidden="true">OP</div>
+        <div className="opMark" aria-hidden="true">
+          OP
+        </div>
         <div className="brandBlock">
           <strong>Superchain Impact Console</strong>
-          <span>Liquidity intelligence for DEX TVL, fees and incentive outcomes</span>
+          <span>Live liquidity intelligence for Superchain DEX outcomes</span>
         </div>
         <nav className="topNav" aria-label="Product areas">
-          <span>TVL</span>
-          <span>Fees</span>
-          <span>Priority pairs</span>
-          <span>Reviewer reports</span>
+          <a href="#markets">Live markets</a>
+          <a href="#networks">Chain metrics</a>
+          <a href="#sources">Sources</a>
+          <a href="#exports">Exports</a>
         </nav>
       </header>
 
@@ -172,16 +233,27 @@ function App() {
             <p className="eyebrow">Optimism / Superchain grant proof-of-work</p>
             <h1>Your liquidity. Your fees. Measurable outcomes.</h1>
             <p>
-              Open-source analytics for protocols, LPs and grant reviewers to see
-              whether Superchain liquidity programs are increasing DEX TVL, fee
-              generation and capital efficiency.
+              Open-source analytics for protocols, LPs and grant reviewers to track
+              live Superchain DEX volume, fee generation, chain TVL and incentive
+              watchlists from public data sources.
             </p>
           </div>
 
-          <aside className="grantPanel">
-            <span>Grant ask</span>
-            <strong>$15,000 equivalent in OP</strong>
-            <p>For live DEX data adapters, reviewer reports, methodology docs and a public MVP demo.</p>
+          <aside className="dataPanel">
+            <div className={`statusDot ${liveState.className}`}>
+              <span>{liveState.label}</span>
+              <strong>{isLoading ? "Refreshing live data" : liveState.title}</strong>
+            </div>
+            <div className="dataPanelStats">
+              <Stat label="Markets loaded" value={isLoading ? "..." : String(markets.length)} />
+              <Stat label="Sources checked" value={String(snapshot?.sources.length ?? 0)} />
+              <Stat label="Last refresh" value={lastUpdated} />
+              <Stat label="No local dataset" value="Live-first" />
+            </div>
+            <button className="refreshButton" onClick={refreshData} disabled={isLoading}>
+              <RefreshCcw size={18} />
+              Refresh
+            </button>
           </aside>
         </section>
 
@@ -192,7 +264,10 @@ function App() {
           </div>
           <label>
             Network
-            <select value={network} onChange={(event) => setNetwork(event.target.value as typeof network)}>
+            <select
+              value={network}
+              onChange={(event) => setNetwork(event.target.value as typeof network)}
+            >
               {networks.map((item) => (
                 <option key={item}>{item}</option>
               ))}
@@ -200,95 +275,117 @@ function App() {
           </label>
           <label>
             Outcome target
-            <select value={target} onChange={(event) => setTarget(event.target.value as typeof target)}>
+            <select
+              value={target}
+              onChange={(event) => setTarget(event.target.value as typeof target)}
+            >
               {targets.map((item) => (
                 <option key={item}>{item}</option>
               ))}
             </select>
           </label>
-          <button className="exportButton" onClick={exportCsv}>
+          <button className="exportButton" onClick={exportCsv} disabled={filteredMarkets.length === 0}>
             <ArrowDownToLine size={18} />
             Export report
           </button>
         </section>
 
+        {loadError ? <div className="alertPanel">{loadError}</div> : null}
+
         <section className="metricRail">
-          <Metric icon={<Layers3 />} label="Tracked TVL" value={compactUsd.format(totals.tvl)} />
-          <Metric icon={<CircleDollarSign />} label="30d DEX fees" value={compactUsd.format(totals.fees)} />
-          <Metric icon={<BarChart3 />} label="30d volume" value={compactUsd.format(totals.volume)} />
-          <Metric icon={<Gauge />} label="Fees / TVL" value={`${totals.feeEfficiency.toFixed(2)}%`} />
-          <Metric icon={<TrendingUp />} label="7d TVL delta" value={`${pct.format(totals.weightedChange)}%`} />
-          <Metric icon={<Radar />} label="Watchlist pools" value={String(totals.watchCount)} />
+          <Metric icon={<BarChart3 />} label="24h DEX volume" value={compactUsd.format(totals.volume24h)} />
+          <Metric icon={<Layers3 />} label="30d DEX volume" value={compactUsd.format(totals.volume30d)} />
+          <Metric icon={<CircleDollarSign />} label="30d fees" value={formatOptionalUsd(totals.fees30d)} />
+          <Metric icon={<Gauge />} label="Fee / volume" value={formatOptionalPct(totals.feeToVolume)} />
+          <Metric icon={<TrendingUp />} label="7d market trend" value={`${pct.format(totals.weightedChange7d)}%`} />
+          <Metric icon={<Radar />} label="Watchlist markets" value={String(totals.watchCount)} />
         </section>
 
-        <section className="workbench">
+        <section className="workbench" id="markets">
           <section className="poolMatrix">
             <div className="sectionHeader">
               <div>
-                <p className="sectionKicker">Priority pair matrix</p>
-                <h2>DEX liquidity outcome tracking</h2>
+                <p className="sectionKicker">Live DefiLlama DEX markets</p>
+                <h2>Volume, fees and reviewer watchlist</h2>
               </div>
-              <span>{filteredPools.length} pools in scope</span>
+              <span>{isLoading ? "Loading" : `${filteredMarkets.length} markets in scope`}</span>
             </div>
 
             <div className="table">
               <div className="tableHead">
-                <span>Pool</span>
-                <span>TVL</span>
-                <span>7d TVL</span>
+                <span>Market</span>
+                <span>24h vol</span>
+                <span>7d vol</span>
+                <span>30d vol</span>
                 <span>30d fees</span>
-                <span>APR</span>
                 <span>Health</span>
               </div>
-              {filteredPools.map((pool) => (
-                <button
-                  className={`poolRow ${pool.id === selectedPool.id ? "selected" : ""}`}
-                  key={pool.id}
-                  onClick={() => setSelectedPoolId(pool.id)}
-                >
-                  <span>
-                    <strong>{pool.pair}</strong>
-                    <small>
-                      {pool.network} / {pool.dex}
-                    </small>
-                  </span>
-                  <strong>{compactUsd.format(pool.tvlUsd)}</strong>
-                  <Change value={pool.tvlChange7dPct} />
-                  <strong>{compactUsd.format(pool.fees30dUsd)}</strong>
-                  <strong>{pool.feeAprPct.toFixed(1)}%</strong>
-                  <Health value={pool.health} />
-                </button>
-              ))}
+              {filteredMarkets.length > 0 ? (
+                filteredMarkets.map((market) => (
+                  <button
+                    className={`poolRow ${market.id === selectedMarket?.id ? "selected" : ""}`}
+                    key={market.id}
+                    onClick={() => setSelectedMarketId(market.id)}
+                  >
+                    <span>
+                      <strong>{market.dex}</strong>
+                      <small>
+                        {market.network} / {market.category} / {market.slug}
+                      </small>
+                    </span>
+                    <strong>{compactUsd.format(market.volume24hUsd)}</strong>
+                    <strong>{formatOptionalUsd(market.volume7dUsd)}</strong>
+                    <strong>{formatOptionalUsd(market.volume30dUsd)}</strong>
+                    <strong>{formatOptionalUsd(market.fees30dUsd)}</strong>
+                    <Health value={market.health} />
+                  </button>
+                ))
+              ) : (
+                <div className="emptyState">
+                  {isLoading ? "Loading live markets..." : "No live markets match the current filters."}
+                </div>
+              )}
             </div>
           </section>
 
           <aside className="reviewColumn">
             <section className="reviewPanel">
-              <div className="sectionHeader compactHeader">
-                <div>
-                  <p className="sectionKicker">Reviewer focus</p>
-                  <h2>{selectedPool.pair}</h2>
-                </div>
-                <Health value={selectedPool.health} />
-              </div>
-              <div className="focusGrid">
-                <Stat label="Network" value={selectedPool.network} />
-                <Stat label="DEX" value={selectedPool.dex} />
-                <Stat label="Liquidity depth" value={compactUsd.format(selectedPool.liquidityDepthUsd)} />
-                <Stat label="Utilization" value={`${selectedPool.utilizationPct}%`} />
-              </div>
-              <div className="outcomeBox">
-                <span>Outcome target</span>
-                <strong>{selectedPool.outcomeTarget}</strong>
-                <p>{selectedPool.note}</p>
-              </div>
+              {selectedMarket ? (
+                <>
+                  <div className="sectionHeader compactHeader">
+                    <div>
+                      <p className="sectionKicker">Reviewer focus</p>
+                      <h2>{selectedMarket.dex}</h2>
+                    </div>
+                    <Health value={selectedMarket.health} />
+                  </div>
+                  <div className="focusGrid">
+                    <Stat label="Network" value={selectedMarket.network} />
+                    <Stat label="Category" value={selectedMarket.category} />
+                    <Stat label="24h volume" value={compactUsd.format(selectedMarket.volume24hUsd)} />
+                    <Stat label="7d change" value={formatOptionalPct(selectedMarket.change7dPct)} />
+                    <Stat label="30d fee / volume" value={formatOptionalPct(selectedMarket.feeToVolume30dPct)} />
+                    <Stat label="DefiLlama slug" value={selectedMarket.slug} />
+                  </div>
+                  <div className="outcomeBox">
+                    <span>Outcome target</span>
+                    <strong>{selectedMarket.outcomeTarget}</strong>
+                    <p>{selectedMarket.note}</p>
+                    <a href={selectedMarket.sourceUrl} target="_blank" rel="noreferrer">
+                      Open live source <ExternalLink size={15} />
+                    </a>
+                  </div>
+                </>
+              ) : (
+                <div className="emptyState">Select a live market to inspect reviewer signals.</div>
+              )}
             </section>
 
-            <section className="networkPanel">
+            <section className="networkPanel" id="networks">
               <div className="sectionHeader compactHeader">
                 <div>
-                  <p className="sectionKicker">Superchain coverage</p>
-                  <h2>TVL by network</h2>
+                  <p className="sectionKicker">DefiLlama chain coverage</p>
+                  <h2>TVL, DEX volume and fees</h2>
                 </div>
                 <Network size={20} />
               </div>
@@ -297,7 +394,11 @@ function App() {
                   <div className="chainBar" key={row.network}>
                     <div>
                       <strong>{row.network}</strong>
-                      <span>{compactUsd.format(row.tvl)} TVL / {compactUsd.format(row.fees)} fees</span>
+                      <span>
+                        {formatOptionalUsd(row.tvlUsd)} TVL /{" "}
+                        {formatOptionalUsd(row.dexVolume30dUsd)} 30d volume /{" "}
+                        {formatOptionalUsd(row.fees30dUsd)} 30d fees
+                      </span>
                     </div>
                     <div className="barTrack">
                       <span style={{ width: `${row.width}%` }} />
@@ -309,11 +410,31 @@ function App() {
           </aside>
         </section>
 
-        <section className="impactStrip">
-          <Impact icon={<LineChart />} title="Measurable outcomes" text="7d and 30d windows show whether incentives move TVL, fees and pool efficiency." />
-          <Impact icon={<DatabaseZap />} title="Open data adapters" text="Grant milestone adds live DEX, subgraph, RPC and report export adapters." />
-          <Impact icon={<GitBranch />} title="Reviewer-ready exports" text="CSV/JSON outputs make pool-level impact easier to audit and compare." />
-          <Impact icon={<Target />} title="Priority-pair focus" text="The product is scoped around pairs that matter for Superchain grant outcomes." />
+        <section className="sourceAudit" id="sources">
+          <div className="sectionHeader">
+            <div>
+              <p className="sectionKicker">Source audit</p>
+              <h2>Every number links back to a public endpoint</h2>
+            </div>
+            <span>{liveState.title}</span>
+          </div>
+          <div className="sourceGrid">
+            {(snapshot?.sources ?? []).map((source) => (
+              <SourceItem source={source} key={source.id} />
+            ))}
+            {!snapshot && (
+              <div className="emptyState">
+                {isLoading ? "Checking public data sources..." : "No source status available."}
+              </div>
+            )}
+          </div>
+        </section>
+
+        <section className="impactStrip" id="exports">
+          <Impact icon={<LineChart />} title="Live outcome metrics" text="DEX market volume, chain TVL and fee totals are refreshed from public endpoints." />
+          <Impact icon={<DatabaseZap />} title="No hidden spreadsheet" text="The app does not import a local metric dataset; unavailable endpoints are surfaced as source errors." />
+          <Impact icon={<GitBranch />} title="Reviewer-ready CSV" text="Exports include source URLs, timestamps, DEX slugs and derived health labels." />
+          <Impact icon={<Target />} title="Superchain scope" text="The data layer is scoped to OP Mainnet, Base, Unichain, Mode and Zora." />
         </section>
       </main>
     </div>
@@ -330,11 +451,7 @@ function Metric({ icon, label, value }: { icon: ReactNode; label: string; value:
   );
 }
 
-function Change({ value }: { value: number }) {
-  return <strong className={value >= 0 ? "positive" : "negative"}>{pct.format(value)}%</strong>;
-}
-
-function Health({ value }: { value: LiquidityPool["health"] }) {
+function Health({ value }: { value: DexMarket["health"] }) {
   return <span className={`health ${value.toLowerCase().replace(" ", "-")}`}>{value}</span>;
 }
 
@@ -356,6 +473,103 @@ function Impact({ icon, title, text }: { icon: ReactNode; title: string; text: s
       <ArrowUpRight size={18} />
     </section>
   );
+}
+
+function SourceItem({ source }: { source: SourceStatus }) {
+  return (
+    <a className={`sourceItem ${source.state}`} href={source.url} target="_blank" rel="noreferrer">
+      <span>{source.state}</span>
+      <strong>{source.name}</strong>
+      <small>{source.message}</small>
+      <ExternalLink size={16} />
+    </a>
+  );
+}
+
+function getLiveState(snapshot: LiquiditySnapshot | null, error: string | null) {
+  if (error) {
+    return {
+      className: "error",
+      label: "Live status",
+      title: "API issue",
+    };
+  }
+
+  if (!snapshot) {
+    return {
+      className: "loading",
+      label: "Live status",
+      title: "Connecting",
+    };
+  }
+
+  if (snapshot.degraded) {
+    return {
+      className: "degraded",
+      label: "Live status",
+      title: "Partial data",
+    };
+  }
+
+  return {
+    className: "ok",
+    label: "Live status",
+    title: "All sources live",
+  };
+}
+
+type NullableChainMetricKey =
+  | "tvlUsd"
+  | "dexVolume24hUsd"
+  | "dexVolume7dUsd"
+  | "dexVolume30dUsd"
+  | "fees24hUsd"
+  | "fees7dUsd"
+  | "fees30dUsd";
+
+type NullableMarketMetricKey =
+  | "volume7dUsd"
+  | "volume30dUsd"
+  | "fees24hUsd"
+  | "fees7dUsd"
+  | "fees30dUsd"
+  | "change1dPct"
+  | "change7dPct"
+  | "change30dPct"
+  | "feeToVolume30dPct";
+
+function sumNullableChains(rows: ChainMetric[], key: NullableChainMetricKey): number | null {
+  const values = rows
+    .map((row) => row[key])
+    .filter((value): value is number => typeof value === "number");
+  return values.length === 0 ? null : values.reduce((sum, value) => sum + value, 0);
+}
+
+function sumNullableMarkets(rows: DexMarket[], key: NullableMarketMetricKey): number | null {
+  const values = rows
+    .map((row) => row[key])
+    .filter((value): value is number => typeof value === "number");
+  return values.length === 0 ? null : values.reduce((sum, value) => sum + value, 0);
+}
+
+function formatOptionalUsd(value: number | null) {
+  return value === null ? "Unavailable" : compactUsd.format(value);
+}
+
+function formatOptionalPct(value: number | null) {
+  return value === null ? "Unavailable" : `${pct.format(value)}%`;
+}
+
+function nullableCell(value: string | number | null) {
+  return value === null ? "" : String(value);
+}
+
+function csvCell(value: string) {
+  if (!/[",\n]/.test(value)) {
+    return value;
+  }
+
+  return `"${value.replace(/"/g, '""')}"`;
 }
 
 export default App;

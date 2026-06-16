@@ -89,7 +89,7 @@ button {
   gap: 8px;
 }
 
-.topNav span {
+.topNav a {
   display: inline-flex;
   align-items: center;
   min-height: 34px;
@@ -99,6 +99,11 @@ button {
   border-radius: 999px;
   font-size: 13px;
   font-weight: 800;
+  text-decoration: none;
+}
+
+.topNav a:hover {
+  border-color: #ff0421;
 }
 
 .main {
@@ -163,9 +168,9 @@ h2 {
   line-height: 1.5;
 }
 
-.grantPanel {
+.dataPanel {
   display: grid;
-  align-content: end;
+  align-content: start;
   gap: 12px;
   padding: 26px;
   color: #ffffff;
@@ -173,22 +178,86 @@ h2 {
   border-radius: 24px;
 }
 
-.grantPanel span {
+.statusDot {
+  display: grid;
+  gap: 8px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #2f2f2f;
+}
+
+.statusDot span {
   color: #ff5a6d;
   font-size: 12px;
   font-weight: 950;
   text-transform: uppercase;
 }
 
-.grantPanel strong {
-  font-size: 38px;
+.statusDot strong {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 28px;
   line-height: 1;
 }
 
-.grantPanel p {
-  margin-bottom: 0;
-  color: #c8c8c8;
-  line-height: 1.45;
+.statusDot strong::before {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  content: "";
+  border-radius: 999px;
+  background: #ffbe00;
+}
+
+.statusDot.ok strong::before {
+  background: #00c48c;
+}
+
+.statusDot.degraded strong::before,
+.statusDot.loading strong::before {
+  background: #ffbe00;
+}
+
+.statusDot.error strong::before {
+  background: #ff0421;
+}
+
+.dataPanelStats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.dataPanel .stat {
+  background: #1d1d1d;
+}
+
+.dataPanel .stat span {
+  color: #929292;
+}
+
+.dataPanel .stat strong {
+  color: #ffffff;
+  font-size: 14px;
+}
+
+.refreshButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  color: #ffffff;
+  background: transparent;
+  border: 1px solid #565656;
+  border-radius: 12px;
+  font-weight: 950;
+}
+
+.refreshButton:disabled {
+  cursor: wait;
+  opacity: 0.7;
 }
 
 .commandBar {
@@ -244,6 +313,20 @@ select {
   font-weight: 950;
 }
 
+.alertPanel,
+.emptyState {
+  padding: 16px;
+  color: #5b010b;
+  background: #fff1f3;
+  border: 1px solid #ffd1d8;
+  border-radius: 14px;
+  font-weight: 850;
+}
+
+.alertPanel {
+  margin-bottom: 18px;
+}
+
 .metricRail {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -297,7 +380,8 @@ select {
 .poolMatrix,
 .reviewPanel,
 .networkPanel,
-.impactItem {
+.impactItem,
+.sourceAudit {
   background: #ffffff;
   border: 1px solid #e6e6e6;
   border-radius: 22px;
@@ -306,7 +390,8 @@ select {
 
 .poolMatrix,
 .reviewPanel,
-.networkPanel {
+.networkPanel,
+.sourceAudit {
   padding: 22px;
 }
 
@@ -486,6 +571,17 @@ select {
   line-height: 1.5;
 }
 
+.outcomeBox a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 900;
+  text-decoration: none;
+}
+
 .chainBars {
   display: grid;
   gap: 16px;
@@ -520,6 +616,61 @@ select {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 14px;
   margin-top: 20px;
+}
+
+.sourceAudit {
+  margin-top: 20px;
+}
+
+.sourceGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.sourceItem {
+  position: relative;
+  display: grid;
+  gap: 8px;
+  min-height: 118px;
+  padding: 16px 42px 16px 16px;
+  color: #0f0f0f;
+  background: #f8f8f8;
+  border: 1px solid #e6e6e6;
+  border-left: 6px solid #ffbe00;
+  border-radius: 16px;
+  text-decoration: none;
+}
+
+.sourceItem.ok {
+  border-left-color: #00c48c;
+}
+
+.sourceItem.error {
+  border-left-color: #ff0421;
+}
+
+.sourceItem span {
+  color: #6a6a6a;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.sourceItem strong {
+  font-size: 16px;
+}
+
+.sourceItem small {
+  color: #6a6a6a;
+  line-height: 1.45;
+}
+
+.sourceItem svg {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  color: #ff0421;
 }
 
 .impactItem {
@@ -585,7 +736,7 @@ select {
   }
 
   .heroCopy,
-  .grantPanel {
+  .dataPanel {
     border-radius: 18px;
   }
 
@@ -610,6 +761,11 @@ select {
   }
 
   .focusGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .sourceGrid,
+  .dataPanelStats {
     grid-template-columns: 1fr;
   }
 }

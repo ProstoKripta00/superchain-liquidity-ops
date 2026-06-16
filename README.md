@@ -1,20 +1,20 @@
 # Superchain Liquidity Ops
 
-Open-source grant proof-of-work for an Optimism / Superchain liquidity monitoring tool.
+Open-source liquidity monitoring for Optimism / Superchain DEX outcomes.
 
 ## Product
 
 Superchain Liquidity Ops helps protocols, LPs, and grant reviewers track measurable DEX outcomes across Superchain priority pairs:
 
-- TVL by chain, DEX, and pair
-- 30-day volume and fee generation
-- fee efficiency
-- liquidity depth
-- 7-day TVL change
-- pool health and watchlists
-- CSV reports for grant reviews
+- live DEX market volume by chain and protocol
+- 24-hour, 7-day, and 30-day DEX volume windows
+- chain-level TVL, DEX volume, and fees
+- protocol-level fee attribution when the public feed exposes it
+- source status for every public endpoint
+- market health and watchlists
+- timestamped CSV reports for grant reviews
 
-The current version is a frontend MVP with a typed sample dataset. The grant milestone turns this into a live data product with DEX/subgraph/RPC adapters and an open-source reporting pipeline.
+The public app is live-data first. It loads DEX volume, fee, and chain TVL data from DefiLlama public endpoints. If an endpoint is unavailable, the app surfaces the source error instead of silently substituting a local dataset.
 
 ## Grant Fit
 
@@ -23,6 +23,8 @@ Target ecosystem: Optimism / Superchain
 Target request: `$15,000 equivalent in OP`
 
 Primary funded cost: founder/developer compensation for building the MVP into a working analytics and reporting tool.
+
+Public product pages avoid budget language and focus on reviewer utility, measurable liquidity outcomes, and transparent data sources.
 
 ## Local Development
 
@@ -35,9 +37,9 @@ Open `http://127.0.0.1:5175`.
 
 ## MVP Roadmap
 
-1. Replace sample pools with live adapters for selected Superchain DEXs.
-2. Add OP Mainnet and Base production data ingestion.
-3. Add priority pair configuration and reviewer reports.
-4. Add 7d/30d historical charts.
-5. Add exportable CSV/JSON datasets.
+1. Add priority-pair configuration from the latest Optimism grants sheet.
+2. Add pool-level adapters through a backend or static ingestion job for sources that do not support browser CORS.
+3. Add reviewer report templates for grant impact analysis.
+4. Add JSON exports and a public API endpoint.
+5. Add alerting for pools with declining liquidity or weak fee output.
 6. Publish deployment and methodology docs.
