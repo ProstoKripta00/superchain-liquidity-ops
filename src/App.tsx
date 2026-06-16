@@ -8,6 +8,7 @@ import {
   DatabaseZap,
   ExternalLink,
   FileCheck2,
+  FileText,
   Gauge,
   GitBranch,
   Layers3,
@@ -58,11 +59,17 @@ const targets: Array<"All" | OutcomeTarget> = [
   "Monitor incentives",
 ];
 
+type ReportLibraryItem = {
+  scan: ProtocolScan;
+  report: ProtocolMiniReport;
+};
+
 function App() {
   const [network, setNetwork] = useState<NetworkScope>("All");
   const [target, setTarget] = useState<(typeof targets)[number]>("All");
   const [selectedMarketId, setSelectedMarketId] = useState<string | null>(null);
   const [selectedProtocolId, setSelectedProtocolId] = useState<string | null>(null);
+  const [selectedReportId, setSelectedReportId] = useState<string | null>(null);
   const [copyFeedback, setCopyFeedback] = useState<{
     label: string;
     protocolId: string;
@@ -86,6 +93,7 @@ function App() {
       setSelectedProtocolId(
         (current) => current ?? nextSnapshot.protocolScans[0]?.id ?? null,
       );
+      setSelectedReportId((current) => current ?? nextSnapshot.protocolScans[0]?.id ?? null);
     } catch (error) {
       setLoadError(error instanceof Error ? error.message : "Failed to load live data");
     } finally {
@@ -133,13 +141,13 @@ function App() {
         : null,
     [selectedProtocol, selectedProtocolMarkets],
   );
-  const sampleReports = useMemo(() => {
+  const reportItems = useMemo<ReportLibraryItem[]>(() => {
     const readyScans = protocolScans.filter(
       (scan) => scan.status === "Ready for report",
     );
     const selectedScans = (readyScans.length >= 3 ? readyScans : protocolScans).slice(
       0,
-      3,
+      4,
     );
 
     return selectedScans.map((scan) => {
@@ -150,6 +158,10 @@ function App() {
       };
     });
   }, [markets, protocolScans]);
+  const selectedReportItem =
+    reportItems.find((item) => item.report.protocolId === selectedReportId) ??
+    reportItems[0] ??
+    null;
 
   const totals = useMemo(
     () => buildMarketScopeMetrics(filteredMarkets, chains, network),
@@ -287,7 +299,7 @@ function App() {
         </div>
         <nav className="topNav" aria-label="Product areas">
           <a href="#protocol-scanner">Protocol scanner</a>
-          <a href="#sample-reports">Sample reports</a>
+          <a href="#reports">Reports</a>
           <a href="#markets">Live markets</a>
           <a href="#networks">Chain metrics</a>
           <a href="#reviewer-pack">Reviewer pack</a>
@@ -482,16 +494,18 @@ function App() {
           </div>
         </section>
 
-        <SampleReportsSection
+        <ReportsSection
           feedbackFor={(report) =>
             reportFeedback?.protocolId === report.protocolId
               ? reportFeedback.label
               : null
           }
           isLoading={isLoading}
-          items={sampleReports}
+          items={reportItems}
           onCopy={(report) => void copyMiniReport(report)}
           onDownload={downloadMiniReport}
+          onSelectReport={setSelectedReportId}
+          selectedItem={selectedReportItem}
         />
 
         <section className="workbench" id="markets">
@@ -700,93 +714,160 @@ function App() {
   );
 }
 
-function SampleReportsSection({
+function ReportsSection({
   feedbackFor,
   isLoading,
   items,
   onCopy,
   onDownload,
+  onSelectReport,
+  selectedItem,
 }: {
   feedbackFor: (report: ProtocolMiniReport) => string | null;
   isLoading: boolean;
-  items: Array<{ scan: ProtocolScan; report: ProtocolMiniReport }>;
+  items: ReportLibraryItem[];
   onCopy: (report: ProtocolMiniReport) => void;
   onDownload: (report: ProtocolMiniReport) => void;
+  onSelectReport: (protocolId: string) => void;
+  selectedItem: ReportLibraryItem | null;
 }) {
+  const selectedFeedback = selectedItem ? feedbackFor(selectedItem.report) : null;
+  const preview = selectedItem
+    ? selectedItem.report.markdown.split("\n").slice(0, 28).join("\n")
+    : "";
+
   return (
-    <section className="sampleReports" id="sample-reports">
+    <section className="reportsSection" id="reports">
       <div className="sectionHeader">
         <div>
-          <p className="sectionKicker">Public Sample Reports</p>
-          <h2>Ready examples clients can inspect before they talk to us</h2>
+          <p className="sectionKicker">Reports</p>
+          <h2>Protocol report library for outreach and reviewer evidence</h2>
         </div>
-        <span>{items.length > 0 ? `${items.length} generated` : "Waiting for data"}</span>
+        <span>{items.length > 0 ? `${items.length} live generated` : "Waiting for data"}</span>
       </div>
 
-      <div className="sampleReportGrid">
-        {items.length > 0 ? (
-          items.map(({ scan, report }) => {
-            const feedback = feedbackFor(report);
-            const preview = report.markdown.split("\n").slice(0, 13).join("\n");
+      <div className="reportsLayout">
+        <aside className="reportQueue">
+          <div className="reportQueueHeader">
+            <span>Report queue</span>
+            <strong>Scanner-selected targets</strong>
+          </div>
 
-            return (
-              <article className="sampleReportCard" key={scan.id}>
-                <div className="sampleReportHeader">
+          <div className="reportQueueList">
+            {items.length > 0 ? (
+              items.map((item) => (
+                <button
+                  className={`reportQueueItem ${
+                    item.report.protocolId === selectedItem?.report.protocolId ? "selected" : ""
+                  }`}
+                  key={item.report.protocolId}
+                  onClick={() => onSelectReport(item.report.protocolId)}
+                >
+                  <FileText size={18} />
+                  <span>
+                    <strong>{item.scan.name}</strong>
+                    <small>
+                      {item.scan.status} / grade {item.scan.healthScore.grade}
+                    </small>
+                  </span>
+                  <em>{item.scan.score}</em>
+                </button>
+              ))
+            ) : (
+              <div className="emptyState">
+                {isLoading
+                  ? "Generating report queue from live protocol scans..."
+                  : "No report targets are available yet."}
+              </div>
+            )}
+          </div>
+        </aside>
+
+        {items.length > 0 ? (
+          <article className="reportReader">
+            {selectedItem ? (
+              <>
+                <div className="reportReaderHeader">
                   <div>
-                    <span>{scan.status}</span>
-                    <h3>{scan.name}</h3>
-                    <small>{scan.segment}</small>
+                    <span>{selectedItem.scan.status}</span>
+                    <h3>{selectedItem.report.title}</h3>
+                    <small>{new Date(selectedItem.report.generatedAt).toLocaleString()}</small>
                   </div>
-                  <div className={`scorePill grade-${scan.healthScore.grade.toLowerCase()}`}>
-                    <strong>{scan.score}</strong>
-                    <small>{scan.healthScore.grade}</small>
+                  <div
+                    className={`scorePill grade-${selectedItem.scan.healthScore.grade.toLowerCase()}`}
+                  >
+                    <strong>{selectedItem.scan.score}</strong>
+                    <small>{selectedItem.scan.healthScore.grade}</small>
                   </div>
                 </div>
 
-                <p className="sampleReportSummary">{report.summary}</p>
+                <p className="reportSummary">{selectedItem.report.summary}</p>
 
-                <div className="sampleReportStats">
+                <div className="reportReaderStats">
                   <div>
-                    <span>Networks</span>
-                    <strong>{scan.networks.join(", ")}</strong>
+                    <span>Protocol</span>
+                    <strong>{selectedItem.scan.name}</strong>
                   </div>
                   <div>
-                    <span>30d volume</span>
-                    <strong>{compactUsd.format(scan.volume30dUsd)}</strong>
+                    <span>Status</span>
+                    <strong>{selectedItem.scan.status}</strong>
                   </div>
                   <div>
-                    <span>30d fees</span>
-                    <strong>{formatOptionalUsd(scan.fees30dUsd)}</strong>
+                    <span>Score</span>
+                    <strong>{selectedItem.scan.score}/100</strong>
                   </div>
                   <div>
                     <span>Confidence</span>
-                    <strong>{scan.healthScore.confidence}/100</strong>
+                    <strong>{selectedItem.scan.healthScore.confidence}/100</strong>
+                  </div>
+                  <div className="wideStat">
+                    <span>Networks</span>
+                    <strong>{selectedItem.scan.networks.join(", ")}</strong>
+                  </div>
+                  <div>
+                    <span>30d volume</span>
+                    <strong>{compactUsd.format(selectedItem.scan.volume30dUsd)}</strong>
+                  </div>
+                  <div>
+                    <span>30d fees</span>
+                    <strong>{formatOptionalUsd(selectedItem.scan.fees30dUsd)}</strong>
                   </div>
                 </div>
 
-                <pre className="sampleReportPreview">{preview}</pre>
+                <pre className="reportMarkdownPreview">{preview}</pre>
 
-                <div className="sampleReportActions">
-                  <button onClick={() => onCopy(report)}>
+                <div className="reportActions">
+                  <button onClick={() => onCopy(selectedItem.report)}>
                     <FileCheck2 size={17} />
-                    {feedback === "Copied" || feedback === "Markdown ready"
-                      ? feedback
+                    {selectedFeedback === "Copied" || selectedFeedback === "Markdown ready"
+                      ? selectedFeedback
                       : "Copy report"}
                   </button>
-                  <button onClick={() => onDownload(report)}>
+                  <button onClick={() => onDownload(selectedItem.report)}>
                     <ArrowDownToLine size={17} />
-                    {feedback === "Downloaded" ? feedback : "Download .md"}
+                    {selectedFeedback === "Downloaded" ? selectedFeedback : "Download .md"}
                   </button>
                 </div>
-              </article>
-            );
-          })
+
+                <div className="reportWorkflow">
+                  <span>Delivery path</span>
+                  <strong>1. Copy report</strong>
+                  <strong>2. Attach CSV export</strong>
+                  <strong>3. Send protocol-specific outreach</strong>
+                </div>
+              </>
+            ) : (
+              <div className="emptyState">Select a report to inspect the generated output.</div>
+            )}
+          </article>
         ) : (
-          <div className="emptyState">
-            {isLoading
-              ? "Generating public report examples from live protocol scans..."
-              : "No protocol scans are available for public examples yet."}
-          </div>
+          <article className="reportReader">
+            <div className="emptyState">
+              {isLoading
+                ? "Waiting for live data before rendering reports..."
+                : "No generated reports are available yet."}
+            </div>
+          </article>
         )}
       </div>
     </section>

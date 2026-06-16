@@ -786,7 +786,7 @@ select {
   background: #ff0421;
 }
 
-.sampleReports {
+.reportsSection {
   margin-bottom: 20px;
   padding: 22px;
   color: #ffffff;
@@ -795,121 +795,214 @@ select {
   box-shadow: 0 16px 40px rgba(15, 15, 15, 0.08);
 }
 
-.sampleReports .sectionKicker {
+.reportsSection .sectionKicker {
   color: #ff5a6d;
 }
 
-.sampleReports .sectionHeader span {
+.reportsSection .sectionHeader span {
   color: #0f0f0f;
   background: #ffffff;
 }
 
-.sampleReportGrid {
+.reportsLayout {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: 360px minmax(0, 1fr);
   gap: 14px;
+  align-items: start;
 }
 
-.sampleReportCard {
+.reportQueue,
+.reportReader {
   display: grid;
   gap: 14px;
   min-width: 0;
   padding: 18px;
-  color: #0f0f0f;
   background: #ffffff;
   border-radius: 16px;
 }
 
-.sampleReportHeader {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 14px;
+.reportQueue {
+  align-content: start;
+  color: #0f0f0f;
 }
 
-.sampleReportHeader span,
-.sampleReportHeader h3,
-.sampleReportHeader small {
+.reportQueueHeader span,
+.reportQueueHeader strong {
   display: block;
 }
 
-.sampleReportHeader span {
+.reportQueueHeader span {
   color: #ff0421;
   font-size: 11px;
   font-weight: 950;
   text-transform: uppercase;
 }
 
-.sampleReportHeader h3 {
+.reportQueueHeader strong {
+  margin-top: 5px;
+  font-size: 18px;
+  line-height: 1.15;
+}
+
+.reportQueueList {
+  display: grid;
+  gap: 8px;
+}
+
+.reportQueueItem {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  min-height: 74px;
+  padding: 12px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border: 1px solid #e6e6e6;
+  border-left: 5px solid transparent;
+  border-radius: 12px;
+  text-align: left;
+}
+
+.reportQueueItem.selected,
+.reportQueueItem:hover {
+  border-left-color: #ff0421;
+  background: #fff4f5;
+}
+
+.reportQueueItem svg {
+  color: #ff0421;
+}
+
+.reportQueueItem span,
+.reportQueueItem strong,
+.reportQueueItem small {
+  display: block;
+}
+
+.reportQueueItem strong {
+  font-size: 15px;
+}
+
+.reportQueueItem small {
+  margin-top: 4px;
+  color: #6a6a6a;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.reportQueueItem em {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  color: #ffffff;
+  background: #0f0f0f;
+  border-radius: 999px;
+  font-style: normal;
+  font-size: 12px;
+  font-weight: 950;
+}
+
+.reportReader {
+  color: #0f0f0f;
+}
+
+.reportReaderHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.reportReaderHeader span,
+.reportReaderHeader h3,
+.reportReaderHeader small {
+  display: block;
+}
+
+.reportReaderHeader span {
+  color: #ff0421;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.reportReaderHeader h3 {
   margin: 6px 0 4px;
-  font-size: 22px;
+  font-size: 28px;
   line-height: 1.1;
 }
 
-.sampleReportHeader small {
+.reportReaderHeader small {
   color: #6a6a6a;
   font-size: 13px;
   font-weight: 850;
   line-height: 1.35;
 }
 
-.sampleReportSummary {
+.reportSummary {
   margin-bottom: 0;
   color: #4d4d4d;
   line-height: 1.5;
 }
 
-.sampleReportStats {
+.reportReaderStats {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
 }
 
-.sampleReportStats div {
+.reportReaderStats div {
   min-width: 0;
   padding: 12px;
   background: #f4f4f4;
   border-radius: 12px;
 }
 
-.sampleReportStats span,
-.sampleReportStats strong {
+.reportReaderStats .wideStat {
+  grid-column: span 2;
+}
+
+.reportReaderStats span,
+.reportReaderStats strong {
   display: block;
 }
 
-.sampleReportStats span {
+.reportReaderStats span {
   color: #6a6a6a;
   font-size: 11px;
   font-weight: 950;
   text-transform: uppercase;
 }
 
-.sampleReportStats strong {
+.reportReaderStats strong {
   margin-top: 5px;
   font-size: 14px;
   line-height: 1.25;
 }
 
-.sampleReportPreview {
-  max-height: 170px;
+.reportMarkdownPreview {
+  max-height: 360px;
   margin: 0;
   overflow: auto;
-  padding: 14px;
+  padding: 16px;
   color: #ffffff;
   background: #0f0f0f;
   border-radius: 12px;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.5;
   white-space: pre-wrap;
 }
 
-.sampleReportActions {
+.reportActions {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
 }
 
-.sampleReportActions button {
+.reportActions button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -922,8 +1015,39 @@ select {
   font-weight: 950;
 }
 
-.sampleReportActions button:first-child {
+.reportActions button:first-child {
   background: #ff0421;
+}
+
+.reportWorkflow {
+  display: grid;
+  grid-template-columns: auto repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  align-items: center;
+  padding: 12px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border-radius: 12px;
+}
+
+.reportWorkflow span {
+  color: #ff5a6d;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.reportWorkflow strong {
+  display: inline-flex;
+  min-height: 30px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8px;
+  background: #242424;
+  border-radius: 999px;
+  font-size: 12px;
+  line-height: 1.2;
+  text-align: center;
 }
 
 .scannerAction {
@@ -1458,7 +1582,7 @@ select {
   .hero,
   .workbench,
   .scannerGrid,
-  .sampleReportGrid,
+  .reportsLayout,
   .impactStrip,
   .packHero {
     grid-template-columns: 1fr;
@@ -1524,12 +1648,17 @@ select {
 
   .sourceGrid,
   .dataPanelStats,
-  .sampleReportStats,
-  .sampleReportActions,
+  .reportReaderStats,
+  .reportActions,
+  .reportWorkflow,
   .packGrid,
   .milestoneGrid,
   .healthTags,
   .miniReportActions {
     grid-template-columns: 1fr;
+  }
+
+  .reportReaderStats .wideStat {
+    grid-column: auto;
   }
 }

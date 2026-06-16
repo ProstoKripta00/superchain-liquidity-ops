@@ -165,6 +165,7 @@ The MVP should produce grant-review artifacts:
 - CSV export by market
 - protocol scanner and health score summary for outreach and report preparation
 - Markdown mini-report for a selected protocol
+- reports workspace for selecting, previewing, copying, and downloading generated reports
 - chain-level TVL and fee summaries
 - watchlist of underperforming markets
 - 7d/30d trend reports
@@ -186,9 +187,9 @@ The mini-report generator converts the selected protocol scan into a Markdown ar
 
 The generated report is intended for outreach, public examples, grant updates, and protocol growth conversations. It uses the same live scanner output and matched market rows shown in the dashboard.
 
-## Public Sample Reports
+## Reports Workspace
 
-The public sample report section turns the highest-signal protocol scans into visible examples on the dashboard.
+The Reports workspace turns the highest-signal protocol scans into a working report queue on the dashboard.
 
 Current selection rule:
 
@@ -196,7 +197,7 @@ Current selection rule:
 - fall back to the top scanner scores when fewer than three protocols are ready
 - generate each report from the same live protocol scan and matched markets used by the selected mini-report workflow
 
-These reports are examples for outreach and reviewer inspection. They are not manually curated endorsements, and they regenerate when the live snapshot changes.
+Each report can be selected, previewed as Markdown, copied, or downloaded as an `.md` file. These reports are examples for outreach and reviewer inspection. They are not manually curated endorsements, and they regenerate when the live snapshot changes.
 
 ## Initial Live Data Scope
 
