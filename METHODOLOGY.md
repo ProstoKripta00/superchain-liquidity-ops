@@ -25,6 +25,7 @@ The app now separates data processing from the React UI.
 - weighted 7d trend calculation
 - market health labels
 - outcome target labels
+- protocol health score components
 - network-scoped totals
 - chain coverage rows
 
@@ -117,28 +118,52 @@ Is this protocol active enough on the Superchain to justify a paid report or out
 
 Current tracked profiles include Uniswap, Aerodrome, Velodrome, Curve, PancakeSwap, SushiSwap, Balancer, and KIM Exchange.
 
-The scanner score is derived from:
+## Protocol Health Score
 
-- 30d DEX volume
-- 30d fees when protocol fee attribution is available
-- number of Superchain networks where the protocol has matched live markets
-- weighted 7d trend
-- share of matched markets labeled Strong
+The protocol scanner includes a protocol health score. It is not a security audit, investment rating, or promise that a protocol will pay. It is an operational signal for deciding whether a protocol is worth deeper testing, a mini-report, or outreach.
+
+The score is expressed as:
+
+- total score from `0` to `100`
+- grade: `A`, `B`, `C`, or `D`
+- data confidence from `0` to `100`
+- component breakdown
+- strengths
+- risks
+- recommendation
+
+Components:
+
+| Component | Weight | Signal |
+| --- | ---: | --- |
+| DEX activity | 30% | 30d matched DEX volume |
+| Fee capture | 20% | 30d fees and 30d fee-to-volume |
+| Short-term trend | 15% | weighted 7d change |
+| Superchain coverage | 15% | matched networks and market count |
+| Market quality | 10% | Strong vs At Risk market mix |
+| Data confidence | 10% | availability of fee and trend fields |
+
+Grades:
+
+- `A`: 80+
+- `B`: 65-79
+- `C`: 45-64
+- `D`: below 45
 
 Scanner statuses:
 
-- `Ready for report`: enough visible activity to prepare a public mini-report and outreach.
+- `Ready for report`: enough visible activity and data confidence to prepare a public mini-report and outreach.
 - `Monitor`: visible activity, but weak trends, incomplete fee data, or mixed market quality.
 - `Low signal`: not enough public activity to justify manual sales effort yet.
 
-This score is not a security audit or investment rating. It is an operational filter for deciding which protocols are worth testing, reporting on, and pitching.
+The score is intentionally conservative when public data is incomplete. Missing values are not replaced by manual assumptions.
 
 ## Reviewer Outputs
 
 The MVP should produce grant-review artifacts:
 
 - CSV export by market
-- protocol scanner summary for outreach and report preparation
+- protocol scanner and health score summary for outreach and report preparation
 - chain-level TVL and fee summaries
 - watchlist of underperforming markets
 - 7d/30d trend reports

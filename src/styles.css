@@ -445,8 +445,41 @@ select {
   color: #ffffff;
   background: #0f0f0f;
   border-radius: 999px;
-  font-size: 14px;
   font-weight: 950;
+}
+
+.scorePill strong,
+.scorePill small {
+  display: block;
+  line-height: 1;
+}
+
+.scorePill strong {
+  align-self: end;
+  font-size: 14px;
+}
+
+.scorePill small {
+  align-self: start;
+  margin-top: 2px;
+  color: #ffccd2;
+  font-size: 10px;
+}
+
+.grade-a {
+  background: #ff0421;
+}
+
+.grade-b {
+  background: #0f0f0f;
+}
+
+.grade-c {
+  background: #724900;
+}
+
+.grade-d {
+  background: #4d4d4d;
 }
 
 .protocolStatus {
@@ -514,7 +547,8 @@ select {
 }
 
 .scoreDial span,
-.scoreDial strong {
+.scoreDial strong,
+.scoreDial small {
   display: block;
 }
 
@@ -527,9 +561,16 @@ select {
 }
 
 .scoreDial strong {
-  align-self: start;
+  align-self: center;
   font-size: 28px;
   line-height: 1;
+}
+
+.scoreDial small {
+  align-self: start;
+  color: #666666;
+  font-size: 11px;
+  font-weight: 950;
 }
 
 .scannerThesis {
@@ -549,6 +590,115 @@ select {
 .scannerDetail .stat strong {
   color: #ffffff;
   font-size: 14px;
+}
+
+.healthBreakdown {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding: 16px;
+  background: #171717;
+  border: 1px solid #303030;
+  border-radius: 16px;
+}
+
+.healthBreakdownHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.healthBreakdownHeader span {
+  color: #ff5a6d;
+  font-size: 12px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.healthBreakdownHeader strong {
+  font-size: 18px;
+}
+
+.componentList {
+  display: grid;
+  gap: 12px;
+}
+
+.componentRow {
+  display: grid;
+  gap: 7px;
+}
+
+.componentMeta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: #ffffff;
+}
+
+.componentMeta strong {
+  font-size: 13px;
+}
+
+.componentMeta span {
+  color: #b8b8b8;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.componentTrack {
+  height: 8px;
+  overflow: hidden;
+  background: #303030;
+  border-radius: 999px;
+}
+
+.componentTrack span {
+  display: block;
+  height: 100%;
+  background: #ff0421;
+  border-radius: inherit;
+}
+
+.componentRow p {
+  margin-bottom: 0;
+  color: #bdbdbd;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.healthTags {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.healthTags div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  align-content: flex-start;
+}
+
+.healthTags span {
+  flex-basis: 100%;
+  color: #929292;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.healthTags strong {
+  display: inline-flex;
+  min-height: 26px;
+  align-items: center;
+  padding: 0 8px;
+  color: #ffffff;
+  background: #2a2a2a;
+  border-radius: 999px;
+  font-size: 11px;
+  line-height: 1.2;
 }
 
 .scannerAction {
@@ -1149,7 +1299,8 @@ select {
   .sourceGrid,
   .dataPanelStats,
   .packGrid,
-  .milestoneGrid {
+  .milestoneGrid,
+  .healthTags {
     grid-template-columns: 1fr;
   }
 }

@@ -19,6 +19,34 @@ export type SourceState = "ok" | "degraded" | "error";
 
 export type ProtocolScanStatus = "Ready for report" | "Monitor" | "Low signal";
 
+export type ProtocolHealthGrade = "A" | "B" | "C" | "D";
+
+export type ProtocolHealthComponentId =
+  | "activity"
+  | "fees"
+  | "trend"
+  | "coverage"
+  | "risk"
+  | "confidence";
+
+export type ProtocolHealthComponent = {
+  id: ProtocolHealthComponentId;
+  label: string;
+  score: number;
+  weight: number;
+  note: string;
+};
+
+export type ProtocolHealthScore = {
+  total: number;
+  grade: ProtocolHealthGrade;
+  confidence: number;
+  components: ProtocolHealthComponent[];
+  strengths: string[];
+  risks: string[];
+  recommendation: string;
+};
+
 export type SourceStatus = {
   id: string;
   name: string;
@@ -85,6 +113,7 @@ export type ProtocolScan = {
   watchMarkets: number;
   atRiskMarkets: number;
   score: number;
+  healthScore: ProtocolHealthScore;
   status: ProtocolScanStatus;
   opportunity: string;
   nextAction: string;

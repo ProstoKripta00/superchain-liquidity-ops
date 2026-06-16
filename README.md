@@ -27,6 +27,7 @@ What works today:
 - live DEX market rows for `OP Mainnet`, `Base`, `Unichain`, `Mode`, and `Zora`
 - shared data engine for numeric normalization, ratios, weighted trends, market health, outcome labels, and scope totals
 - protocol scanner for monetizable report targets such as Uniswap, Aerodrome, Velodrome, Curve, PancakeSwap, SushiSwap, Balancer, and KIM Exchange
+- protocol health score with grade, confidence, component breakdown, strengths, risks, and recommendation
 - chain-level TVL, DEX volume, and fee totals
 - protocol-level fee attribution when the public feed exposes it
 - source audit for every public endpoint
@@ -69,6 +70,7 @@ Unavailable values are shown as unavailable. The app does not silently substitut
 | Market health | Strong / Watch / At risk labels | Live |
 | Data engine | Shared normalization, aggregation, ratios, weighted trends | Live |
 | Protocol scanner | Protocol-level report readiness score and next action | Live |
+| Protocol health score | Activity, fee capture, trend, coverage, quality, confidence | Live |
 | Reviewer evidence | CSV export with source URLs and timestamps | Live |
 | Priority pairs | Official OP pair mapping and pool-level ingestion | Planned |
 
@@ -100,7 +102,7 @@ Live data adapters
 Data engine: normalization, ratios, weighted trends, market scoring
         |
         v
-Protocol scanner, scope totals, chain coverage, source audit, CSV export
+Protocol scanner, protocol health score, scope totals, chain coverage, source audit, CSV export
         |
         v
 Dashboard state and reviewer workflow

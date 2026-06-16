@@ -61,7 +61,10 @@ function App() {
   const [target, setTarget] = useState<(typeof targets)[number]>("All");
   const [selectedMarketId, setSelectedMarketId] = useState<string | null>(null);
   const [selectedProtocolId, setSelectedProtocolId] = useState<string | null>(null);
-  const [copiedProtocolId, setCopiedProtocolId] = useState<string | null>(null);
+  const [copyFeedback, setCopyFeedback] = useState<{
+    label: string;
+    protocolId: string;
+  } | null>(null);
   const [snapshot, setSnapshot] = useState<LiquiditySnapshot | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -199,13 +202,14 @@ function App() {
 
     try {
       await writeClipboardText(summary);
-      setCopiedProtocolId(scan.id);
-      window.setTimeout(() => {
-        setCopiedProtocolId((current) => (current === scan.id ? null : current));
-      }, 1600);
+      setCopyFeedback({ protocolId: scan.id, label: "Copied" });
     } catch {
-      setLoadError("Clipboard is unavailable in this browser session.");
+      setCopyFeedback({ protocolId: scan.id, label: "Summary ready" });
     }
+
+    window.setTimeout(() => {
+      setCopyFeedback((current) => (current?.protocolId === scan.id ? null : current));
+    }, 1600);
   };
 
   return (
@@ -328,7 +332,10 @@ function App() {
                     key={scan.id}
                     onClick={() => setSelectedProtocolId(scan.id)}
                   >
-                    <span className="scorePill">{scan.score}</span>
+                    <span className={`scorePill grade-${scan.healthScore.grade.toLowerCase()}`}>
+                      <strong>{scan.score}</strong>
+                      <small>{scan.healthScore.grade}</small>
+                    </span>
                     <span>
                       <strong>{scan.name}</strong>
                       <small>
@@ -356,9 +363,10 @@ function App() {
                       <h2>{selectedProtocol.name}</h2>
                       <span>{selectedProtocol.segment}</span>
                     </div>
-                    <div className="scoreDial">
-                      <span>Score</span>
-                      <strong>{selectedProtocol.score}</strong>
+                    <div className={`scoreDial grade-${selectedProtocol.healthScore.grade.toLowerCase()}`}>
+                      <span>Grade</span>
+                      <strong>{selectedProtocol.healthScore.grade}</strong>
+                      <small>{selectedProtocol.score}/100</small>
                     </div>
                   </div>
 
@@ -371,16 +379,22 @@ function App() {
                     <Stat label="Fee / volume" value={formatOptionalPct(selectedProtocol.feeToVolume30dPct)} />
                     <Stat label="Strong markets" value={String(selectedProtocol.strongMarkets)} />
                     <Stat label="Risk markets" value={String(selectedProtocol.atRiskMarkets)} />
+                    <Stat label="Data confidence" value={`${selectedProtocol.healthScore.confidence}/100`} />
+                    <Stat label="Health grade" value={selectedProtocol.healthScore.grade} />
                   </div>
+
+                  <HealthScoreBreakdown scan={selectedProtocol} />
 
                   <div className="scannerAction">
                     <span>Opportunity</span>
                     <strong>{selectedProtocol.status}</strong>
                     <p>{selectedProtocol.opportunity}</p>
-                    <p>{selectedProtocol.nextAction}</p>
+                    <p>{selectedProtocol.healthScore.recommendation}</p>
                     <button onClick={() => void copyProtocolSummary(selectedProtocol)}>
                       <FileCheck2 size={17} />
-                      {copiedProtocolId === selectedProtocol.id ? "Copied" : "Copy protocol summary"}
+                      {copyFeedback?.protocolId === selectedProtocol.id
+                        ? copyFeedback.label
+                        : "Copy protocol summary"}
                     </button>
                   </div>
                 </>
@@ -619,6 +633,47 @@ function ProtocolStatus({ value }: { value: ProtocolScan["status"] }) {
   );
 }
 
+function HealthScoreBreakdown({ scan }: { scan: ProtocolScan }) {
+  return (
+    <section className="healthBreakdown">
+      <div className="healthBreakdownHeader">
+        <span>Health score breakdown</span>
+        <strong>{scan.score}/100</strong>
+      </div>
+      <div className="componentList">
+        {scan.healthScore.components.map((component) => (
+          <div className="componentRow" key={component.id}>
+            <div className="componentMeta">
+              <strong>{component.label}</strong>
+              <span>
+                {component.score}/100 / weight {component.weight}%
+              </span>
+            </div>
+            <div className="componentTrack" aria-hidden="true">
+              <span style={{ width: `${component.score}%` }} />
+            </div>
+            <p>{component.note}</p>
+          </div>
+        ))}
+      </div>
+      <div className="healthTags">
+        <div>
+          <span>Strengths</span>
+          {scan.healthScore.strengths.map((item) => (
+            <strong key={item}>{item}</strong>
+          ))}
+        </div>
+        <div>
+          <span>Risks</span>
+          {scan.healthScore.risks.map((item) => (
+            <strong key={item}>{item}</strong>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div className="stat">
@@ -726,7 +781,8 @@ function csvCell(value: string) {
 function buildProtocolSummary(scan: ProtocolScan) {
   return [
     `Protocol: ${scan.name}`,
-    `Scanner score: ${scan.score}/100 (${scan.status})`,
+    `Health score: ${scan.score}/100, grade ${scan.healthScore.grade} (${scan.status})`,
+    `Data confidence: ${scan.healthScore.confidence}/100`,
     `Segment: ${scan.segment}`,
     `Networks: ${scan.networks.join(", ")}`,
     `Markets matched: ${scan.marketCount}`,
@@ -734,7 +790,13 @@ function buildProtocolSummary(scan: ProtocolScan) {
     `30d fees: ${formatOptionalUsd(scan.fees30dUsd)}`,
     `7d weighted trend: ${formatOptionalPct(scan.weightedChange7dPct)}`,
     `Fee / volume: ${formatOptionalPct(scan.feeToVolume30dPct)}`,
+    `Component scores: ${scan.healthScore.components
+      .map((component) => `${component.label} ${component.score}/100`)
+      .join("; ")}`,
+    `Strengths: ${scan.healthScore.strengths.join("; ")}`,
+    `Risks: ${scan.healthScore.risks.join("; ")}`,
     `Opportunity: ${scan.opportunity}`,
+    `Recommendation: ${scan.healthScore.recommendation}`,
     `Next action: ${scan.nextAction}`,
   ].join("\n");
 }
@@ -743,8 +805,12 @@ async function writeClipboardText(text: string) {
   const clipboard = globalThis.navigator?.clipboard;
 
   if (clipboard?.writeText) {
-    await clipboard.writeText(text);
-    return;
+    try {
+      await clipboard.writeText(text);
+      return;
+    } catch {
+      // Some browser contexts expose clipboard but reject writes without permission.
+    }
   }
 
   const textArea = document.createElement("textarea");

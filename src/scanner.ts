@@ -1,7 +1,13 @@
 import { TRACKED_PROTOCOLS } from "./protocols";
-import { ratioPct, sumNullable, weightedAverage } from "./dataEngine";
+import {
+  buildProtocolHealthScore,
+  ratioPct,
+  sumNullable,
+  weightedAverage,
+} from "./dataEngine";
 import type {
   DexMarket,
+  ProtocolHealthScore,
   ProtocolProfile,
   ProtocolScan,
   ProtocolScanStatus,
@@ -39,15 +45,27 @@ function buildProtocolScan(
   const strongMarkets = matchedMarkets.filter((market) => market.health === "Strong").length;
   const watchMarkets = matchedMarkets.filter((market) => market.health === "Watch").length;
   const atRiskMarkets = matchedMarkets.filter((market) => market.health === "At risk").length;
-  const score = scoreProtocol({
+  const feeDataMarkets = matchedMarkets.filter(
+    (market) => typeof market.fees30dUsd === "number",
+  ).length;
+  const trendDataMarkets = matchedMarkets.filter(
+    (market) => typeof market.change7dPct === "number",
+  ).length;
+  const healthScore = buildProtocolHealthScore({
+    marketCount: matchedMarkets.length,
+    networkCount: networks.length,
+    volume24hUsd,
     volume30dUsd,
     fees30dUsd,
+    feeToVolume30dPct,
     weightedChange7dPct,
-    networkCount: networks.length,
     strongMarkets,
-    marketCount: matchedMarkets.length,
+    watchMarkets,
+    atRiskMarkets,
+    feeDataMarkets,
+    trendDataMarkets,
   });
-  const status = classifyProtocol(score);
+  const status = classifyProtocol(healthScore);
 
   return {
     id: profile.id,
@@ -66,7 +84,8 @@ function buildProtocolScan(
     strongMarkets,
     watchMarkets,
     atRiskMarkets,
-    score,
+    score: healthScore.total,
+    healthScore,
     status,
     opportunity: buildOpportunity(status, profile, {
       volume30dUsd,
@@ -80,57 +99,12 @@ function buildProtocolScan(
   };
 }
 
-function scoreProtocol(input: {
-  volume30dUsd: number;
-  fees30dUsd: number | null;
-  weightedChange7dPct: number | null;
-  networkCount: number;
-  strongMarkets: number;
-  marketCount: number;
-}) {
-  const volumeScore =
-    input.volume30dUsd >= 1_000_000_000
-      ? 30
-      : input.volume30dUsd >= 100_000_000
-        ? 24
-        : input.volume30dUsd >= 10_000_000
-          ? 16
-          : input.volume30dUsd >= 1_000_000
-            ? 8
-            : 2;
-  const feeScore =
-    input.fees30dUsd === null
-      ? 4
-      : input.fees30dUsd >= 1_000_000
-        ? 20
-        : input.fees30dUsd >= 100_000
-          ? 14
-          : input.fees30dUsd >= 10_000
-            ? 8
-            : 3;
-  const coverageScore = Math.min(20, input.networkCount * 5);
-  const trendScore =
-    input.weightedChange7dPct === null
-      ? 5
-      : input.weightedChange7dPct >= 20
-        ? 15
-        : input.weightedChange7dPct >= 0
-          ? 11
-          : input.weightedChange7dPct >= -20
-            ? 7
-            : 2;
-  const qualityScore =
-    input.marketCount === 0 ? 0 : Math.round((input.strongMarkets / input.marketCount) * 15);
-
-  return Math.min(100, volumeScore + feeScore + coverageScore + trendScore + qualityScore);
-}
-
-function classifyProtocol(score: number): ProtocolScanStatus {
-  if (score >= 70) {
+function classifyProtocol(healthScore: ProtocolHealthScore): ProtocolScanStatus {
+  if (healthScore.total >= 70 && healthScore.confidence >= 55) {
     return "Ready for report";
   }
 
-  if (score >= 45) {
+  if (healthScore.total >= 45) {
     return "Monitor";
   }
 
