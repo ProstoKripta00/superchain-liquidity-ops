@@ -1050,6 +1050,190 @@ select {
   text-align: center;
 }
 
+.exportPackSection {
+  margin-bottom: 20px;
+  padding: 22px;
+  background: #ffffff;
+  border: 1px solid #e6e6e6;
+  border-radius: 22px;
+  box-shadow: 0 16px 40px rgba(15, 15, 15, 0.08);
+}
+
+.exportPackLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 430px;
+  gap: 14px;
+  align-items: start;
+}
+
+.exportPackLead,
+.artifactPanel {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  padding: 18px;
+  border-radius: 16px;
+}
+
+.exportPackLead {
+  color: #ffffff;
+  background: #0f0f0f;
+}
+
+.artifactPanel {
+  color: #0f0f0f;
+  background: #f7f7f7;
+}
+
+.exportPackTitle span,
+.exportPackTitle h3,
+.exportPackTitle small,
+.artifactPanelHeader span,
+.artifactPanelHeader strong {
+  display: block;
+}
+
+.exportPackTitle span,
+.artifactPanelHeader span {
+  color: #ff5a6d;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.exportPackTitle h3 {
+  margin: 6px 0 4px;
+  color: #ffffff;
+  font-size: 28px;
+  line-height: 1.1;
+}
+
+.exportPackTitle small {
+  color: #a8a8a8;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.exportPackLead p {
+  margin-bottom: 0;
+  color: #d4d4d4;
+  line-height: 1.55;
+}
+
+.exportPackStats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.exportPackStats .stat {
+  background: #1d1d1d;
+}
+
+.exportPackStats .stat span {
+  color: #929292;
+}
+
+.exportPackStats .stat strong {
+  color: #ffffff;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.handoffPreview {
+  max-height: 180px;
+  margin: 0;
+  overflow: auto;
+  padding: 14px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.exportPackActions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.exportPackActions button,
+.artifactRow button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  border: 0;
+  border-radius: 12px;
+  font-weight: 950;
+}
+
+.exportPackActions button {
+  color: #ffffff;
+  background: #ff0421;
+}
+
+.exportPackActions button:last-child {
+  color: #0f0f0f;
+  background: #ffffff;
+}
+
+.artifactPanelHeader strong {
+  margin-top: 5px;
+  font-size: 18px;
+  line-height: 1.15;
+}
+
+.artifactList {
+  display: grid;
+  gap: 10px;
+}
+
+.artifactRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 132px;
+  gap: 12px;
+  align-items: center;
+  padding: 14px;
+  background: #ffffff;
+  border: 1px solid #e6e6e6;
+  border-left: 5px solid #ff0421;
+  border-radius: 14px;
+}
+
+.artifactRow strong,
+.artifactRow span,
+.artifactRow small {
+  display: block;
+}
+
+.artifactRow strong {
+  font-size: 15px;
+}
+
+.artifactRow span {
+  margin-top: 5px;
+  color: #4d4d4d;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.artifactRow small {
+  margin-top: 6px;
+  color: #777777;
+  font-size: 12px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.artifactRow button {
+  color: #ffffff;
+  background: #0f0f0f;
+}
+
 .scannerAction {
   display: grid;
   gap: 8px;
@@ -1583,6 +1767,7 @@ select {
   .workbench,
   .scannerGrid,
   .reportsLayout,
+  .exportPackLayout,
   .impactStrip,
   .packHero {
     grid-template-columns: 1fr;
@@ -1651,6 +1836,9 @@ select {
   .reportReaderStats,
   .reportActions,
   .reportWorkflow,
+  .exportPackStats,
+  .exportPackActions,
+  .artifactRow,
   .packGrid,
   .milestoneGrid,
   .healthTags,

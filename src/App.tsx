@@ -24,6 +24,12 @@ import {
 } from "lucide-react";
 import { loadLiquiditySnapshot } from "./api";
 import { buildChainCoverageRows, buildMarketScopeMetrics } from "./dataEngine";
+import {
+  buildExportPack,
+  buildMarketsCsv,
+  type ExportPack,
+  type ExportPackArtifactId,
+} from "./exportPack";
 import { buildProtocolMiniReport } from "./reportGenerator";
 import { SUPERCHAIN_NETWORKS } from "./sources";
 import type {
@@ -64,6 +70,8 @@ type ReportLibraryItem = {
   report: ProtocolMiniReport;
 };
 
+type ExportPackFeedbackAction = ExportPackArtifactId | "pack-json" | "handoff";
+
 function App() {
   const [network, setNetwork] = useState<NetworkScope>("All");
   const [target, setTarget] = useState<(typeof targets)[number]>("All");
@@ -75,6 +83,11 @@ function App() {
     protocolId: string;
   } | null>(null);
   const [reportFeedback, setReportFeedback] = useState<{
+    label: string;
+    protocolId: string;
+  } | null>(null);
+  const [exportPackFeedback, setExportPackFeedback] = useState<{
+    action: ExportPackFeedbackAction;
     label: string;
     protocolId: string;
   } | null>(null);
@@ -167,6 +180,26 @@ function App() {
     () => buildMarketScopeMetrics(filteredMarkets, chains, network),
     [chains, filteredMarkets, network],
   );
+  const selectedExportPack = useMemo(() => {
+    if (!selectedReportItem) {
+      return null;
+    }
+
+    const protocolMarkets = markets.filter((market) =>
+      selectedReportItem.scan.marketIds.includes(market.id),
+    );
+
+    return buildExportPack({
+      network,
+      protocolMarkets,
+      report: selectedReportItem.report,
+      scan: selectedReportItem.scan,
+      scopedMarkets: filteredMarkets,
+      sources: snapshot?.sources ?? [],
+      target,
+      totals,
+    });
+  }, [filteredMarkets, markets, network, selectedReportItem, snapshot?.sources, target, totals]);
 
   const chainRows = useMemo(
     () => buildChainCoverageRows(chains, network),
@@ -189,61 +222,11 @@ function App() {
       return;
     }
 
-    const header = [
-      "network",
-      "dex",
-      "slug",
-      "category",
-      "priority",
-      "volume24hUsd",
-      "volume7dUsd",
-      "volume30dUsd",
-      "fees24hUsd",
-      "fees7dUsd",
-      "fees30dUsd",
-      "change1dPct",
-      "change7dPct",
-      "change30dPct",
-      "feeToVolume30dPct",
-      "health",
-      "outcomeTarget",
-      "sourceUrl",
-      "updatedAt",
-    ];
-    const rows = filteredMarkets.map((market) =>
-      [
-        market.network,
-        market.dex,
-        market.slug,
-        market.category,
-        String(market.priority),
-        String(market.volume24hUsd),
-        nullableCell(market.volume7dUsd),
-        nullableCell(market.volume30dUsd),
-        nullableCell(market.fees24hUsd),
-        nullableCell(market.fees7dUsd),
-        nullableCell(market.fees30dUsd),
-        nullableCell(market.change1dPct),
-        nullableCell(market.change7dPct),
-        nullableCell(market.change30dPct),
-        nullableCell(market.feeToVolume30dPct),
-        market.health,
-        market.outcomeTarget,
-        market.sourceUrl,
-        market.updatedAt,
-      ]
-        .map(csvCell)
-        .join(","),
+    downloadTextFile(
+      "superchain-dex-market-impact.csv",
+      buildMarketsCsv(filteredMarkets),
+      "text/csv;charset=utf-8",
     );
-    const blob = new Blob([[header.join(","), ...rows].join("\n")], {
-      type: "text/csv;charset=utf-8",
-    });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "superchain-dex-market-impact.csv";
-    link.click();
-    URL.revokeObjectURL(url);
   };
 
   const copyProtocolSummary = async (scan: ProtocolScan) => {
@@ -287,6 +270,50 @@ function App() {
     }, 1600);
   };
 
+  const setTemporaryExportPackFeedback = (
+    pack: ExportPack,
+    action: ExportPackFeedbackAction,
+    label: string,
+  ) => {
+    setExportPackFeedback({ action, label, protocolId: pack.protocolId });
+
+    window.setTimeout(() => {
+      setExportPackFeedback((current) =>
+        current?.protocolId === pack.protocolId && current.action === action
+          ? null
+          : current,
+      );
+    }, 1600);
+  };
+
+  const copyExportPackHandoff = async (pack: ExportPack) => {
+    try {
+      await writeClipboardText(pack.handoffSummary);
+      setTemporaryExportPackFeedback(pack, "handoff", "Copied");
+    } catch {
+      setTemporaryExportPackFeedback(pack, "handoff", "Summary ready");
+    }
+  };
+
+  const downloadExportPackJson = (pack: ExportPack) => {
+    downloadTextFile(pack.fileName, pack.packJson, "application/json;charset=utf-8");
+    setTemporaryExportPackFeedback(pack, "pack-json", "Downloaded");
+  };
+
+  const downloadExportPackArtifact = (
+    pack: ExportPack,
+    artifactId: ExportPackArtifactId,
+  ) => {
+    const artifact = pack.artifacts.find((item) => item.id === artifactId);
+
+    if (!artifact) {
+      return;
+    }
+
+    downloadTextFile(artifact.fileName, artifact.content, artifact.mimeType);
+    setTemporaryExportPackFeedback(pack, artifactId, "Downloaded");
+  };
+
   return (
     <div className="app">
       <header className="opHeader">
@@ -304,7 +331,7 @@ function App() {
           <a href="#networks">Chain metrics</a>
           <a href="#reviewer-pack">Reviewer pack</a>
           <a href="#sources">Sources</a>
-          <a href="#exports">Exports</a>
+          <a href="#export-pack">Export pack</a>
         </nav>
       </header>
 
@@ -506,6 +533,19 @@ function App() {
           onDownload={downloadMiniReport}
           onSelectReport={setSelectedReportId}
           selectedItem={selectedReportItem}
+        />
+
+        <ExportPackSection
+          feedback={
+            exportPackFeedback?.protocolId === selectedExportPack?.protocolId
+              ? exportPackFeedback
+              : null
+          }
+          isLoading={isLoading}
+          onCopyHandoff={(pack) => void copyExportPackHandoff(pack)}
+          onDownloadArtifact={downloadExportPackArtifact}
+          onDownloadPack={downloadExportPackJson}
+          pack={selectedExportPack}
         />
 
         <section className="workbench" id="markets">
@@ -711,6 +751,106 @@ function App() {
         </section>
       </main>
     </div>
+  );
+}
+
+function ExportPackSection({
+  feedback,
+  isLoading,
+  onCopyHandoff,
+  onDownloadArtifact,
+  onDownloadPack,
+  pack,
+}: {
+  feedback: {
+    action: ExportPackFeedbackAction;
+    label: string;
+    protocolId: string;
+  } | null;
+  isLoading: boolean;
+  onCopyHandoff: (pack: ExportPack) => void;
+  onDownloadArtifact: (pack: ExportPack, artifactId: ExportPackArtifactId) => void;
+  onDownloadPack: (pack: ExportPack) => void;
+  pack: ExportPack | null;
+}) {
+  const feedbackFor = (action: ExportPackFeedbackAction) =>
+    feedback?.action === action ? feedback.label : null;
+
+  return (
+    <section className="exportPackSection" id="export-pack">
+      <div className="sectionHeader">
+        <div>
+          <p className="sectionKicker">Export Pack</p>
+          <h2>One handoff package for protocol outreach and reviewer work</h2>
+        </div>
+        <span>{pack ? `${pack.artifacts.length} artifacts` : "Waiting for report"}</span>
+      </div>
+
+      {pack ? (
+        <div className="exportPackLayout">
+          <article className="exportPackLead">
+            <div className="exportPackTitle">
+              <span>Selected package</span>
+              <h3>{pack.title}</h3>
+              <small>{new Date(pack.generatedAt).toLocaleString()}</small>
+            </div>
+
+            <p>{pack.summary}</p>
+
+            <div className="exportPackStats">
+              <Stat label="Protocol markets" value={String(pack.protocolMarketCount)} />
+              <Stat label="Scope markets" value={String(pack.scopeMarketCount)} />
+              <Stat label="Sources included" value={String(pack.sourceCount)} />
+              <Stat label="Full pack" value={pack.fileName} />
+            </div>
+
+            <pre className="handoffPreview">{pack.handoffSummary}</pre>
+
+            <div className="exportPackActions">
+              <button onClick={() => onDownloadPack(pack)}>
+                <DatabaseZap size={17} />
+                {feedbackFor("pack-json") ?? "Download JSON pack"}
+              </button>
+              <button onClick={() => onCopyHandoff(pack)}>
+                <FileCheck2 size={17} />
+                {feedbackFor("handoff") ?? "Copy handoff summary"}
+              </button>
+            </div>
+          </article>
+
+          <aside className="artifactPanel">
+            <div className="artifactPanelHeader">
+              <span>Included files</span>
+              <strong>Download artifacts separately</strong>
+            </div>
+
+            <div className="artifactList">
+              {pack.artifacts.map((artifact) => (
+                <div className="artifactRow" key={artifact.id}>
+                  <div>
+                    <strong>{artifact.name}</strong>
+                    <span>{artifact.description}</span>
+                    <small>
+                      {artifact.fileName} / {artifact.sizeLabel}
+                    </small>
+                  </div>
+                  <button onClick={() => onDownloadArtifact(pack, artifact.id)}>
+                    <ArrowDownToLine size={16} />
+                    {feedbackFor(artifact.id) ?? "Download"}
+                  </button>
+                </div>
+              ))}
+            </div>
+          </aside>
+        </div>
+      ) : (
+        <div className="emptyState">
+          {isLoading
+            ? "Waiting for live data before creating the export pack..."
+            : "Select a report to create an export pack."}
+        </div>
+      )}
+    </section>
   );
 }
 
@@ -1067,18 +1207,6 @@ function formatOptionalUsd(value: number | null) {
 
 function formatOptionalPct(value: number | null) {
   return value === null ? "Unavailable" : `${pct.format(value)}%`;
-}
-
-function nullableCell(value: string | number | null) {
-  return value === null ? "" : String(value);
-}
-
-function csvCell(value: string) {
-  if (!/[",\n]/.test(value)) {
-    return value;
-  }
-
-  return `"${value.replace(/"/g, '""')}"`;
 }
 
 function buildProtocolSummary(scan: ProtocolScan) {

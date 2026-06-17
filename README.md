@@ -30,6 +30,7 @@ What works today:
 - protocol health score with grade, confidence, component breakdown, strengths, risks, and recommendation
 - mini report generator for reviewer-ready Markdown reports per selected protocol
 - reports workspace with scanner-selected protocol reports, Markdown preview, copy, and download actions
+- export pack builder with report Markdown, protocol CSV, scope CSV, summary JSON, and full JSON handoff pack
 - chain-level TVL, DEX volume, and fee totals
 - protocol-level fee attribution when the public feed exposes it
 - source audit for every public endpoint
@@ -46,11 +47,12 @@ What works today:
 4. Open `Reports` and inspect the scanner-selected report queue.
 5. Select a protocol report and review the Markdown preview.
 6. Copy the Markdown report or download the `.md` file.
-7. Filter to `OP Mainnet` or `Base`.
-8. Review DEX market rows for 24h volume, 30d volume, 30d fees, and health labels.
-9. Open `Source audit` and verify the public endpoints.
-10. Export the CSV report.
-11. Compare the exported evidence against the target outcomes: DEX activity, fee generation, and market health.
+7. Open `Export Pack` and download the full JSON handoff pack or individual artifacts.
+8. Filter to `OP Mainnet` or `Base`.
+9. Review DEX market rows for 24h volume, 30d volume, 30d fees, and health labels.
+10. Open `Source audit` and verify the public endpoints.
+11. Export the CSV report.
+12. Compare the exported evidence against the target outcomes: DEX activity, fee generation, and market health.
 
 ## Data Sources
 
@@ -77,6 +79,7 @@ Unavailable values are shown as unavailable. The app does not silently substitut
 | Protocol health score | Activity, fee capture, trend, coverage, quality, confidence | Live |
 | Mini report generator | Markdown report with summary, metrics, score, markets, risks, next actions | Live |
 | Reports workspace | Scanner-selected protocol reports with queue, preview, copy, and download actions | Live |
+| Export pack | JSON handoff pack plus Markdown, CSV, and structured summary artifacts | Live |
 | Reviewer evidence | CSV export with source URLs and timestamps | Live |
 | Priority pairs | Official OP pair mapping and pool-level ingestion | Planned |
 
@@ -108,7 +111,7 @@ Live data adapters
 Data engine: normalization, ratios, weighted trends, market scoring
         |
         v
-Protocol scanner, protocol health score, reports workspace, mini reports, scope totals, chain coverage, source audit, CSV export
+Protocol scanner, protocol health score, reports workspace, export pack, mini reports, scope totals, chain coverage, source audit, CSV export
         |
         v
 Dashboard state and reviewer workflow
@@ -139,6 +142,7 @@ src/dataEngine.ts            Shared metric normalization, aggregation and scorin
 src/protocols.ts             Tracked protocol profiles and slug matchers
 src/scanner.ts               Protocol readiness scoring and next-action logic
 src/reportGenerator.ts       Markdown mini-report generation for selected protocols
+src/exportPack.ts            Export pack manifest, CSV generation and JSON handoff package
 src/sources.ts               Supported chains and public endpoint URLs
 src/App.tsx                  Dashboard, protocol scanner, reports UI, filters, reviewer pack UI, export flow
 src/styles.css               OP-inspired product UI

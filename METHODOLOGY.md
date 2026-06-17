@@ -166,6 +166,7 @@ The MVP should produce grant-review artifacts:
 - protocol scanner and health score summary for outreach and report preparation
 - Markdown mini-report for a selected protocol
 - reports workspace for selecting, previewing, copying, and downloading generated reports
+- export pack containing Markdown, CSV, structured JSON, and a manifest-style JSON handoff package
 - chain-level TVL and fee summaries
 - watchlist of underperforming markets
 - 7d/30d trend reports
@@ -198,6 +199,20 @@ Current selection rule:
 - generate each report from the same live protocol scan and matched markets used by the selected mini-report workflow
 
 Each report can be selected, previewed as Markdown, copied, or downloaded as an `.md` file. These reports are examples for outreach and reviewer inspection. They are not manually curated endorsements, and they regenerate when the live snapshot changes.
+
+## Export Pack
+
+The Export Pack packages the selected protocol report into a practical handoff bundle.
+
+Current artifacts:
+
+- Markdown report for human review and outreach
+- protocol markets CSV containing only markets matched to the selected scanner target
+- current scope CSV using the active network and outcome filters
+- protocol summary JSON with score, health components, metrics, recommendation, and source audit context
+- full JSON handoff pack containing the manifest and embedded artifact contents
+
+The pack is generated in the browser from the same live snapshot as the dashboard. It is not a signed audit file or a permanent archive. The purpose is to make protocol outreach, reviewer updates, and later automation easier to hand off without manually copying several screens.
 
 ## Initial Live Data Scope
 
