@@ -23,6 +23,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { loadLiquiditySnapshot } from "./api";
+import { buildAutomationRun, type AutomationRun } from "./automation";
 import { buildChainCoverageRows, buildMarketScopeMetrics } from "./dataEngine";
 import {
   buildExportPack,
@@ -71,6 +72,7 @@ type ReportLibraryItem = {
 };
 
 type ExportPackFeedbackAction = ExportPackArtifactId | "pack-json" | "handoff";
+type AutomationFeedbackAction = "run" | "copy" | "download";
 
 function App() {
   const [network, setNetwork] = useState<NetworkScope>("All");
@@ -91,6 +93,11 @@ function App() {
     label: string;
     protocolId: string;
   } | null>(null);
+  const [automationFeedback, setAutomationFeedback] = useState<{
+    action: AutomationFeedbackAction;
+    label: string;
+  } | null>(null);
+  const [automationRunVersion, setAutomationRunVersion] = useState(0);
   const [snapshot, setSnapshot] = useState<LiquiditySnapshot | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -200,6 +207,29 @@ function App() {
       totals,
     });
   }, [filteredMarkets, markets, network, selectedReportItem, snapshot?.sources, target, totals]);
+  const automationRun = useMemo(
+    () =>
+      buildAutomationRun({
+        filteredMarkets,
+        network,
+        protocolScans,
+        selectedExportPack,
+        snapshot,
+        sources: snapshot?.sources ?? [],
+        target,
+        totals,
+      }),
+    [
+      automationRunVersion,
+      filteredMarkets,
+      network,
+      protocolScans,
+      selectedExportPack,
+      snapshot,
+      target,
+      totals,
+    ],
+  );
 
   const chainRows = useMemo(
     () => buildChainCoverageRows(chains, network),
@@ -314,6 +344,42 @@ function App() {
     setTemporaryExportPackFeedback(pack, artifactId, "Downloaded");
   };
 
+  const setTemporaryAutomationFeedback = (
+    action: AutomationFeedbackAction,
+    label: string,
+  ) => {
+    setAutomationFeedback({ action, label });
+
+    window.setTimeout(() => {
+      setAutomationFeedback((current) =>
+        current?.action === action ? null : current,
+      );
+    }, 1600);
+  };
+
+  const runAutomation = () => {
+    setAutomationRunVersion((current) => current + 1);
+    setTemporaryAutomationFeedback("run", "Run complete");
+  };
+
+  const copyAutomationRunbook = async () => {
+    try {
+      await writeClipboardText(automationRun.runbook);
+      setTemporaryAutomationFeedback("copy", "Copied");
+    } catch {
+      setTemporaryAutomationFeedback("copy", "Runbook ready");
+    }
+  };
+
+  const downloadAutomationRunbook = () => {
+    downloadTextFile(
+      "superchain-automation-runbook.md",
+      automationRun.runbook,
+      "text/markdown;charset=utf-8",
+    );
+    setTemporaryAutomationFeedback("download", "Downloaded");
+  };
+
   return (
     <div className="app">
       <header className="opHeader">
@@ -327,11 +393,12 @@ function App() {
         <nav className="topNav" aria-label="Product areas">
           <a href="#protocol-scanner">Protocol scanner</a>
           <a href="#reports">Reports</a>
+          <a href="#export-pack">Export pack</a>
+          <a href="#automation">Automation</a>
           <a href="#markets">Live markets</a>
           <a href="#networks">Chain metrics</a>
           <a href="#reviewer-pack">Reviewer pack</a>
           <a href="#sources">Sources</a>
-          <a href="#export-pack">Export pack</a>
         </nav>
       </header>
 
@@ -546,6 +613,15 @@ function App() {
           onDownloadArtifact={downloadExportPackArtifact}
           onDownloadPack={downloadExportPackJson}
           pack={selectedExportPack}
+        />
+
+        <AutomationSection
+          feedback={automationFeedback}
+          isLoading={isLoading}
+          onCopyRunbook={() => void copyAutomationRunbook()}
+          onDownloadRunbook={downloadAutomationRunbook}
+          onRun={runAutomation}
+          run={automationRun}
         />
 
         <section className="workbench" id="markets">
@@ -850,6 +926,104 @@ function ExportPackSection({
             : "Select a report to create an export pack."}
         </div>
       )}
+    </section>
+  );
+}
+
+function AutomationSection({
+  feedback,
+  isLoading,
+  onCopyRunbook,
+  onDownloadRunbook,
+  onRun,
+  run,
+}: {
+  feedback: {
+    action: AutomationFeedbackAction;
+    label: string;
+  } | null;
+  isLoading: boolean;
+  onCopyRunbook: () => void;
+  onDownloadRunbook: () => void;
+  onRun: () => void;
+  run: AutomationRun;
+}) {
+  const feedbackFor = (action: AutomationFeedbackAction) =>
+    feedback?.action === action ? feedback.label : null;
+  const preview = run.runbook.split("\n").slice(0, 18).join("\n");
+
+  return (
+    <section className={`automationSection ${run.status.toLowerCase()}`} id="automation">
+      <div className="sectionHeader">
+        <div>
+          <p className="sectionKicker">Automation</p>
+          <h2>Repeatable report, export and source-check workflow</h2>
+        </div>
+        <span>{isLoading ? "Refreshing" : run.status}</span>
+      </div>
+
+      <div className="automationLayout">
+        <article className="automationLead">
+          <div className="automationStatus">
+            <span>{run.mode}</span>
+            <strong>{run.status} run</strong>
+            <small>{new Date(run.generatedAt).toLocaleString()}</small>
+          </div>
+
+          <p>{run.summary}</p>
+
+          <div className="automationStats">
+            <Stat label="Scope" value={run.scopeLabel} />
+            <Stat label="Ready" value={String(run.readyCount)} />
+            <Stat label="Watch" value={String(run.watchCount)} />
+            <Stat label="Blocked" value={String(run.blockedCount)} />
+          </div>
+
+          <div className="automationActions">
+            <button onClick={onRun} disabled={isLoading}>
+              <RefreshCcw size={17} />
+              {feedbackFor("run") ?? "Run automation"}
+            </button>
+            <button onClick={onCopyRunbook}>
+              <FileCheck2 size={17} />
+              {feedbackFor("copy") ?? "Copy runbook"}
+            </button>
+            <button onClick={onDownloadRunbook}>
+              <ArrowDownToLine size={17} />
+              {feedbackFor("download") ?? "Download runbook"}
+            </button>
+          </div>
+
+          <pre className="automationRunbookPreview">{preview}</pre>
+        </article>
+
+        <aside className="automationJobs">
+          <div className="automationJobsHeader">
+            <span>Job queue</span>
+            <strong>{run.jobs.length} automation jobs</strong>
+          </div>
+
+          <div className="automationJobList">
+            {run.jobs.map((job) => (
+              <article className={`automationJobRow ${job.status.toLowerCase()}`} key={job.id}>
+                <div className="jobPriority">{job.priority}</div>
+                <div>
+                  <div className="jobTitleLine">
+                    <strong>{job.title}</strong>
+                    <span className={`jobBadge ${job.status.toLowerCase()}`}>{job.status}</span>
+                  </div>
+                  <p>{job.reason}</p>
+                  <div className="jobMeta">
+                    <span>{job.owner}</span>
+                    <span>{job.output}</span>
+                    <span>{job.nextRun}</span>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </aside>
+      </div>
     </section>
   );
 }

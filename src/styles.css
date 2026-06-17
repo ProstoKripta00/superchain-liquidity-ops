@@ -1234,6 +1234,255 @@ select {
   background: #0f0f0f;
 }
 
+.automationSection {
+  margin-bottom: 20px;
+  padding: 22px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border: 1px solid #2f2f2f;
+  border-radius: 22px;
+  box-shadow: 0 16px 40px rgba(15, 15, 15, 0.12);
+}
+
+.automationSection .sectionHeader {
+  color: #ffffff;
+}
+
+.automationSection .sectionHeader span {
+  color: #0f0f0f;
+  background: #ffffff;
+}
+
+.automationSection .sectionKicker {
+  color: #ff5a6d;
+}
+
+.automationLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(420px, 1.1fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.automationLead,
+.automationJobs {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  padding: 18px;
+  border-radius: 16px;
+}
+
+.automationLead {
+  color: #0f0f0f;
+  background: #ffffff;
+}
+
+.automationJobs {
+  color: #ffffff;
+  background: #181818;
+}
+
+.automationStatus span,
+.automationStatus strong,
+.automationStatus small,
+.automationJobsHeader span,
+.automationJobsHeader strong {
+  display: block;
+}
+
+.automationStatus span,
+.automationJobsHeader span {
+  color: #ff0421;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.automationStatus strong {
+  margin-top: 6px;
+  font-size: 34px;
+  line-height: 1;
+}
+
+.automationStatus small {
+  margin-top: 6px;
+  color: #6b6b6b;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.automationLead p {
+  margin-bottom: 0;
+  color: #373737;
+  line-height: 1.5;
+}
+
+.automationStats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.automationStats .stat {
+  background: #f4f4f4;
+}
+
+.automationStats .stat strong {
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.automationActions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.automationActions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  color: #ffffff;
+  background: #ff0421;
+  border: 0;
+  border-radius: 12px;
+  font-weight: 950;
+}
+
+.automationActions button:nth-child(2) {
+  background: #0f0f0f;
+}
+
+.automationActions button:nth-child(3) {
+  color: #0f0f0f;
+  background: #f2f2f2;
+}
+
+.automationActions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.automationRunbookPreview {
+  max-height: 230px;
+  margin: 0;
+  overflow: auto;
+  padding: 14px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.automationJobsHeader strong {
+  margin-top: 5px;
+  color: #ffffff;
+  font-size: 18px;
+}
+
+.automationJobList {
+  display: grid;
+  gap: 10px;
+}
+
+.automationJobRow {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 12px;
+  padding: 14px;
+  background: #0f0f0f;
+  border: 1px solid #2b2b2b;
+  border-left: 5px solid #ff0421;
+  border-radius: 14px;
+}
+
+.automationJobRow.watch {
+  border-left-color: #ffbe00;
+}
+
+.automationJobRow.blocked {
+  border-left-color: #ff5a6d;
+}
+
+.jobPriority {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  color: #0f0f0f;
+  background: #ffffff;
+  border-radius: 999px;
+  font-weight: 950;
+}
+
+.jobTitleLine {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.jobTitleLine strong {
+  min-width: 0;
+  font-size: 15px;
+  line-height: 1.25;
+}
+
+.jobBadge {
+  display: inline-flex;
+  min-height: 26px;
+  align-items: center;
+  padding: 0 10px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.jobBadge.watch {
+  background: #ffe7a6;
+}
+
+.jobBadge.blocked {
+  color: #ffffff;
+  background: #ff0421;
+}
+
+.automationJobRow p {
+  margin: 8px 0 0;
+  color: #cfcfcf;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.jobMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.jobMeta span {
+  display: inline-flex;
+  min-height: 24px;
+  align-items: center;
+  padding: 0 8px;
+  color: #d8d8d8;
+  background: #242424;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 850;
+  overflow-wrap: anywhere;
+}
+
 .scannerAction {
   display: grid;
   gap: 8px;
@@ -1768,6 +2017,7 @@ select {
   .scannerGrid,
   .reportsLayout,
   .exportPackLayout,
+  .automationLayout,
   .impactStrip,
   .packHero {
     grid-template-columns: 1fr;
@@ -1838,6 +2088,9 @@ select {
   .reportWorkflow,
   .exportPackStats,
   .exportPackActions,
+  .automationStats,
+  .automationActions,
+  .automationJobRow,
   .artifactRow,
   .packGrid,
   .milestoneGrid,

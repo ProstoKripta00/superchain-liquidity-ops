@@ -167,6 +167,7 @@ The MVP should produce grant-review artifacts:
 - Markdown mini-report for a selected protocol
 - reports workspace for selecting, previewing, copying, and downloading generated reports
 - export pack containing Markdown, CSV, structured JSON, and a manifest-style JSON handoff package
+- automation runbook with report, export-pack, watchlist, source-audit, and scope-refresh jobs
 - chain-level TVL and fee summaries
 - watchlist of underperforming markets
 - 7d/30d trend reports
@@ -213,6 +214,20 @@ Current artifacts:
 - full JSON handoff pack containing the manifest and embedded artifact contents
 
 The pack is generated in the browser from the same live snapshot as the dashboard. It is not a signed audit file or a permanent archive. The purpose is to make protocol outreach, reviewer updates, and later automation easier to hand off without manually copying several screens.
+
+## Automation
+
+The Automation workspace turns the current live dashboard state into a repeatable operating queue.
+
+Current job types:
+
+- scope refresh: confirms that the selected network and outcome filters have live markets
+- report generation: queues the strongest scanner targets for mini-report output
+- export pack: packages the selected protocol report into Markdown, CSV and JSON artifacts
+- watchlist: flags markets that are not classified as Strong
+- source audit: checks whether public data endpoints are OK, degraded, or blocking
+
+Each automation run generates a Markdown runbook with status, scope, job counts, outputs, next-run instructions, and the reason for each job. Browser automation is intentionally conservative: a blocked source or missing selection stays visible instead of being hidden behind a successful-looking export.
 
 ## Initial Live Data Scope
 
