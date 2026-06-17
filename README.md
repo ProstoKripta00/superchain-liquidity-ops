@@ -32,6 +32,7 @@ What works today:
 - reports workspace with scanner-selected protocol reports, Markdown preview, copy, and download actions
 - export pack builder with report Markdown, protocol CSV, scope CSV, summary JSON, and full JSON handoff pack
 - automation workspace that turns live scanner, reports, export pack and source audit state into a repeatable runbook
+- service layer that packages analytics output into sellable diagnostic, monitoring, and grant evidence offers
 - chain-level TVL, DEX volume, and fee totals
 - protocol-level fee attribution when the public feed exposes it
 - source audit for every public endpoint
@@ -50,11 +51,12 @@ What works today:
 6. Copy the Markdown report or download the `.md` file.
 7. Open `Export Pack` and download the full JSON handoff pack or individual artifacts.
 8. Open `Automation`, run the workflow and download the generated runbook.
-9. Filter to `OP Mainnet` or `Base`.
-10. Review DEX market rows for 24h volume, 30d volume, 30d fees, and health labels.
-11. Open `Source audit` and verify the public endpoints.
-12. Export the CSV report.
-13. Compare the exported evidence against the target outcomes: DEX activity, fee generation, and market health.
+9. Open `Service Layer`, select a client package, copy the brief, or download the service JSON.
+10. Filter to `OP Mainnet` or `Base`.
+11. Review DEX market rows for 24h volume, 30d volume, 30d fees, and health labels.
+12. Open `Source audit` and verify the public endpoints.
+13. Export the CSV report.
+14. Compare the exported evidence against the target outcomes: DEX activity, fee generation, and market health.
 
 ## Data Sources
 
@@ -83,6 +85,7 @@ Unavailable values are shown as unavailable. The app does not silently substitut
 | Reports workspace | Scanner-selected protocol reports with queue, preview, copy, and download actions | Live |
 | Export pack | JSON handoff pack plus Markdown, CSV, and structured summary artifacts | Live |
 | Automation | Browser-side job queue and Markdown runbook for report, export, watchlist, and source-audit workflows | Live |
+| Service layer | Client package builder with suggested scopes, deliverables, acceptance criteria, brief export, and service JSON | Live |
 | Reviewer evidence | CSV export with source URLs and timestamps | Live |
 | Priority pairs | Official OP pair mapping and pool-level ingestion | Planned |
 
@@ -114,7 +117,7 @@ Live data adapters
 Data engine: normalization, ratios, weighted trends, market scoring
         |
         v
-Protocol scanner, protocol health score, reports workspace, export pack, automation runbook, mini reports, scope totals, chain coverage, source audit, CSV export
+Protocol scanner, protocol health score, reports workspace, export pack, automation runbook, service layer, mini reports, scope totals, chain coverage, source audit, CSV export
         |
         v
 Dashboard state and reviewer workflow
@@ -134,8 +137,9 @@ Current stack:
 2. Add pool-level adapters through backend or scheduled static ingestion for sources that do not support reliable browser fetches.
 3. Add 7d/30d before-after reviewer reports.
 4. Add scheduled automation and a small public API surface.
-5. Add alerting for markets with declining liquidity, weak fee output, or source degradation.
-6. Publish example final grant reports.
+5. Add service CRM handoff fields and outreach status tracking.
+6. Add alerting for markets with declining liquidity, weak fee output, or source degradation.
+7. Publish example final grant reports.
 
 ## Repository Map
 
@@ -147,8 +151,9 @@ src/scanner.ts               Protocol readiness scoring and next-action logic
 src/reportGenerator.ts       Markdown mini-report generation for selected protocols
 src/exportPack.ts            Export pack manifest, CSV generation and JSON handoff package
 src/automation.ts            Browser-side automation job queue and Markdown runbook generator
+src/serviceLayer.ts          Sellable service offer, client brief and service JSON generation
 src/sources.ts               Supported chains and public endpoint URLs
-src/App.tsx                  Dashboard, protocol scanner, reports UI, automation UI, filters, reviewer pack UI, export flow
+src/App.tsx                  Dashboard, protocol scanner, reports UI, automation UI, service UI, filters, reviewer pack UI, export flow
 src/styles.css               OP-inspired product UI
 GRANT_REVIEWER_PACK.md       Reviewer summary, evidence, milestones, budget
 OP_GRANT_SUBMISSION_READY.md Copy-paste grant form answers and checklist

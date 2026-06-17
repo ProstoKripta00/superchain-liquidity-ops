@@ -32,6 +32,11 @@ import {
   type ExportPackArtifactId,
 } from "./exportPack";
 import { buildProtocolMiniReport } from "./reportGenerator";
+import {
+  buildServiceLayer,
+  type ServiceLayer,
+  type ServiceOffer,
+} from "./serviceLayer";
 import { SUPERCHAIN_NETWORKS } from "./sources";
 import type {
   DexMarket,
@@ -73,6 +78,7 @@ type ReportLibraryItem = {
 
 type ExportPackFeedbackAction = ExportPackArtifactId | "pack-json" | "handoff";
 type AutomationFeedbackAction = "run" | "copy" | "download";
+type ServiceFeedbackAction = "copy-brief" | "download-brief" | "json";
 
 function App() {
   const [network, setNetwork] = useState<NetworkScope>("All");
@@ -80,6 +86,9 @@ function App() {
   const [selectedMarketId, setSelectedMarketId] = useState<string | null>(null);
   const [selectedProtocolId, setSelectedProtocolId] = useState<string | null>(null);
   const [selectedReportId, setSelectedReportId] = useState<string | null>(null);
+  const [selectedServiceOfferId, setSelectedServiceOfferId] = useState<
+    ServiceOffer["id"] | null
+  >(null);
   const [copyFeedback, setCopyFeedback] = useState<{
     label: string;
     protocolId: string;
@@ -95,6 +104,10 @@ function App() {
   } | null>(null);
   const [automationFeedback, setAutomationFeedback] = useState<{
     action: AutomationFeedbackAction;
+    label: string;
+  } | null>(null);
+  const [serviceFeedback, setServiceFeedback] = useState<{
+    action: ServiceFeedbackAction;
     label: string;
   } | null>(null);
   const [automationRunVersion, setAutomationRunVersion] = useState(0);
@@ -230,6 +243,32 @@ function App() {
       totals,
     ],
   );
+  const serviceLayer = useMemo(
+    () =>
+      buildServiceLayer({
+        automationRun,
+        filteredMarkets,
+        network,
+        protocolScans,
+        selectedExportPack,
+        target,
+        totals,
+      }),
+    [
+      automationRun,
+      filteredMarkets,
+      network,
+      protocolScans,
+      selectedExportPack,
+      target,
+      totals,
+    ],
+  );
+  const selectedServiceOffer =
+    serviceLayer.offers.find((offer) => offer.id === selectedServiceOfferId) ??
+    serviceLayer.offers.find((offer) => offer.id === serviceLayer.recommendedOfferId) ??
+    serviceLayer.offers[0] ??
+    null;
 
   const chainRows = useMemo(
     () => buildChainCoverageRows(chains, network),
@@ -380,6 +419,46 @@ function App() {
     setTemporaryAutomationFeedback("download", "Downloaded");
   };
 
+  const setTemporaryServiceFeedback = (
+    action: ServiceFeedbackAction,
+    label: string,
+  ) => {
+    setServiceFeedback({ action, label });
+
+    window.setTimeout(() => {
+      setServiceFeedback((current) =>
+        current?.action === action ? null : current,
+      );
+    }, 1600);
+  };
+
+  const copyServiceBrief = async (offer: ServiceOffer) => {
+    try {
+      await writeClipboardText(offer.clientBrief);
+      setTemporaryServiceFeedback("copy-brief", "Copied");
+    } catch {
+      setTemporaryServiceFeedback("copy-brief", "Brief ready");
+    }
+  };
+
+  const downloadServiceBrief = (offer: ServiceOffer) => {
+    downloadTextFile(
+      `${offer.id}-client-brief.md`,
+      offer.clientBrief,
+      "text/markdown;charset=utf-8",
+    );
+    setTemporaryServiceFeedback("download-brief", "Downloaded");
+  };
+
+  const downloadServiceJson = (layer: ServiceLayer) => {
+    downloadTextFile(
+      "superchain-service-layer.json",
+      layer.serviceJson,
+      "application/json;charset=utf-8",
+    );
+    setTemporaryServiceFeedback("json", "Downloaded");
+  };
+
   return (
     <div className="app">
       <header className="opHeader">
@@ -395,6 +474,7 @@ function App() {
           <a href="#reports">Reports</a>
           <a href="#export-pack">Export pack</a>
           <a href="#automation">Automation</a>
+          <a href="#service-layer">Service layer</a>
           <a href="#markets">Live markets</a>
           <a href="#networks">Chain metrics</a>
           <a href="#reviewer-pack">Reviewer pack</a>
@@ -622,6 +702,16 @@ function App() {
           onDownloadRunbook={downloadAutomationRunbook}
           onRun={runAutomation}
           run={automationRun}
+        />
+
+        <ServiceLayerSection
+          feedback={serviceFeedback}
+          layer={serviceLayer}
+          onCopyBrief={(offer) => void copyServiceBrief(offer)}
+          onDownloadBrief={downloadServiceBrief}
+          onDownloadJson={downloadServiceJson}
+          onSelectOffer={setSelectedServiceOfferId}
+          selectedOffer={selectedServiceOffer}
         />
 
         <section className="workbench" id="markets">
@@ -1028,6 +1118,164 @@ function AutomationSection({
   );
 }
 
+function ServiceLayerSection({
+  feedback,
+  layer,
+  onCopyBrief,
+  onDownloadBrief,
+  onDownloadJson,
+  onSelectOffer,
+  selectedOffer,
+}: {
+  feedback: {
+    action: ServiceFeedbackAction;
+    label: string;
+  } | null;
+  layer: ServiceLayer;
+  onCopyBrief: (offer: ServiceOffer) => void;
+  onDownloadBrief: (offer: ServiceOffer) => void;
+  onDownloadJson: (layer: ServiceLayer) => void;
+  onSelectOffer: (offerId: ServiceOffer["id"]) => void;
+  selectedOffer: ServiceOffer | null;
+}) {
+  const feedbackFor = (action: ServiceFeedbackAction) =>
+    feedback?.action === action ? feedback.label : null;
+  const preview = selectedOffer
+    ? selectedOffer.clientBrief.split("\n").slice(0, 20).join("\n")
+    : "Select a service offer to generate a client brief.";
+
+  return (
+    <section className="serviceLayerSection" id="service-layer">
+      <div className="sectionHeader">
+        <div>
+          <p className="sectionKicker">Service Layer</p>
+          <h2>Turn analytics evidence into sellable client packages</h2>
+        </div>
+        <span>
+          {layer.readyCount}/{layer.offers.length} ready
+        </span>
+      </div>
+
+      <div className="serviceLayerLayout">
+        <article className="serviceLead">
+          <div className="serviceLeadTitle">
+            <span>Recommended offer</span>
+            <h3>{layer.recommendedOfferName}</h3>
+            <small>{new Date(layer.generatedAt).toLocaleString()}</small>
+          </div>
+
+          <p>{layer.summary}</p>
+
+          <div className="serviceStats">
+            <Stat label="Scope" value={layer.scopeLabel} />
+            <Stat label="Protocol" value={layer.selectedProtocolName} />
+            <Stat label="Pipeline" value={layer.totalPipelineLabel} />
+            <Stat label="Ready offers" value={String(layer.readyCount)} />
+          </div>
+
+          <div className="serviceOperatingModel">
+            <span>Operating model</span>
+            {layer.operatingModel.map((item) => (
+              <strong key={item}>{item}</strong>
+            ))}
+          </div>
+
+          <div className="serviceActions">
+            <button
+              disabled={!selectedOffer}
+              onClick={() => selectedOffer && onCopyBrief(selectedOffer)}
+            >
+              <FileCheck2 size={17} />
+              {feedbackFor("copy-brief") ?? "Copy client brief"}
+            </button>
+            <button
+              disabled={!selectedOffer}
+              onClick={() => selectedOffer && onDownloadBrief(selectedOffer)}
+            >
+              <ArrowDownToLine size={17} />
+              {feedbackFor("download-brief") ?? "Download brief"}
+            </button>
+            <button onClick={() => onDownloadJson(layer)}>
+              <DatabaseZap size={17} />
+              {feedbackFor("json") ?? "Download service JSON"}
+            </button>
+          </div>
+
+          <pre className="serviceBriefPreview">{preview}</pre>
+        </article>
+
+        <aside className="serviceOfferPanel">
+          <div className="serviceOfferList">
+            {layer.offers.map((offer) => (
+              <button
+                className={`serviceOfferCard ${
+                  offer.id === selectedOffer?.id ? "selected" : ""
+                } ${serviceStatusClass(offer.status)}`}
+                key={offer.id}
+                onClick={() => onSelectOffer(offer.id)}
+              >
+                <span className="servicePriority">{offer.priority}</span>
+                <span>
+                  <strong>{offer.name}</strong>
+                  <small>{offer.audience}</small>
+                </span>
+                <em>{offer.priceLabel}</em>
+                <i>{offer.status}</i>
+              </button>
+            ))}
+          </div>
+
+          {selectedOffer ? (
+            <div className="serviceDetail">
+              <div className="serviceDetailHead">
+                <div>
+                  <span>{selectedOffer.timeline}</span>
+                  <h3>{selectedOffer.name}</h3>
+                </div>
+                <div className="serviceFit">
+                  <Target size={17} />
+                  <strong>{selectedOffer.fitScore}/100</strong>
+                </div>
+              </div>
+
+              <p>{selectedOffer.problem}</p>
+
+              <div className="serviceAngle">
+                <CircleDollarSign size={18} />
+                <strong>{selectedOffer.salesAngle}</strong>
+              </div>
+
+              <div className="serviceDetailGrid">
+                <div>
+                  <span>Deliverables</span>
+                  {selectedOffer.deliverables.map((item) => (
+                    <strong key={item}>{item}</strong>
+                  ))}
+                </div>
+                <div>
+                  <span>Acceptance criteria</span>
+                  {selectedOffer.acceptanceCriteria.map((item) => (
+                    <strong key={item}>{item}</strong>
+                  ))}
+                </div>
+              </div>
+
+              <div className="serviceArtifacts">
+                <span>Included artifacts</span>
+                {selectedOffer.includedArtifacts.map((item) => (
+                  <small key={item}>{item}</small>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="emptyState">Select a service offer to inspect the client package.</div>
+          )}
+        </aside>
+      </div>
+    </section>
+  );
+}
+
 function ReportsSection({
   feedbackFor,
   isLoading,
@@ -1381,6 +1629,10 @@ function formatOptionalUsd(value: number | null) {
 
 function formatOptionalPct(value: number | null) {
   return value === null ? "Unavailable" : `${pct.format(value)}%`;
+}
+
+function serviceStatusClass(value: ServiceOffer["status"]) {
+  return value.toLowerCase().replace(/\s+/g, "-");
 }
 
 function buildProtocolSummary(scan: ProtocolScan) {

@@ -1483,6 +1483,354 @@ select {
   overflow-wrap: anywhere;
 }
 
+.serviceLayerSection {
+  margin-bottom: 20px;
+  padding: 22px;
+  background: #ffffff;
+  border: 1px solid #e6e6e6;
+  border-radius: 22px;
+  box-shadow: 0 16px 40px rgba(15, 15, 15, 0.08);
+}
+
+.serviceLayerSection .sectionHeader span {
+  color: #ffffff;
+  background: #0f0f0f;
+}
+
+.serviceLayerLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(430px, 1.05fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.serviceLead,
+.serviceOfferPanel {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  padding: 18px;
+  border-radius: 16px;
+}
+
+.serviceLead {
+  color: #ffffff;
+  background: #0f0f0f;
+}
+
+.serviceOfferPanel {
+  color: #0f0f0f;
+  background: #f7f7f7;
+}
+
+.serviceLeadTitle span,
+.serviceLeadTitle h3,
+.serviceLeadTitle small {
+  display: block;
+}
+
+.serviceLeadTitle span {
+  color: #ff5a6d;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.serviceLeadTitle h3 {
+  margin: 6px 0 4px;
+  color: #ffffff;
+  font-size: 30px;
+  line-height: 1.05;
+}
+
+.serviceLeadTitle small {
+  color: #a8a8a8;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.serviceLead p {
+  margin-bottom: 0;
+  color: #d4d4d4;
+  line-height: 1.5;
+}
+
+.serviceStats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.serviceStats .stat {
+  background: #1d1d1d;
+}
+
+.serviceStats .stat span {
+  color: #929292;
+}
+
+.serviceStats .stat strong {
+  color: #ffffff;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.serviceOperatingModel {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  background: #1d1d1d;
+  border-radius: 12px;
+}
+
+.serviceOperatingModel span {
+  color: #ff5a6d;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.serviceOperatingModel strong {
+  display: block;
+  color: #ffffff;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.serviceActions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.serviceActions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  color: #ffffff;
+  background: #ff0421;
+  border: 0;
+  border-radius: 12px;
+  font-weight: 950;
+}
+
+.serviceActions button:nth-child(2) {
+  color: #0f0f0f;
+  background: #ffffff;
+}
+
+.serviceActions button:nth-child(3) {
+  color: #ffffff;
+  background: #323232;
+}
+
+.serviceActions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.serviceBriefPreview {
+  max-height: 240px;
+  margin: 0;
+  overflow: auto;
+  padding: 14px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.serviceOfferList {
+  display: grid;
+  gap: 10px;
+}
+
+.serviceOfferCard {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) minmax(120px, 0.45fr) 118px;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+  min-height: 76px;
+  padding: 12px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border: 1px solid #e1e1e1;
+  border-left: 5px solid #ffbe00;
+  border-radius: 14px;
+  text-align: left;
+}
+
+.serviceOfferCard.ready-to-sell {
+  border-left-color: #ff0421;
+}
+
+.serviceOfferCard.blocked {
+  border-left-color: #777777;
+}
+
+.serviceOfferCard.selected {
+  border-color: #ff0421;
+  box-shadow: 0 10px 24px rgba(255, 4, 33, 0.14);
+}
+
+.servicePriority {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  color: #ffffff;
+  background: #0f0f0f;
+  border-radius: 999px;
+  font-weight: 950;
+}
+
+.serviceOfferCard strong,
+.serviceOfferCard small,
+.serviceOfferCard em,
+.serviceOfferCard i {
+  display: block;
+}
+
+.serviceOfferCard strong {
+  font-size: 15px;
+  line-height: 1.2;
+}
+
+.serviceOfferCard small {
+  margin-top: 4px;
+  color: #666666;
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+.serviceOfferCard em {
+  font-style: normal;
+  font-size: 13px;
+  font-weight: 950;
+}
+
+.serviceOfferCard i {
+  min-height: 28px;
+  padding: 7px 8px;
+  color: #0f0f0f;
+  background: #f0f0f0;
+  border-radius: 999px;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 950;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.serviceOfferCard.ready-to-sell i {
+  color: #ffffff;
+  background: #ff0421;
+}
+
+.serviceDetail {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border-radius: 16px;
+}
+
+.serviceDetailHead {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.serviceDetailHead span {
+  display: block;
+  color: #ff5a6d;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.serviceDetailHead h3 {
+  margin: 5px 0 0;
+  font-size: 24px;
+  line-height: 1.1;
+}
+
+.serviceFit {
+  display: inline-flex;
+  gap: 7px;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 10px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border-radius: 999px;
+  font-size: 13px;
+}
+
+.serviceDetail p {
+  margin-bottom: 0;
+  color: #d4d4d4;
+  line-height: 1.5;
+}
+
+.serviceAngle {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  padding: 12px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border-radius: 12px;
+}
+
+.serviceAngle svg {
+  color: #ff0421;
+}
+
+.serviceAngle strong {
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.serviceDetailGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.serviceDetailGrid div,
+.serviceArtifacts {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  background: #1d1d1d;
+  border-radius: 12px;
+}
+
+.serviceDetailGrid span,
+.serviceArtifacts span {
+  color: #ff5a6d;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.serviceDetailGrid strong,
+.serviceArtifacts small {
+  color: #ffffff;
+  font-size: 12px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
 .scannerAction {
   display: grid;
   gap: 8px;
@@ -2018,6 +2366,7 @@ select {
   .reportsLayout,
   .exportPackLayout,
   .automationLayout,
+  .serviceLayerLayout,
   .impactStrip,
   .packHero {
     grid-template-columns: 1fr;
@@ -2091,6 +2440,10 @@ select {
   .automationStats,
   .automationActions,
   .automationJobRow,
+  .serviceStats,
+  .serviceActions,
+  .serviceOfferCard,
+  .serviceDetailGrid,
   .artifactRow,
   .packGrid,
   .milestoneGrid,

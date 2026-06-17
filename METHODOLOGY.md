@@ -168,6 +168,7 @@ The MVP should produce grant-review artifacts:
 - reports workspace for selecting, previewing, copying, and downloading generated reports
 - export pack containing Markdown, CSV, structured JSON, and a manifest-style JSON handoff package
 - automation runbook with report, export-pack, watchlist, source-audit, and scope-refresh jobs
+- service layer with client-ready package briefs, deliverables, acceptance criteria, and service JSON
 - chain-level TVL and fee summaries
 - watchlist of underperforming markets
 - 7d/30d trend reports
@@ -228,6 +229,29 @@ Current job types:
 - source audit: checks whether public data endpoints are OK, degraded, or blocking
 
 Each automation run generates a Markdown runbook with status, scope, job counts, outputs, next-run instructions, and the reason for each job. Browser automation is intentionally conservative: a blocked source or missing selection stays visible instead of being hidden behind a successful-looking export.
+
+## Service Layer
+
+The Service Layer turns the evidence system into client packages. It does not invent results or guarantee sales. It packages the current scanner, report, export and automation state into offers that can be sent to a protocol, grants team, or ecosystem operator.
+
+Current service offers:
+
+- Protocol Diagnostic Sprint: a fixed-scope report using the selected protocol mini-report and matched market exports
+- Liquidity Monitoring Retainer: weekly runbook, watchlist and source-health monitoring for the selected Superchain scope
+- Grant Evidence Pack: reviewer-ready package for teams that need public evidence around liquidity, volume, fees and source limitations
+
+Each offer includes:
+
+- suggested quote range and timeline
+- target audience
+- problem statement and sales angle
+- deliverables
+- acceptance criteria
+- included artifacts
+- client brief export
+- structured service JSON
+
+The layer is intentionally scoped to services that can be delivered from the available product outputs. If an offer depends on a selected export pack or a clean source audit, it is marked `Needs review` or `Blocked` instead of being presented as ready.
 
 ## Initial Live Data Scope
 
