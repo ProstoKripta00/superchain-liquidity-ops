@@ -168,6 +168,7 @@ The MVP should produce grant-review artifacts:
 - reports workspace for selecting, previewing, copying, and downloading generated reports
 - public sample reports for client-facing proof-of-work across diagnostic, monitoring, and grant-evidence services
 - static sample files for stable Markdown, CSV, JSON, and manifest links that do not depend on live data
+- trust / proof section that links to the public repository, live app, methodology, sample manifest, reviewer pack, source audit, and delivery boundaries
 - offer / pricing page with fixed-scope packages, price ranges, timelines, deliverables, and buyer brief actions
 - launch desk with proposal, onboarding email, delivery checklist, buyer FAQ, terms, and sales-kit export
 - contact / request report intake with editable client scope, copy-ready request text, GitHub issue link, Markdown export, and JSON export
@@ -249,6 +250,31 @@ Current files:
 - `index.json` manifest
 
 The static files are not live measurements. They are examples of structure, delivery boundaries, and expected artifact formats. Final paid delivery should still refresh live data, regenerate current reports, and disclose unavailable values.
+
+## Trust / Proof Section
+
+The Trust / Proof section is designed for buyers, grant reviewers, and protocol operators who need to verify the project before responding to an outreach message.
+
+It uses the current app state plus fixed public links to show:
+
+- public GitHub repository
+- live GitHub Pages dashboard
+- documented methodology
+- static sample manifest
+- grant reviewer pack
+- source audit trail
+- delivery boundaries
+
+The section deliberately avoids fake credibility signals. It does not display invented client logos, testimonials, audits, paid users, or guarantees. If the product has not earned a proof point yet, the section should show a boundary or future upgrade instead of implying traction.
+
+Current trust boundaries:
+
+- the product is not a smart-contract security audit
+- reports are liquidity and fee intelligence, not financial advice
+- unavailable public metrics remain visible
+- browser-saved CRM and intake records are local storage, not shared backend storage
+
+This proof layer supports sales conversations by reducing the risk of being a new builder. A buyer can inspect the code, open the live dashboard, review sample artifacts, and check how missing data is handled before ordering a report.
 
 ## Offer / Pricing Page
 

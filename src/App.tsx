@@ -101,6 +101,7 @@ import {
   type StaticSampleFile,
 } from "./staticSamples";
 import { SUPERCHAIN_NETWORKS } from "./sources";
+import { buildTrustProofPack, type TrustProofPack } from "./trustProof";
 import type {
   DexMarket,
   LiquiditySnapshot,
@@ -537,6 +538,35 @@ function App() {
         month: "short",
       }).format(new Date(snapshot.updatedAt))
     : "Not loaded";
+  const trustProofPack = useMemo(
+    () =>
+      buildTrustProofPack({
+        launchStatus: salesKit.status,
+        liveStatus: isLoading ? "Refreshing" : liveState.title,
+        marketCount: markets.length,
+        protocolCount: protocolScans.length,
+        readinessScore: salesKit.readinessScore,
+        sampleReportCount: sampleReports.length,
+        savedIntakeCount: intakeRecords.length,
+        serviceOfferCount: serviceLayer.offers.length,
+        serviceReadyCount: serviceLayer.readyCount,
+        sourceCount: snapshot?.sources.length ?? 0,
+        staticSampleCount: STATIC_SAMPLE_FILES.length,
+      }),
+    [
+      intakeRecords.length,
+      isLoading,
+      liveState.title,
+      markets.length,
+      protocolScans.length,
+      salesKit.readinessScore,
+      salesKit.status,
+      sampleReports.length,
+      serviceLayer.offers.length,
+      serviceLayer.readyCount,
+      snapshot?.sources.length,
+    ],
+  );
 
   const exportCsv = () => {
     if (filteredMarkets.length === 0) {
@@ -1114,6 +1144,7 @@ function App() {
           <a href="#reports">Reports</a>
           <a href="#sample-reports">Sample reports</a>
           <a href="#static-samples">Static files</a>
+          <a href="#trust-proof">Trust proof</a>
           <a href="#pricing">Pricing</a>
           <a href="#launch-desk">Launch desk</a>
           <a href="#request-report">Request report</a>
@@ -1344,6 +1375,8 @@ function App() {
           files={STATIC_SAMPLE_FILES}
           manifestUrl={STATIC_SAMPLE_MANIFEST_URL}
         />
+
+        <TrustProofSection pack={trustProofPack} />
 
         <OfferPricingSection
           feedback={serviceFeedback}
@@ -3597,6 +3630,94 @@ function StaticSampleFilesSection({
             </article>
           ))}
         </div>
+      </div>
+    </section>
+  );
+}
+
+function TrustProofSection({ pack }: { pack: TrustProofPack }) {
+  return (
+    <section className="trustProofSection" id="trust-proof">
+      <div className="sectionHeader">
+        <div>
+          <p className="sectionKicker">Trust / Proof</p>
+          <h2>Verifiable proof before a buyer pays</h2>
+        </div>
+        <span>Public proof</span>
+      </div>
+
+      <div className="trustProofLayout">
+        <article className="trustProofLead">
+          <div className="trustProofTitle">
+            <ShieldCheck size={24} />
+            <div>
+              <span>Proof stack</span>
+              <h3>No fake traction, only links a reviewer can verify</h3>
+            </div>
+          </div>
+          <p>{pack.summary}</p>
+
+          <div className="trustProofMetrics">
+            {pack.metrics.map((metric) => (
+              <div key={metric.label}>
+                <span>{metric.label}</span>
+                <strong>{metric.value}</strong>
+                <small>{metric.note}</small>
+              </div>
+            ))}
+          </div>
+
+          <small className="trustProofGenerated">
+            Generated from current app state: {new Date(pack.generatedAt).toLocaleString()}
+          </small>
+        </article>
+
+        <div className="trustProofGrid">
+          {pack.items.map((item) => (
+            <article className="trustProofCard" key={item.id}>
+              <div className="trustProofCardHead">
+                <div className="trustProofIcon">
+                  {item.category === "Source" ? (
+                    <GitBranch size={18} />
+                  ) : item.category === "Data" || item.category === "Artifacts" ? (
+                    <DatabaseZap size={18} />
+                  ) : (
+                    <FileCheck2 size={18} />
+                  )}
+                </div>
+                <span className={`trustProofStatus ${item.status.toLowerCase()}`}>
+                  {item.status}
+                </span>
+              </div>
+              <span>{item.category}</span>
+              <h3>{item.title}</h3>
+              <p>{item.description}</p>
+              <small>{item.proof}</small>
+              <a className="trustProofAction" href={item.href} target="_blank" rel="noreferrer">
+                {item.action}
+                <ExternalLink size={15} />
+              </a>
+            </article>
+          ))}
+        </div>
+
+        <aside className="trustBoundaryPanel">
+          <div>
+            <span>Delivery boundaries</span>
+            <h3>What this does not claim yet</h3>
+          </div>
+          <div className="trustBoundaryList">
+            {pack.boundaries.map((boundary) => (
+              <div className="trustBoundaryItem" key={boundary.title}>
+                <ShieldCheck size={18} />
+                <div>
+                  <strong>{boundary.title}</strong>
+                  <p>{boundary.detail}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </aside>
       </div>
     </section>
   );
