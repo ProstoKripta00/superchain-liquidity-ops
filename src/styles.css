@@ -1831,6 +1831,352 @@ select {
   overflow-wrap: anywhere;
 }
 
+.outreachSection {
+  margin-bottom: 20px;
+  padding: 22px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border: 1px solid #2f2f2f;
+  border-radius: 22px;
+  box-shadow: 0 16px 40px rgba(15, 15, 15, 0.12);
+}
+
+.outreachSection .sectionHeader {
+  color: #ffffff;
+}
+
+.outreachSection .sectionHeader span {
+  color: #0f0f0f;
+  background: #ffffff;
+}
+
+.outreachSection .sectionKicker {
+  color: #ff5a6d;
+}
+
+.outreachLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(430px, 1.05fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.outreachLeadPanel,
+.pitchPanel {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  padding: 18px;
+  border-radius: 16px;
+}
+
+.outreachLeadPanel {
+  color: #0f0f0f;
+  background: #ffffff;
+}
+
+.pitchPanel {
+  color: #ffffff;
+  background: #181818;
+}
+
+.outreachLeadTitle span,
+.outreachLeadTitle h3,
+.outreachLeadTitle small {
+  display: block;
+}
+
+.outreachLeadTitle span {
+  color: #ff0421;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.outreachLeadTitle h3 {
+  margin: 6px 0 4px;
+  font-size: 28px;
+  line-height: 1.08;
+}
+
+.outreachLeadTitle small {
+  color: #777777;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.outreachStats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.outreachStats .stat {
+  background: #f4f4f4;
+}
+
+.outreachStats .stat strong {
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.outreachActions,
+.pitchActions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.outreachActions button,
+.pitchActions button,
+.pitchTabs button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  border: 0;
+  border-radius: 12px;
+  font-weight: 950;
+}
+
+.outreachActions button {
+  color: #ffffff;
+  background: #ff0421;
+}
+
+.outreachActions button:last-child {
+  background: #0f0f0f;
+}
+
+.outreachActions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.leadList {
+  display: grid;
+  gap: 10px;
+}
+
+.leadRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 170px;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.leadRow button {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) 54px;
+  gap: 12px;
+  align-items: center;
+  min-height: 74px;
+  padding: 12px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border: 1px solid #e1e1e1;
+  border-left: 5px solid #ffbe00;
+  border-radius: 14px;
+  text-align: left;
+}
+
+.leadRow.selected button {
+  border-color: #ff0421;
+  border-left-color: #ff0421;
+  box-shadow: 0 10px 24px rgba(255, 4, 33, 0.14);
+}
+
+.leadPriority {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  color: #ffffff;
+  background: #0f0f0f;
+  border-radius: 999px;
+  font-weight: 950;
+}
+
+.leadRow strong,
+.leadRow small,
+.leadRow em {
+  display: block;
+}
+
+.leadRow small {
+  margin-top: 5px;
+  color: #666666;
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+.leadRow em {
+  color: #ff0421;
+  font-style: normal;
+  font-weight: 950;
+  text-align: right;
+}
+
+.leadRow select {
+  width: 100%;
+  min-height: 74px;
+  padding: 0 12px;
+  color: #0f0f0f;
+  background: #f4f4f4;
+  border: 1px solid #dedede;
+  border-radius: 14px;
+  font-weight: 850;
+}
+
+.pitchHead {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.pitchHead span,
+.pitchSubject span,
+.sourceLinks span {
+  display: block;
+  color: #ff5a6d;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.pitchHead h3 {
+  margin: 5px 0 4px;
+  color: #ffffff;
+  font-size: 30px;
+  line-height: 1.05;
+}
+
+.pitchHead small {
+  display: block;
+  color: #b6b6b6;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.pitchScore {
+  display: inline-flex;
+  gap: 7px;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 11px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border-radius: 999px;
+}
+
+.pitchPanel p {
+  margin-bottom: 0;
+  color: #d4d4d4;
+  line-height: 1.5;
+}
+
+.leadBriefGrid {
+  display: grid;
+  grid-template-columns: 0.65fr 1fr 1fr;
+  gap: 8px;
+}
+
+.leadBriefGrid .stat {
+  background: #242424;
+}
+
+.leadBriefGrid .stat span {
+  color: #9e9e9e;
+}
+
+.leadBriefGrid .stat strong {
+  color: #ffffff;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.pitchTabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.pitchTabs button {
+  color: #ffffff;
+  background: #242424;
+}
+
+.pitchTabs button.selected {
+  color: #0f0f0f;
+  background: #ffffff;
+}
+
+.pitchSubject {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border-radius: 12px;
+}
+
+.pitchSubject strong {
+  font-size: 15px;
+  line-height: 1.25;
+}
+
+.pitchPreview {
+  max-height: 280px;
+  margin: 0;
+  overflow: auto;
+  padding: 14px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.pitchActions {
+  grid-template-columns: 1fr;
+}
+
+.pitchActions button {
+  color: #ffffff;
+  background: #ff0421;
+}
+
+.sourceLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  padding: 12px;
+  background: #242424;
+  border-radius: 12px;
+}
+
+.sourceLinks span {
+  width: 100%;
+}
+
+.sourceLinks a {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 9px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 900;
+  text-decoration: none;
+}
+
 .scannerAction {
   display: grid;
   gap: 8px;
@@ -2367,6 +2713,7 @@ select {
   .exportPackLayout,
   .automationLayout,
   .serviceLayerLayout,
+  .outreachLayout,
   .impactStrip,
   .packHero {
     grid-template-columns: 1fr;
@@ -2444,6 +2791,12 @@ select {
   .serviceActions,
   .serviceOfferCard,
   .serviceDetailGrid,
+  .outreachStats,
+  .outreachActions,
+  .leadRow,
+  .leadRow button,
+  .leadBriefGrid,
+  .pitchTabs,
   .artifactRow,
   .packGrid,
   .milestoneGrid,

@@ -169,6 +169,7 @@ The MVP should produce grant-review artifacts:
 - export pack containing Markdown, CSV, structured JSON, and a manifest-style JSON handoff package
 - automation runbook with report, export-pack, watchlist, source-audit, and scope-refresh jobs
 - service layer with client-ready package briefs, deliverables, acceptance criteria, and service JSON
+- outreach pipeline with protocol leads, status tracking, generated DM/email/follow-up pitches, CSV export and JSON export
 - chain-level TVL and fee summaries
 - watchlist of underperforming markets
 - 7d/30d trend reports
@@ -252,6 +253,38 @@ Each offer includes:
 - structured service JSON
 
 The layer is intentionally scoped to services that can be delivered from the available product outputs. If an offer depends on a selected export pack or a clean source audit, it is marked `Needs review` or `Blocked` instead of being presented as ready.
+
+## Outreach Pipeline
+
+The Outreach Pipeline turns scanner output into a practical lead list. It is not an automated spam system. It produces a prioritized workspace for manual outreach, with status tracking and copy-ready pitch variants.
+
+Current lead states:
+
+- New
+- Ready to contact
+- Contacted
+- Replied
+- Won
+- Lost
+
+Current pitch variants:
+
+- DM: short message for X, Discord, Telegram, or ecosystem chats
+- Email: longer business-development pitch with subject line
+- Follow-up: short second-touch message
+
+Each lead includes:
+
+- scanner score and health grade
+- recommended service package
+- suggested price range from the Service Layer
+- source-backed value signal
+- reason for outreach
+- next step
+- contact target guidance
+- public source links
+
+The current status board is browser-local. Exported CSV and JSON include the current in-session statuses, but long-term CRM persistence is a later backend or storage step.
 
 ## Initial Live Data Scope
 

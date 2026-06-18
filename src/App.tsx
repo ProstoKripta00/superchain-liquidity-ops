@@ -13,10 +13,13 @@ import {
   GitBranch,
   Layers3,
   LineChart,
+  Mail,
+  MessageSquare,
   Network,
   Radar,
   RefreshCcw,
   Route,
+  Send,
   ShieldCheck,
   SlidersHorizontal,
   Target,
@@ -31,6 +34,13 @@ import {
   type ExportPack,
   type ExportPackArtifactId,
 } from "./exportPack";
+import {
+  buildOutreachPipeline,
+  type LeadStatus,
+  type OutreachLead,
+  type OutreachPipeline,
+  type PitchVariantId,
+} from "./outreachPipeline";
 import { buildProtocolMiniReport } from "./reportGenerator";
 import {
   buildServiceLayer,
@@ -79,6 +89,15 @@ type ReportLibraryItem = {
 type ExportPackFeedbackAction = ExportPackArtifactId | "pack-json" | "handoff";
 type AutomationFeedbackAction = "run" | "copy" | "download";
 type ServiceFeedbackAction = "copy-brief" | "download-brief" | "json";
+type OutreachFeedbackAction = "pitch" | "csv" | "json";
+const leadStatuses: LeadStatus[] = [
+  "New",
+  "Ready to contact",
+  "Contacted",
+  "Replied",
+  "Won",
+  "Lost",
+];
 
 function App() {
   const [network, setNetwork] = useState<NetworkScope>("All");
@@ -86,9 +105,14 @@ function App() {
   const [selectedMarketId, setSelectedMarketId] = useState<string | null>(null);
   const [selectedProtocolId, setSelectedProtocolId] = useState<string | null>(null);
   const [selectedReportId, setSelectedReportId] = useState<string | null>(null);
+  const [selectedLeadId, setSelectedLeadId] = useState<string | null>(null);
+  const [selectedPitchId, setSelectedPitchId] = useState<PitchVariantId>("dm");
   const [selectedServiceOfferId, setSelectedServiceOfferId] = useState<
     ServiceOffer["id"] | null
   >(null);
+  const [leadStatusOverrides, setLeadStatusOverrides] = useState<
+    Partial<Record<string, LeadStatus>>
+  >({});
   const [copyFeedback, setCopyFeedback] = useState<{
     label: string;
     protocolId: string;
@@ -108,6 +132,10 @@ function App() {
   } | null>(null);
   const [serviceFeedback, setServiceFeedback] = useState<{
     action: ServiceFeedbackAction;
+    label: string;
+  } | null>(null);
+  const [outreachFeedback, setOutreachFeedback] = useState<{
+    action: OutreachFeedbackAction;
     label: string;
   } | null>(null);
   const [automationRunVersion, setAutomationRunVersion] = useState(0);
@@ -268,6 +296,32 @@ function App() {
     serviceLayer.offers.find((offer) => offer.id === selectedServiceOfferId) ??
     serviceLayer.offers.find((offer) => offer.id === serviceLayer.recommendedOfferId) ??
     serviceLayer.offers[0] ??
+    null;
+  const outreachPipeline = useMemo(
+    () =>
+      buildOutreachPipeline({
+        filteredMarkets,
+        network,
+        protocolScans,
+        serviceLayer,
+        statusOverrides: leadStatusOverrides,
+        target,
+        totals,
+      }),
+    [
+      filteredMarkets,
+      leadStatusOverrides,
+      network,
+      protocolScans,
+      serviceLayer,
+      target,
+      totals,
+    ],
+  );
+  const selectedLead =
+    outreachPipeline.leads.find((lead) => lead.id === selectedLeadId) ??
+    outreachPipeline.leads.find((lead) => lead.status === "Ready to contact") ??
+    outreachPipeline.leads[0] ??
     null;
 
   const chainRows = useMemo(
@@ -459,6 +513,56 @@ function App() {
     setTemporaryServiceFeedback("json", "Downloaded");
   };
 
+  const setTemporaryOutreachFeedback = (
+    action: OutreachFeedbackAction,
+    label: string,
+  ) => {
+    setOutreachFeedback({ action, label });
+
+    window.setTimeout(() => {
+      setOutreachFeedback((current) =>
+        current?.action === action ? null : current,
+      );
+    }, 1600);
+  };
+
+  const updateLeadStatus = (leadId: string, status: LeadStatus) => {
+    setLeadStatusOverrides((current) => ({
+      ...current,
+      [leadId]: status,
+    }));
+  };
+
+  const copyLeadPitch = async (lead: OutreachLead, pitchId: PitchVariantId) => {
+    const pitch = lead.pitches.find((item) => item.id === pitchId) ?? lead.pitches[0];
+    const text = [`Subject: ${pitch.subject}`, "", pitch.body].join("\n");
+
+    try {
+      await writeClipboardText(text);
+      setTemporaryOutreachFeedback("pitch", "Copied");
+    } catch {
+      setTemporaryOutreachFeedback("pitch", "Pitch ready");
+    }
+  };
+
+  const downloadOutreachCsv = (pipeline: OutreachPipeline) => {
+    downloadTextFile(
+      "superchain-outreach-leads.csv",
+      pipeline.leadsCsv,
+      "text/csv;charset=utf-8",
+    );
+    setTemporaryOutreachFeedback("csv", "Downloaded");
+  };
+
+  const downloadOutreachJson = (pipeline: OutreachPipeline) => {
+    downloadTextFile(
+      "superchain-outreach-pipeline.json",
+      pipeline.pipelineJson,
+      "application/json;charset=utf-8",
+    );
+    setTemporaryOutreachFeedback("json", "Downloaded");
+  };
+
   return (
     <div className="app">
       <header className="opHeader">
@@ -475,6 +579,7 @@ function App() {
           <a href="#export-pack">Export pack</a>
           <a href="#automation">Automation</a>
           <a href="#service-layer">Service layer</a>
+          <a href="#outreach">Outreach</a>
           <a href="#markets">Live markets</a>
           <a href="#networks">Chain metrics</a>
           <a href="#reviewer-pack">Reviewer pack</a>
@@ -712,6 +817,20 @@ function App() {
           onDownloadJson={downloadServiceJson}
           onSelectOffer={setSelectedServiceOfferId}
           selectedOffer={selectedServiceOffer}
+        />
+
+        <OutreachPipelineSection
+          feedback={outreachFeedback}
+          leadStatuses={leadStatuses}
+          onCopyPitch={(lead, pitchId) => void copyLeadPitch(lead, pitchId)}
+          onDownloadCsv={downloadOutreachCsv}
+          onDownloadJson={downloadOutreachJson}
+          onSelectLead={setSelectedLeadId}
+          onSelectPitch={setSelectedPitchId}
+          onUpdateLeadStatus={updateLeadStatus}
+          pipeline={outreachPipeline}
+          selectedLead={selectedLead}
+          selectedPitchId={selectedPitchId}
         />
 
         <section className="workbench" id="markets">
@@ -1269,6 +1388,178 @@ function ServiceLayerSection({
             </div>
           ) : (
             <div className="emptyState">Select a service offer to inspect the client package.</div>
+          )}
+        </aside>
+      </div>
+    </section>
+  );
+}
+
+function OutreachPipelineSection({
+  feedback,
+  leadStatuses,
+  onCopyPitch,
+  onDownloadCsv,
+  onDownloadJson,
+  onSelectLead,
+  onSelectPitch,
+  onUpdateLeadStatus,
+  pipeline,
+  selectedLead,
+  selectedPitchId,
+}: {
+  feedback: {
+    action: OutreachFeedbackAction;
+    label: string;
+  } | null;
+  leadStatuses: LeadStatus[];
+  onCopyPitch: (lead: OutreachLead, pitchId: PitchVariantId) => void;
+  onDownloadCsv: (pipeline: OutreachPipeline) => void;
+  onDownloadJson: (pipeline: OutreachPipeline) => void;
+  onSelectLead: (leadId: string) => void;
+  onSelectPitch: (pitchId: PitchVariantId) => void;
+  onUpdateLeadStatus: (leadId: string, status: LeadStatus) => void;
+  pipeline: OutreachPipeline;
+  selectedLead: OutreachLead | null;
+  selectedPitchId: PitchVariantId;
+}) {
+  const feedbackFor = (action: OutreachFeedbackAction) =>
+    feedback?.action === action ? feedback.label : null;
+  const selectedPitch =
+    selectedLead?.pitches.find((pitch) => pitch.id === selectedPitchId) ??
+    selectedLead?.pitches[0] ??
+    null;
+
+  return (
+    <section className="outreachSection" id="outreach">
+      <div className="sectionHeader">
+        <div>
+          <p className="sectionKicker">Outreach Pipeline</p>
+          <h2>Find protocol leads, generate pitches and export the list</h2>
+        </div>
+        <span>{pipeline.readyCount} ready</span>
+      </div>
+
+      <div className="outreachLayout">
+        <article className="outreachLeadPanel">
+          <div className="outreachLeadTitle">
+            <span>Lead export</span>
+            <h3>{pipeline.summary}</h3>
+            <small>{new Date(pipeline.generatedAt).toLocaleString()}</small>
+          </div>
+
+          <div className="outreachStats">
+            <Stat label="Scope" value={pipeline.scopeLabel} />
+            <Stat label="Leads" value={String(pipeline.leadCount)} />
+            <Stat label="Ready" value={String(pipeline.readyCount)} />
+            <Stat label="Offers used" value={String(pipeline.selectedOfferCount)} />
+          </div>
+
+          <div className="outreachActions">
+            <button onClick={() => onDownloadCsv(pipeline)} disabled={pipeline.leads.length === 0}>
+              <ArrowDownToLine size={17} />
+              {feedbackFor("csv") ?? "Download leads CSV"}
+            </button>
+            <button onClick={() => onDownloadJson(pipeline)} disabled={pipeline.leads.length === 0}>
+              <DatabaseZap size={17} />
+              {feedbackFor("json") ?? "Download pipeline JSON"}
+            </button>
+          </div>
+
+          <div className="leadList">
+            {pipeline.leads.length > 0 ? (
+              pipeline.leads.map((lead) => (
+                <article
+                  className={`leadRow ${lead.id === selectedLead?.id ? "selected" : ""}`}
+                  key={lead.id}
+                >
+                  <button onClick={() => onSelectLead(lead.id)}>
+                    <span className="leadPriority">{lead.priority}</span>
+                    <span>
+                      <strong>{lead.protocolName}</strong>
+                      <small>{lead.valueSignal}</small>
+                    </span>
+                    <em>{lead.score}</em>
+                  </button>
+                  <select
+                    value={lead.status}
+                    onChange={(event) =>
+                      onUpdateLeadStatus(lead.id, event.target.value as LeadStatus)
+                    }
+                  >
+                    {leadStatuses.map((status) => (
+                      <option key={status}>{status}</option>
+                    ))}
+                  </select>
+                </article>
+              ))
+            ) : (
+              <div className="emptyState">No scanner leads are available yet.</div>
+            )}
+          </div>
+        </article>
+
+        <aside className="pitchPanel">
+          {selectedLead && selectedPitch ? (
+            <>
+              <div className="pitchHead">
+                <div>
+                  <span>{selectedLead.status}</span>
+                  <h3>{selectedLead.protocolName}</h3>
+                  <small>{selectedLead.recommendedOfferName} / {selectedLead.priceLabel}</small>
+                </div>
+                <div className="pitchScore">
+                  <Send size={17} />
+                  <strong>{selectedLead.grade}</strong>
+                </div>
+              </div>
+
+              <p>{selectedLead.reason}</p>
+
+              <div className="leadBriefGrid">
+                <Stat label="Segment" value={selectedLead.segment} />
+                <Stat label="Contact target" value={selectedLead.contactTarget} />
+                <Stat label="Next step" value={selectedLead.nextStep} />
+              </div>
+
+              <div className="pitchTabs">
+                {selectedLead.pitches.map((pitch) => (
+                  <button
+                    className={pitch.id === selectedPitch.id ? "selected" : ""}
+                    key={pitch.id}
+                    onClick={() => onSelectPitch(pitch.id)}
+                  >
+                    {pitch.id === "email" ? <Mail size={16} /> : <MessageSquare size={16} />}
+                    {pitch.label}
+                  </button>
+                ))}
+              </div>
+
+              <div className="pitchSubject">
+                <span>Subject</span>
+                <strong>{selectedPitch.subject}</strong>
+              </div>
+
+              <pre className="pitchPreview">{selectedPitch.body}</pre>
+
+              <div className="pitchActions">
+                <button onClick={() => onCopyPitch(selectedLead, selectedPitch.id)}>
+                  <FileCheck2 size={17} />
+                  {feedbackFor("pitch") ?? "Copy pitch"}
+                </button>
+              </div>
+
+              <div className="sourceLinks">
+                <span>Source links</span>
+                {selectedLead.sourceUrls.slice(0, 4).map((url) => (
+                  <a href={url} key={url} target="_blank" rel="noreferrer">
+                    Open source <ExternalLink size={14} />
+                  </a>
+                ))}
+              </div>
+            </>
+          ) : (
+            <div className="emptyState">Select a lead to generate outreach copy.</div>
           )}
         </aside>
       </div>
