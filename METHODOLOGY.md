@@ -168,6 +168,7 @@ The MVP should produce grant-review artifacts:
 - reports workspace for selecting, previewing, copying, and downloading generated reports
 - public sample reports for client-facing proof-of-work across diagnostic, monitoring, and grant-evidence services
 - offer / pricing page with fixed-scope packages, price ranges, timelines, deliverables, and buyer brief actions
+- launch desk with proposal, onboarding email, delivery checklist, buyer FAQ, terms, and sales-kit export
 - export pack containing Markdown, CSV, structured JSON, and a manifest-style JSON handoff package
 - automation runbook with report, export-pack, watchlist, source-audit, and scope-refresh jobs
 - service layer with client-ready package briefs, deliverables, acceptance criteria, and service JSON
@@ -249,6 +250,35 @@ Each package includes:
 - pricing sheet export
 
 The pricing page is not a payment processor and does not create a binding contract. It is a manual sales page designed to make the service understandable before outreach starts. The pricing ranges are intentionally fixed-scope so the seller can avoid custom unpaid analysis before a client confirms interest.
+
+## Launch Desk
+
+The Launch Desk is the final sales-readiness layer. It combines the selected service offer, sample report, export pack, outreach lead, and service-layer state into a single closing and delivery workspace.
+
+Current outputs:
+
+- sales-readiness score
+- launch status: `Launch ready`, `Needs review`, or `Blocked`
+- proposal Markdown
+- onboarding email
+- delivery checklist Markdown
+- sales-kit JSON
+- buyer FAQ
+- terms and delivery boundaries
+- client intake questions
+
+The readiness score is operational, not legal or financial. It checks whether the current workflow has enough proof and delivery structure to ask for payment without inventing missing evidence.
+
+Readiness inputs:
+
+- selected sellable package
+- public proof sample
+- export pack availability
+- outreach lead route
+- lead/contact enrichment status
+- service-layer readiness
+
+The Launch Desk is intentionally manual. It does not send messages, collect payment, or sign contracts. Its purpose is to make the project usable for a real first client: copy the proposal, confirm scope, agree payment method outside the app, deliver the report and exports, then save follow-up state in the CRM.
 
 ## Export Pack
 

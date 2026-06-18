@@ -1585,6 +1585,283 @@ select {
   background: #ff0421;
 }
 
+.launchDeskSection {
+  margin-bottom: 20px;
+  padding: 22px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border: 1px solid #2f2f2f;
+  border-radius: 22px;
+  box-shadow: 0 16px 40px rgba(15, 15, 15, 0.12);
+}
+
+.launchDeskSection .sectionHeader {
+  color: #ffffff;
+}
+
+.launchDeskSection .sectionKicker {
+  color: #ff5a6d;
+}
+
+.launchDeskSection .sectionHeader span {
+  color: #0f0f0f;
+  background: #ffffff;
+}
+
+.launchDeskLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 470px;
+  gap: 14px;
+  align-items: start;
+}
+
+.launchLead,
+.launchChecklistPanel {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  padding: 18px;
+  border-radius: 16px;
+}
+
+.launchLead {
+  color: #0f0f0f;
+  background: #ffffff;
+}
+
+.launchChecklistPanel {
+  color: #ffffff;
+  background: #181818;
+}
+
+.launchTitle {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: start;
+}
+
+.launchTitle span,
+.launchPanelHeader span,
+.launchIntake span,
+.launchProofGrid span {
+  display: block;
+  color: #ff0421;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.launchTitle h3 {
+  grid-column: 1;
+  margin: 4px 0 0;
+  font-size: 54px;
+  line-height: 0.95;
+}
+
+.launchStatus {
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border-radius: 999px;
+  font-size: 12px;
+  line-height: 1.1;
+  text-align: center;
+}
+
+.launchStatus.launch-ready {
+  background: #ff0421;
+}
+
+.launchStatus.blocked {
+  background: #777777;
+}
+
+.launchLead p {
+  margin-bottom: 0;
+  color: #4d4d4d;
+  line-height: 1.5;
+}
+
+.launchStats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.launchStats .stat {
+  background: #f4f4f4;
+}
+
+.launchStats .stat strong {
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.launchActions {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.launchActions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 10px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border: 0;
+  border-radius: 12px;
+  font-weight: 950;
+  line-height: 1.15;
+}
+
+.launchActions button:first-child {
+  background: #ff0421;
+}
+
+.launchProposalPreview {
+  max-height: 360px;
+  margin: 0;
+  overflow: auto;
+  padding: 16px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.launchPanelHeader strong {
+  display: block;
+  margin-top: 5px;
+  font-size: 24px;
+  line-height: 1.08;
+}
+
+.launchChecklist {
+  display: grid;
+  gap: 8px;
+}
+
+.launchCheck {
+  display: grid;
+  gap: 5px;
+  padding: 12px;
+  background: #242424;
+  border-left: 5px solid #ffbe00;
+  border-radius: 12px;
+}
+
+.launchCheck.ready {
+  border-left-color: #ff0421;
+}
+
+.launchCheck.blocked {
+  border-left-color: #777777;
+}
+
+.launchCheck span {
+  color: #ff5a6d;
+  font-size: 10px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.launchCheck strong {
+  font-size: 14px;
+  line-height: 1.25;
+}
+
+.launchCheck p {
+  margin: 0;
+  color: #cfcfcf;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.launchIntake {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border-radius: 12px;
+}
+
+.launchIntake strong {
+  display: block;
+  padding: 9px;
+  background: #f4f4f4;
+  border-radius: 9px;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.launchProofGrid {
+  display: grid;
+  grid-template-columns: 0.8fr 1fr 1fr;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.launchProofGrid section {
+  min-width: 0;
+  padding: 16px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border-radius: 16px;
+}
+
+.launchProofGrid strong,
+.launchProofGrid small {
+  display: block;
+}
+
+.launchProofGrid strong {
+  margin-top: 8px;
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+.launchProofGrid small {
+  margin-top: 7px;
+  color: #5a5a5a;
+  font-size: 12px;
+  font-weight: 850;
+  line-height: 1.35;
+}
+
+.launchProofGrid details {
+  padding: 10px 0;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+.launchProofGrid details:last-child {
+  border-bottom: 0;
+}
+
+.launchProofGrid summary {
+  cursor: pointer;
+  font-weight: 950;
+  line-height: 1.25;
+}
+
+.launchProofGrid details p {
+  margin: 8px 0 0;
+  color: #4d4d4d;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
 .exportPackSection {
   margin-bottom: 20px;
   padding: 22px;
@@ -3466,6 +3743,8 @@ select {
   .sampleReportsLayout,
   .pricingLead,
   .pricingGrid,
+  .launchDeskLayout,
+  .launchProofGrid,
   .exportPackLayout,
   .automationLayout,
   .serviceLayerLayout,
@@ -3545,6 +3824,9 @@ select {
   .pricingMiniStats,
   .pricingActions,
   .pricingCardActions,
+  .launchTitle,
+  .launchStats,
+  .launchActions,
   .exportPackStats,
   .exportPackActions,
   .automationStats,

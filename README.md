@@ -32,6 +32,7 @@ What works today:
 - reports workspace with scanner-selected protocol reports, Markdown preview, copy, and download actions
 - public sample reports for client-facing proof-of-work examples across diagnostic, monitoring, and grant-evidence services
 - offer / pricing page with fixed-scope service packages, price ranges, timelines, and buyer brief actions
+- launch desk with proposal, onboarding email, delivery checklist, buyer FAQ, terms, and full sales-kit JSON export
 - export pack builder with report Markdown, protocol CSV, scope CSV, summary JSON, and full JSON handoff pack
 - automation workspace that turns live scanner, reports, export pack and source audit state into a repeatable runbook
 - service layer that packages analytics output into sellable diagnostic, monitoring, and grant evidence offers
@@ -56,15 +57,16 @@ What works today:
 8. Copy a sample report, download the `.md`, or download the sample JSON bundle.
 9. Open `Pricing` and choose the package that matches the client need.
 10. Copy the pricing sheet or buyer brief for outreach.
-11. Open `Export Pack` and download the full JSON handoff pack or individual artifacts.
-12. Open `Automation`, run the workflow and download the generated runbook.
-13. Open `Service Layer`, select a client package, copy the brief, or download the service JSON.
-14. Open `Outreach`, select a protocol lead, enrich the contact route, update CRM notes/follow-up dates, review pitches, and export leads.
-15. Filter to `OP Mainnet` or `Base`.
-16. Review DEX market rows for 24h volume, 30d volume, 30d fees, and health labels.
-17. Open `Source audit` and verify the public endpoints.
-18. Export the CSV report.
-19. Compare the exported evidence against the target outcomes: DEX activity, fee generation, and market health.
+11. Open `Launch Desk` and export the final proposal, onboarding email, delivery checklist, or sales-kit JSON.
+12. Open `Export Pack` and download the full JSON handoff pack or individual artifacts.
+13. Open `Automation`, run the workflow and download the generated runbook.
+14. Open `Service Layer`, select a client package, copy the brief, or download the service JSON.
+15. Open `Outreach`, select a protocol lead, enrich the contact route, update CRM notes/follow-up dates, review pitches, and export leads.
+16. Filter to `OP Mainnet` or `Base`.
+17. Review DEX market rows for 24h volume, 30d volume, 30d fees, and health labels.
+18. Open `Source audit` and verify the public endpoints.
+19. Export the CSV report.
+20. Compare the exported evidence against the target outcomes: DEX activity, fee generation, and market health.
 
 ## Data Sources
 
@@ -93,6 +95,7 @@ Unavailable values are shown as unavailable. The app does not silently substitut
 | Reports workspace | Scanner-selected protocol reports with queue, preview, copy, and download actions | Live |
 | Public sample reports | Client-ready proof-of-work samples with Markdown and JSON export | Live |
 | Offer / pricing page | Fixed-scope service packages with price ranges, timelines, deliverables, and buyer brief copy | Live |
+| Launch desk | Sales proposal, onboarding email, delivery checklist, buyer FAQ, terms, and sales-kit export | Live |
 | Export pack | JSON handoff pack plus Markdown, CSV, and structured summary artifacts | Live |
 | Automation | Browser-side job queue and Markdown runbook for report, export, watchlist, and source-audit workflows | Live |
 | Service layer | Client package builder with suggested scopes, deliverables, acceptance criteria, brief export, and service JSON | Live |
@@ -130,7 +133,7 @@ Live data adapters
 Data engine: normalization, ratios, weighted trends, market scoring
         |
         v
-Protocol scanner, protocol health score, reports workspace, public sample reports, offer / pricing page, export pack, automation runbook, service layer, outreach pipeline, contact enrichment, persistent CRM, mini reports, scope totals, chain coverage, source audit, CSV export
+Protocol scanner, protocol health score, reports workspace, public sample reports, offer / pricing page, launch desk, export pack, automation runbook, service layer, outreach pipeline, contact enrichment, persistent CRM, mini reports, scope totals, chain coverage, source audit, CSV export
         |
         v
 Dashboard state and reviewer workflow
@@ -167,6 +170,7 @@ src/sampleReports.ts         Public proof-of-work sample reports for client-faci
 src/exportPack.ts            Export pack manifest, CSV generation and JSON handoff package
 src/automation.ts            Browser-side automation job queue and Markdown runbook generator
 src/serviceLayer.ts          Sellable service offer, pricing page data, client brief and service JSON generation
+src/salesKit.ts              Launch desk proposal, onboarding email, checklist, FAQ, terms and sales-kit export
 src/outreachPipeline.ts      Scanner-derived leads, contact enrichment, status defaults, pitch generation and lead exports
 src/crmStorage.ts            LocalStorage persistence for outreach lead CRM and contact enrichment records
 src/sources.ts               Supported chains and public endpoint URLs

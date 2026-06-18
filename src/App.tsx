@@ -59,6 +59,10 @@ import {
   type SampleReportId,
 } from "./sampleReports";
 import {
+  buildSalesKit,
+  type SalesKit,
+} from "./salesKit";
+import {
   buildServiceLayer,
   type ServiceLayer,
   type ServiceOffer,
@@ -103,6 +107,12 @@ type ReportLibraryItem = {
 };
 
 type SampleReportFeedbackAction = "copy" | "download" | "json";
+type LaunchFeedbackAction =
+  | "copy-proposal"
+  | "download-proposal"
+  | "copy-email"
+  | "download-checklist"
+  | "download-json";
 type ExportPackFeedbackAction = ExportPackArtifactId | "pack-json" | "handoff";
 type AutomationFeedbackAction = "run" | "copy" | "download";
 type ServiceFeedbackAction =
@@ -148,6 +158,10 @@ function App() {
     action: SampleReportFeedbackAction;
     label: string;
     reportId?: SampleReportId;
+  } | null>(null);
+  const [launchFeedback, setLaunchFeedback] = useState<{
+    action: LaunchFeedbackAction;
+    label: string;
   } | null>(null);
   const [exportPackFeedback, setExportPackFeedback] = useState<{
     action: ExportPackFeedbackAction;
@@ -363,6 +377,25 @@ function App() {
     outreachPipeline.leads.find((lead) => lead.status === "Ready to contact") ??
     outreachPipeline.leads[0] ??
     null;
+  const salesKit = useMemo(
+    () =>
+      buildSalesKit({
+        outreachPipeline,
+        selectedExportPack,
+        selectedLead,
+        selectedOffer: selectedServiceOffer,
+        selectedSampleReport,
+        serviceLayer,
+      }),
+    [
+      outreachPipeline,
+      selectedExportPack,
+      selectedLead,
+      selectedSampleReport,
+      selectedServiceOffer,
+      serviceLayer,
+    ],
+  );
 
   const chainRows = useMemo(
     () => buildChainCoverageRows(chains, network),
@@ -468,6 +501,64 @@ function App() {
       "application/json;charset=utf-8",
     );
     setTemporarySampleReportFeedback("json", "Downloaded");
+  };
+
+  const setTemporaryLaunchFeedback = (
+    action: LaunchFeedbackAction,
+    label: string,
+  ) => {
+    setLaunchFeedback({ action, label });
+
+    window.setTimeout(() => {
+      setLaunchFeedback((current) =>
+        current?.action === action ? null : current,
+      );
+    }, 1600);
+  };
+
+  const copyLaunchProposal = async (kit: SalesKit) => {
+    try {
+      await writeClipboardText(kit.proposalMarkdown);
+      setTemporaryLaunchFeedback("copy-proposal", "Copied");
+    } catch {
+      setTemporaryLaunchFeedback("copy-proposal", "Proposal ready");
+    }
+  };
+
+  const downloadLaunchProposal = (kit: SalesKit) => {
+    downloadTextFile(
+      "superchain-client-proposal.md",
+      kit.proposalMarkdown,
+      "text/markdown;charset=utf-8",
+    );
+    setTemporaryLaunchFeedback("download-proposal", "Downloaded");
+  };
+
+  const copyOnboardingEmail = async (kit: SalesKit) => {
+    try {
+      await writeClipboardText(kit.onboardingEmail);
+      setTemporaryLaunchFeedback("copy-email", "Copied");
+    } catch {
+      setTemporaryLaunchFeedback("copy-email", "Email ready");
+    }
+  };
+
+  const downloadDeliveryChecklist = (kit: SalesKit) => {
+    downloadTextFile(
+      "superchain-delivery-checklist.md",
+      kit.deliveryChecklistMarkdown,
+      "text/markdown;charset=utf-8",
+    );
+    setTemporaryLaunchFeedback("download-checklist", "Downloaded");
+  };
+
+  const downloadSalesKitJson = (kit: SalesKit) => {
+    downloadTextFile(
+      "superchain-sales-kit.json",
+      kit.salesKitJson,
+      "application/json;charset=utf-8",
+    );
+    setTemporaryLaunchFeedback("download-json", "Downloaded");
   };
 
   const setTemporaryExportPackFeedback = (
@@ -720,6 +811,7 @@ function App() {
           <a href="#reports">Reports</a>
           <a href="#sample-reports">Sample reports</a>
           <a href="#pricing">Pricing</a>
+          <a href="#launch-desk">Launch desk</a>
           <a href="#export-pack">Export pack</a>
           <a href="#automation">Automation</a>
           <a href="#service-layer">Service layer</a>
@@ -950,6 +1042,16 @@ function App() {
           onDownloadPricing={() => downloadPricingSheet(serviceLayer)}
           onSelectOffer={setSelectedServiceOfferId}
           selectedOffer={selectedServiceOffer}
+        />
+
+        <LaunchDeskSection
+          feedback={launchFeedback}
+          kit={salesKit}
+          onCopyEmail={() => void copyOnboardingEmail(salesKit)}
+          onCopyProposal={() => void copyLaunchProposal(salesKit)}
+          onDownloadChecklist={() => downloadDeliveryChecklist(salesKit)}
+          onDownloadJson={() => downloadSalesKitJson(salesKit)}
+          onDownloadProposal={() => downloadLaunchProposal(salesKit)}
         />
 
         <ExportPackSection
@@ -1337,6 +1439,140 @@ function OfferPricingSection({
             </article>
           );
         })}
+      </div>
+    </section>
+  );
+}
+
+function LaunchDeskSection({
+  feedback,
+  kit,
+  onCopyEmail,
+  onCopyProposal,
+  onDownloadChecklist,
+  onDownloadJson,
+  onDownloadProposal,
+}: {
+  feedback: {
+    action: LaunchFeedbackAction;
+    label: string;
+  } | null;
+  kit: SalesKit;
+  onCopyEmail: () => void;
+  onCopyProposal: () => void;
+  onDownloadChecklist: () => void;
+  onDownloadJson: () => void;
+  onDownloadProposal: () => void;
+}) {
+  const feedbackFor = (action: LaunchFeedbackAction) =>
+    feedback?.action === action ? feedback.label : null;
+  const proposalPreview = kit.proposalMarkdown.split("\n").slice(0, 30).join("\n");
+
+  return (
+    <section className="launchDeskSection" id="launch-desk">
+      <div className="sectionHeader">
+        <div>
+          <p className="sectionKicker">Launch Desk</p>
+          <h2>Final sales kit for closing and delivering the first client</h2>
+        </div>
+        <span>{kit.status}</span>
+      </div>
+
+      <div className="launchDeskLayout">
+        <article className="launchLead">
+          <div className="launchTitle">
+            <span>Readiness score</span>
+            <h3>{kit.readinessScore}/100</h3>
+            <strong className={`launchStatus ${launchStatusClass(kit.status)}`}>
+              {kit.status}
+            </strong>
+          </div>
+
+          <p>{kit.summary}</p>
+
+          <div className="launchStats">
+            <Stat label="Package" value={kit.packageName} />
+            <Stat label="Price" value={kit.priceLabel} />
+            <Stat label="Timeline" value={kit.timeline} />
+            <Stat label="Target" value={kit.targetProtocol} />
+          </div>
+
+          <div className="launchActions">
+            <button onClick={onCopyProposal}>
+              <FileCheck2 size={17} />
+              {feedbackFor("copy-proposal") ?? "Copy proposal"}
+            </button>
+            <button onClick={onDownloadProposal}>
+              <ArrowDownToLine size={17} />
+              {feedbackFor("download-proposal") ?? "Download proposal"}
+            </button>
+            <button onClick={onCopyEmail}>
+              <Mail size={17} />
+              {feedbackFor("copy-email") ?? "Copy onboarding email"}
+            </button>
+            <button onClick={onDownloadChecklist}>
+              <Route size={17} />
+              {feedbackFor("download-checklist") ?? "Download checklist"}
+            </button>
+            <button onClick={onDownloadJson}>
+              <DatabaseZap size={17} />
+              {feedbackFor("download-json") ?? "Download sales JSON"}
+            </button>
+          </div>
+
+          <pre className="launchProposalPreview">{proposalPreview}</pre>
+        </article>
+
+        <aside className="launchChecklistPanel">
+          <div className="launchPanelHeader">
+            <span>Launch checks</span>
+            <strong>What must be true before asking for money</strong>
+          </div>
+
+          <div className="launchChecklist">
+            {kit.checklist.map((item) => (
+              <article
+                className={`launchCheck ${checklistStatusClass(item.status)}`}
+                key={item.id}
+              >
+                <span>{item.status}</span>
+                <strong>{item.title}</strong>
+                <p>{item.detail}</p>
+              </article>
+            ))}
+          </div>
+
+          <div className="launchIntake">
+            <span>Client intake</span>
+            {kit.intakeQuestions.map((question) => (
+              <strong key={question}>{question}</strong>
+            ))}
+          </div>
+        </aside>
+      </div>
+
+      <div className="launchProofGrid">
+        <section>
+          <span>Selected proof</span>
+          <strong>{kit.sampleReportTitle}</strong>
+          <small>{kit.exportPackTitle}</small>
+          <small>{kit.targetLead}</small>
+        </section>
+        <section>
+          <span>Buyer FAQ</span>
+          {kit.buyerFaq.map((item) => (
+            <details key={item.question}>
+              <summary>{item.question}</summary>
+              <p>{item.answer}</p>
+            </details>
+          ))}
+        </section>
+        <section>
+          <span>Terms boundary</span>
+          {kit.terms.map((term) => (
+            <strong key={term}>{term}</strong>
+          ))}
+        </section>
       </div>
     </section>
   );
@@ -2583,6 +2819,14 @@ function formatOptionalPct(value: number | null) {
 }
 
 function serviceStatusClass(value: ServiceOffer["status"]) {
+  return value.toLowerCase().replace(/\s+/g, "-");
+}
+
+function launchStatusClass(value: SalesKit["status"]) {
+  return value.toLowerCase().replace(/\s+/g, "-");
+}
+
+function checklistStatusClass(value: SalesKit["checklist"][number]["status"]) {
   return value.toLowerCase().replace(/\s+/g, "-");
 }
 
