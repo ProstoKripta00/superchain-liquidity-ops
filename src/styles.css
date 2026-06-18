@@ -2128,6 +2128,420 @@ select {
   line-height: 1.35;
 }
 
+.intakeFormSection {
+  margin-bottom: 20px;
+  padding: 22px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border: 1px solid #2f2f2f;
+  border-radius: 22px;
+  box-shadow: 0 16px 40px rgba(15, 15, 15, 0.12);
+}
+
+.intakeFormSection .sectionHeader {
+  color: #ffffff;
+}
+
+.intakeFormSection .sectionKicker {
+  color: #ff5a6d;
+}
+
+.intakeFormSection .sectionHeader span {
+  color: #0f0f0f;
+  background: #ffffff;
+}
+
+.intakeLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 500px;
+  gap: 14px;
+  align-items: start;
+}
+
+.intakeLead,
+.intakeFormPanel {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  padding: 18px;
+  border-radius: 16px;
+}
+
+.intakeLead {
+  color: #0f0f0f;
+  background: #ffffff;
+}
+
+.intakeFormPanel {
+  color: #ffffff;
+  background: #181818;
+}
+
+.intakeTitle span,
+.intakeMissing span,
+.intakeRecordHead span,
+.intakeFormHead span,
+.intakeChoiceGroup span,
+.intakeNextSteps span {
+  display: block;
+  color: #ff0421;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.intakeTitle h3 {
+  margin: 8px 0 6px;
+  font-size: 32px;
+  line-height: 1.05;
+}
+
+.intakeTitle small {
+  color: #5a5a5a;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.intakeStats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.intakeStats .stat {
+  background: #f4f4f4;
+}
+
+.intakeStats .stat strong {
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.intakeMissing {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  padding: 12px;
+  background: #fff6d8;
+  border: 1px solid #ffe29d;
+  border-radius: 12px;
+}
+
+.intakeMissing strong {
+  padding: 8px 10px;
+  color: #6b4400;
+  background: #ffe6a8;
+  border-radius: 999px;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.intakeReady {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 12px;
+  color: #0f0f0f;
+  background: #d9f8ec;
+  border: 1px solid #b8ecd9;
+  border-radius: 12px;
+}
+
+.intakeReady svg {
+  color: #00a876;
+}
+
+.intakeReady strong {
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.intakeActions {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.intakeActions button,
+.intakeIssueLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 10px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border: 0;
+  border-radius: 12px;
+  font-weight: 950;
+  line-height: 1.15;
+  text-align: center;
+  text-decoration: none;
+}
+
+.intakeActions button:first-child {
+  background: #ff0421;
+}
+
+.intakeActions button:disabled {
+  cursor: not-allowed;
+  color: #7d7d7d;
+  background: #eeeeee;
+}
+
+.intakeIssueLink {
+  background: #ff0421;
+}
+
+.intakePreview {
+  max-height: 360px;
+  margin: 0;
+  overflow: auto;
+  padding: 16px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.intakeRecordPanel {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  background: #f7f7f7;
+  border: 1px solid #e6e6e6;
+  border-radius: 14px;
+}
+
+.intakeRecordHead {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.intakeRecordHead button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 36px;
+  padding: 0 11px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border: 0;
+  border-radius: 999px;
+  font-weight: 950;
+}
+
+.intakeRecordHead button:disabled {
+  color: #777777;
+  background: #e9e9e9;
+}
+
+.intakeRecordList {
+  display: grid;
+  gap: 8px;
+}
+
+.intakeRecord {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.intakeRecord > button:first-child {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 7px 10px;
+  align-items: center;
+  min-width: 0;
+  padding: 10px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border: 1px solid #dddddd;
+  border-radius: 12px;
+  text-align: left;
+}
+
+.intakeRecord.selected > button:first-child {
+  border-color: #ff0421;
+  box-shadow: inset 4px 0 0 #ff0421;
+}
+
+.intakeRecord strong,
+.intakeRecord small {
+  display: block;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.intakeRecord small {
+  grid-column: 2;
+  color: #6a6a6a;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.intakeStatus {
+  display: inline-flex;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 9px;
+  color: #ffffff;
+  background: #777777;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.intakeStatus.ready {
+  background: #ff0421;
+}
+
+.intakeStatus.needs-scope {
+  color: #6b4400;
+  background: #ffe29d;
+}
+
+.intakeDelete {
+  min-width: 74px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border: 0;
+  border-radius: 12px;
+  font-weight: 950;
+}
+
+.intakeFormHead {
+  display: flex;
+  gap: 12px;
+  align-items: start;
+  justify-content: space-between;
+}
+
+.intakeFormHead strong {
+  display: block;
+  margin-top: 5px;
+  font-size: 24px;
+  line-height: 1.08;
+}
+
+.intakeFormHead button {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 7px;
+  min-height: 38px;
+  padding: 0 12px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border: 0;
+  border-radius: 999px;
+  font-weight: 950;
+}
+
+.intakeFields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.intakeFields label {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  color: #bdbdbd;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.intakeFields input,
+.intakeFields select,
+.intakeFields textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 12px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border: 1px solid #dddddd;
+  border-radius: 12px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 850;
+  text-transform: none;
+}
+
+.intakeFields textarea {
+  min-height: 116px;
+  padding: 12px;
+  resize: vertical;
+  line-height: 1.45;
+}
+
+.intakeWide {
+  grid-column: 1 / -1;
+}
+
+.intakePublicFlag {
+  align-content: end;
+}
+
+.intakePublicFlag input {
+  width: 28px;
+  min-height: 28px;
+  padding: 0;
+  accent-color: #ff0421;
+}
+
+.intakeChoiceGroup,
+.intakeNextSteps {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  background: #242424;
+  border-radius: 12px;
+}
+
+.intakeChoiceGroup > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.intakeChoiceGroup button {
+  min-height: 36px;
+  padding: 0 12px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border: 1px solid #4a4a4a;
+  border-radius: 999px;
+  font-weight: 950;
+}
+
+.intakeChoiceGroup button.selected {
+  color: #ffffff;
+  background: #ff0421;
+  border-color: #ff0421;
+}
+
+.intakeNextSteps strong {
+  display: block;
+  padding: 9px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border-radius: 9px;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
 .exportPackSection {
   margin-bottom: 20px;
   padding: 22px;
@@ -4012,6 +4426,7 @@ select {
   .launchDeskLayout,
   .launchProofGrid,
   .requestLayout,
+  .intakeLayout,
   .exportPackLayout,
   .automationLayout,
   .serviceLayerLayout,
@@ -4097,6 +4512,11 @@ select {
   .requestMetaGrid,
   .requestActions,
   .requestFields,
+  .intakeStats,
+  .intakeActions,
+  .intakeFields,
+  .intakeRecord,
+  .intakeRecord > button:first-child,
   .exportPackStats,
   .exportPackActions,
   .automationStats,
@@ -4137,6 +4557,19 @@ select {
 
   .requestFormHead {
     display: grid;
+  }
+
+  .intakeFormSection .sectionHeader span {
+    width: fit-content;
+  }
+
+  .intakeFormHead,
+  .intakeRecordHead {
+    display: grid;
+  }
+
+  .intakeRecord small {
+    grid-column: auto;
   }
 
   .sampleReportBadge {

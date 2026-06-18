@@ -41,6 +41,25 @@ import {
   type ExportPackArtifactId,
 } from "./exportPack";
 import {
+  INTAKE_BUDGETS,
+  INTAKE_CHAIN_OPTIONS,
+  INTAKE_DECISIONS,
+  INTAKE_DELIVERABLE_FORMATS,
+  INTAKE_METRIC_OPTIONS,
+  buildDefaultIntakeForm,
+  buildIntakePack,
+  loadIntakeRecords,
+  recordsToJson,
+  removeIntakeRecord,
+  saveIntakeRecords,
+  upsertIntakeRecord,
+  type IntakeDecisionId,
+  type IntakeFormState,
+  type IntakeMetricId,
+  type IntakePack,
+  type IntakeRecord,
+} from "./intakeForm";
+import {
   CONTACT_CHANNELS,
   CONTACT_ENRICHMENT_STATUSES,
   buildOutreachPipeline,
@@ -136,6 +155,15 @@ type RequestFeedbackAction =
   | "copy-telegram"
   | "download-request"
   | "download-json";
+type IntakeFeedbackAction =
+  | "save"
+  | "copy"
+  | "telegram"
+  | "download-md"
+  | "download-json"
+  | "export-records"
+  | "delete"
+  | "reset";
 const leadStatuses: LeadStatus[] = [
   "New",
   "Ready to contact",
@@ -158,6 +186,11 @@ function App() {
     ServiceOffer["id"] | null
   >(null);
   const [requestForm, setRequestForm] = useState<RequestReportForm | null>(null);
+  const [intakeForm, setIntakeForm] = useState<IntakeFormState | null>(null);
+  const [intakeRecords, setIntakeRecords] = useState<IntakeRecord[]>(() =>
+    loadIntakeRecords(),
+  );
+  const [selectedIntakeId, setSelectedIntakeId] = useState<string | null>(null);
   const [crmRecords, setCrmRecords] = useState<OutreachCrmRecords>(() =>
     loadOutreachCrmRecords(),
   );
@@ -199,6 +232,10 @@ function App() {
     action: RequestFeedbackAction;
     label: string;
   } | null>(null);
+  const [intakeFeedback, setIntakeFeedback] = useState<{
+    action: IntakeFeedbackAction;
+    label: string;
+  } | null>(null);
   const [automationRunVersion, setAutomationRunVersion] = useState(0);
   const [snapshot, setSnapshot] = useState<LiquiditySnapshot | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -230,6 +267,10 @@ function App() {
   useEffect(() => {
     saveOutreachCrmRecords(crmRecords);
   }, [crmRecords]);
+
+  useEffect(() => {
+    saveIntakeRecords(intakeRecords);
+  }, [intakeRecords]);
 
   const markets = snapshot?.markets ?? [];
   const chains = snapshot?.chains ?? [];
@@ -442,6 +483,39 @@ function App() {
       serviceLayer,
     ],
   );
+  const defaultIntakeForm = useMemo(
+    () =>
+      buildDefaultIntakeForm({
+        network,
+        requestForm: activeRequestForm,
+        selectedLead,
+        selectedOffer: selectedServiceOffer,
+        target,
+      }),
+    [activeRequestForm, network, selectedLead, selectedServiceOffer, target],
+  );
+  const activeIntakeForm = intakeForm ?? defaultIntakeForm;
+  const intakePack = useMemo(
+    () =>
+      buildIntakePack({
+        form: activeIntakeForm,
+        requestPack: requestReportPack,
+        selectedLead,
+        selectedOffer: selectedServiceOffer,
+        serviceLayer,
+      }),
+    [
+      activeIntakeForm,
+      requestReportPack,
+      selectedLead,
+      selectedServiceOffer,
+      serviceLayer,
+    ],
+  );
+  const selectedIntakeRecord =
+    intakeRecords.find((record) => record.id === selectedIntakeId) ??
+    intakeRecords[0] ??
+    null;
 
   const chainRows = useMemo(
     () => buildChainCoverageRows(chains, network),
@@ -667,6 +741,122 @@ function App() {
       "application/json;charset=utf-8",
     );
     setTemporaryRequestFeedback("download-json", "Downloaded");
+  };
+
+  const setTemporaryIntakeFeedback = (
+    action: IntakeFeedbackAction,
+    label: string,
+  ) => {
+    setIntakeFeedback({ action, label });
+
+    window.setTimeout(() => {
+      setIntakeFeedback((current) =>
+        current?.action === action ? null : current,
+      );
+    }, 1600);
+  };
+
+  const updateIntakeForm = (patch: Partial<IntakeFormState>) => {
+    setIntakeForm((current) => ({
+      ...defaultIntakeForm,
+      ...current,
+      ...patch,
+    }));
+  };
+
+  const toggleIntakeChain = (chain: string) => {
+    const currentChains = activeIntakeForm.chains;
+    const nextChains = currentChains.includes(chain)
+      ? currentChains.filter((item) => item !== chain)
+      : [...currentChains, chain];
+
+    updateIntakeForm({ chains: nextChains });
+  };
+
+  const toggleIntakeMetric = (metric: IntakeMetricId) => {
+    const currentMetrics = activeIntakeForm.metrics;
+    const nextMetrics = currentMetrics.includes(metric)
+      ? currentMetrics.filter((item) => item !== metric)
+      : [...currentMetrics, metric];
+
+    updateIntakeForm({ metrics: nextMetrics });
+  };
+
+  const resetIntakeForm = () => {
+    setIntakeForm(null);
+    setSelectedIntakeId(null);
+    setTemporaryIntakeFeedback("reset", "Reset");
+  };
+
+  const saveCurrentIntake = () => {
+    const result = upsertIntakeRecord({
+      existingId: selectedIntakeId,
+      form: activeIntakeForm,
+      pack: intakePack,
+      records: intakeRecords,
+    });
+
+    setIntakeRecords(result.records);
+    setSelectedIntakeId(result.record.id);
+    setTemporaryIntakeFeedback("save", "Saved");
+  };
+
+  const loadIntakeRecord = (record: IntakeRecord) => {
+    const { createdAt: _createdAt, id: _id, status: _status, title: _title, updatedAt: _updatedAt, ...form } = record;
+    setIntakeForm(form);
+    setSelectedIntakeId(record.id);
+    setTemporaryIntakeFeedback("save", "Loaded");
+  };
+
+  const deleteIntakeRecord = (recordId: string) => {
+    setIntakeRecords((current) => removeIntakeRecord(current, recordId));
+    setSelectedIntakeId((current) => (current === recordId ? null : current));
+    setTemporaryIntakeFeedback("delete", "Deleted");
+  };
+
+  const copyIntakeMarkdown = async (pack: IntakePack) => {
+    try {
+      await writeClipboardText(pack.intakeMarkdown);
+      setTemporaryIntakeFeedback("copy", "Copied");
+    } catch {
+      setTemporaryIntakeFeedback("copy", "Intake ready");
+    }
+  };
+
+  const copyIntakeTelegram = async (pack: IntakePack) => {
+    try {
+      await writeClipboardText(pack.telegramCopy);
+      setTemporaryIntakeFeedback("telegram", "Copied");
+    } catch {
+      setTemporaryIntakeFeedback("telegram", "Text ready");
+    }
+  };
+
+  const downloadIntakeMarkdown = (pack: IntakePack) => {
+    downloadTextFile(
+      "superchain-client-intake.md",
+      pack.intakeMarkdown,
+      "text/markdown;charset=utf-8",
+    );
+    setTemporaryIntakeFeedback("download-md", "Downloaded");
+  };
+
+  const downloadIntakeJson = (pack: IntakePack) => {
+    downloadTextFile(
+      "superchain-client-intake.json",
+      pack.intakeJson,
+      "application/json;charset=utf-8",
+    );
+    setTemporaryIntakeFeedback("download-json", "Downloaded");
+  };
+
+  const exportIntakeRecords = () => {
+    downloadTextFile(
+      "superchain-intake-records.json",
+      recordsToJson(intakeRecords),
+      "application/json;charset=utf-8",
+    );
+    setTemporaryIntakeFeedback("export-records", "Exported");
   };
 
   const setTemporaryExportPackFeedback = (
@@ -921,6 +1111,7 @@ function App() {
           <a href="#pricing">Pricing</a>
           <a href="#launch-desk">Launch desk</a>
           <a href="#request-report">Request report</a>
+          <a href="#intake-form">Intake form</a>
           <a href="#export-pack">Export pack</a>
           <a href="#automation">Automation</a>
           <a href="#service-layer">Service layer</a>
@@ -1173,6 +1364,30 @@ function App() {
           onReset={resetRequestForm}
           onUpdate={updateRequestForm}
           pack={requestReportPack}
+        />
+
+        <IntakeFormSection
+          chainOptions={INTAKE_CHAIN_OPTIONS}
+          decisionOptions={INTAKE_DECISIONS}
+          deliverableFormats={INTAKE_DELIVERABLE_FORMATS}
+          feedback={intakeFeedback}
+          form={activeIntakeForm}
+          metricOptions={INTAKE_METRIC_OPTIONS}
+          onCopyIntake={() => void copyIntakeMarkdown(intakePack)}
+          onCopyTelegram={() => void copyIntakeTelegram(intakePack)}
+          onDeleteRecord={deleteIntakeRecord}
+          onDownloadIntake={() => downloadIntakeMarkdown(intakePack)}
+          onDownloadJson={() => downloadIntakeJson(intakePack)}
+          onExportRecords={exportIntakeRecords}
+          onLoadRecord={loadIntakeRecord}
+          onReset={resetIntakeForm}
+          onSave={saveCurrentIntake}
+          onToggleChain={toggleIntakeChain}
+          onToggleMetric={toggleIntakeMetric}
+          onUpdate={updateIntakeForm}
+          pack={intakePack}
+          records={intakeRecords}
+          selectedRecord={selectedIntakeRecord}
         />
 
         <ExportPackSection
@@ -1881,6 +2096,358 @@ function RequestReportSection({
             <span>Delivery guardrails</span>
             {pack.intakeChecklist.map((item) => (
               <strong key={item}>{item}</strong>
+            ))}
+          </div>
+        </aside>
+      </div>
+    </section>
+  );
+}
+
+function IntakeFormSection({
+  chainOptions,
+  decisionOptions,
+  deliverableFormats,
+  feedback,
+  form,
+  metricOptions,
+  onCopyIntake,
+  onCopyTelegram,
+  onDeleteRecord,
+  onDownloadIntake,
+  onDownloadJson,
+  onExportRecords,
+  onLoadRecord,
+  onReset,
+  onSave,
+  onToggleChain,
+  onToggleMetric,
+  onUpdate,
+  pack,
+  records,
+  selectedRecord,
+}: {
+  chainOptions: string[];
+  decisionOptions: Array<{ id: IntakeDecisionId; label: string }>;
+  deliverableFormats: string[];
+  feedback: {
+    action: IntakeFeedbackAction;
+    label: string;
+  } | null;
+  form: IntakeFormState;
+  metricOptions: Array<{ id: IntakeMetricId; label: string }>;
+  onCopyIntake: () => void;
+  onCopyTelegram: () => void;
+  onDeleteRecord: (recordId: string) => void;
+  onDownloadIntake: () => void;
+  onDownloadJson: () => void;
+  onExportRecords: () => void;
+  onLoadRecord: (record: IntakeRecord) => void;
+  onReset: () => void;
+  onSave: () => void;
+  onToggleChain: (chain: string) => void;
+  onToggleMetric: (metric: IntakeMetricId) => void;
+  onUpdate: (patch: Partial<IntakeFormState>) => void;
+  pack: IntakePack;
+  records: IntakeRecord[];
+  selectedRecord: IntakeRecord | null;
+}) {
+  const feedbackFor = (action: IntakeFeedbackAction) =>
+    feedback?.action === action ? feedback.label : null;
+  const preview = pack.intakeMarkdown.split("\n").slice(0, 36).join("\n");
+  const publicIssueDisabled = !form.publicIssueOk;
+
+  return (
+    <section className="intakeFormSection" id="intake-form">
+      <div className="sectionHeader">
+        <div>
+          <p className="sectionKicker">Intake Form</p>
+          <h2>Capture a client scope before doing paid report work</h2>
+        </div>
+        <span>{pack.status}</span>
+      </div>
+
+      <div className="intakeLayout">
+        <article className="intakeLead">
+          <div className="intakeTitle">
+            <span>Client intake</span>
+            <h3>{pack.summary}</h3>
+            <small>{new Date(pack.generatedAt).toLocaleString()}</small>
+          </div>
+
+          <div className="intakeStats">
+            <Stat label="Status" value={pack.status} />
+            <Stat label="Missing" value={String(pack.missingFields.length)} />
+            <Stat label="Saved" value={String(records.length)} />
+            <Stat label="Selected" value={selectedRecord?.title ?? "Current draft"} />
+          </div>
+
+          {pack.missingFields.length > 0 ? (
+            <div className="intakeMissing">
+              <span>Missing fields</span>
+              {pack.missingFields.map((field) => (
+                <strong key={field}>{field}</strong>
+              ))}
+            </div>
+          ) : (
+            <div className="intakeReady">
+              <ShieldCheck size={18} />
+              <strong>Ready to scope. Confirm payment and delivery terms manually.</strong>
+            </div>
+          )}
+
+          <div className="intakeActions">
+            <button type="button" onClick={onSave}>
+              <FileCheck2 size={17} />
+              {feedbackFor("save") ?? "Save intake"}
+            </button>
+            <button type="button" onClick={onCopyIntake}>
+              <FileText size={17} />
+              {feedbackFor("copy") ?? "Copy intake"}
+            </button>
+            <button type="button" onClick={onCopyTelegram}>
+              <MessageSquare size={17} />
+              {feedbackFor("telegram") ?? "Copy DM text"}
+            </button>
+            <button type="button" onClick={onDownloadIntake}>
+              <ArrowDownToLine size={17} />
+              {feedbackFor("download-md") ?? "Download MD"}
+            </button>
+            <button type="button" onClick={onDownloadJson}>
+              <DatabaseZap size={17} />
+              {feedbackFor("download-json") ?? "Download JSON"}
+            </button>
+            {publicIssueDisabled ? (
+              <button className="intakeIssueDisabled" type="button" disabled>
+                <GitBranch size={17} />
+                Public issue locked
+              </button>
+            ) : (
+              <a
+                className="intakeIssueLink"
+                href={pack.githubIssueUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <GitBranch size={17} />
+                Open public issue
+                <ExternalLink size={15} />
+              </a>
+            )}
+          </div>
+
+          <pre className="intakePreview">{preview}</pre>
+
+          <div className="intakeRecordPanel">
+            <div className="intakeRecordHead">
+              <span>Saved intakes</span>
+              <button
+                type="button"
+                onClick={onExportRecords}
+                disabled={records.length === 0}
+              >
+                <DatabaseZap size={16} />
+                {feedbackFor("export-records") ?? "Export all"}
+              </button>
+            </div>
+
+            <div className="intakeRecordList">
+              {records.length > 0 ? (
+                records.map((record) => (
+                  <article
+                    className={`intakeRecord ${
+                      record.id === selectedRecord?.id ? "selected" : ""
+                    }`}
+                    key={record.id}
+                  >
+                    <button type="button" onClick={() => onLoadRecord(record)}>
+                      <span className={`intakeStatus ${intakeStatusClass(record.status)}`}>
+                        {record.status}
+                      </span>
+                      <strong>{record.title}</strong>
+                      <small>{new Date(record.updatedAt).toLocaleString()}</small>
+                    </button>
+                    <button
+                      className="intakeDelete"
+                      type="button"
+                      onClick={() => onDeleteRecord(record.id)}
+                    >
+                      {feedbackFor("delete") ?? "Delete"}
+                    </button>
+                  </article>
+                ))
+              ) : (
+                <div className="emptyState">No saved intake forms yet.</div>
+              )}
+            </div>
+          </div>
+        </article>
+
+        <aside className="intakeFormPanel">
+          <div className="intakeFormHead">
+            <div>
+              <span>Scope fields</span>
+              <strong>Only enough information to quote and deliver</strong>
+            </div>
+            <button type="button" onClick={onReset}>
+              <RefreshCcw size={16} />
+              {feedbackFor("reset") ?? "Reset"}
+            </button>
+          </div>
+
+          <div className="intakeFields">
+            <label>
+              Protocol / project
+              <input
+                value={form.protocolName}
+                onChange={(event) => onUpdate({ protocolName: event.target.value })}
+                placeholder="Protocol name"
+              />
+            </label>
+            <label>
+              Team / company
+              <input
+                value={form.teamName}
+                onChange={(event) => onUpdate({ teamName: event.target.value })}
+                placeholder="Team name"
+              />
+            </label>
+            <label>
+              Contact name
+              <input
+                value={form.contactName}
+                onChange={(event) => onUpdate({ contactName: event.target.value })}
+                placeholder="Name or handle"
+              />
+            </label>
+            <label>
+              Contact route
+              <input
+                value={form.contactRoute}
+                onChange={(event) => onUpdate({ contactRoute: event.target.value })}
+                placeholder="Telegram, email, X, Discord, GitHub"
+              />
+            </label>
+            <label>
+              Role
+              <input
+                value={form.role}
+                onChange={(event) => onUpdate({ role: event.target.value })}
+                placeholder="Growth, grants, BD, founder"
+              />
+            </label>
+            <label>
+              Decision supported
+              <select
+                value={form.decision}
+                onChange={(event) =>
+                  onUpdate({ decision: event.target.value as IntakeDecisionId })
+                }
+              >
+                {decisionOptions.map((option) => (
+                  <option key={option.id} value={option.id}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+
+          <div className="intakeChoiceGroup">
+            <span>Chains</span>
+            <div>
+              {chainOptions.map((chain) => (
+                <button
+                  className={form.chains.includes(chain) ? "selected" : ""}
+                  key={chain}
+                  type="button"
+                  onClick={() => onToggleChain(chain)}
+                >
+                  {chain}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="intakeChoiceGroup">
+            <span>Metric focus</span>
+            <div>
+              {metricOptions.map((metric) => (
+                <button
+                  className={form.metrics.includes(metric.id) ? "selected" : ""}
+                  key={metric.id}
+                  type="button"
+                  onClick={() => onToggleMetric(metric.id)}
+                >
+                  {metric.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="intakeFields">
+            <label>
+              Deliverable format
+              <select
+                value={form.deliverableFormat}
+                onChange={(event) =>
+                  onUpdate({ deliverableFormat: event.target.value })
+                }
+              >
+                {deliverableFormats.map((format) => (
+                  <option key={format}>{format}</option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Budget
+              <select
+                value={form.budget}
+                onChange={(event) => onUpdate({ budget: event.target.value })}
+              >
+                {Array.from(new Set([form.budget, ...INTAKE_BUDGETS])).map((budget) => (
+                  <option key={budget}>{budget}</option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Deadline
+              <input
+                type="date"
+                value={form.deadline}
+                onChange={(event) => onUpdate({ deadline: event.target.value })}
+              />
+            </label>
+            <label className="intakePublicFlag">
+              Public GitHub issue OK
+              <input
+                checked={form.publicIssueOk}
+                type="checkbox"
+                onChange={(event) => onUpdate({ publicIssueOk: event.target.checked })}
+              />
+            </label>
+            <label className="intakeWide">
+              Source links
+              <textarea
+                value={form.sourceLinks}
+                onChange={(event) => onUpdate({ sourceLinks: event.target.value })}
+                placeholder="One public source URL per line"
+              />
+            </label>
+            <label className="intakeWide">
+              Notes
+              <textarea
+                value={form.notes}
+                onChange={(event) => onUpdate({ notes: event.target.value })}
+                placeholder="What should the report answer?"
+              />
+            </label>
+          </div>
+
+          <div className="intakeNextSteps">
+            <span>Next steps</span>
+            {pack.nextSteps.map((step) => (
+              <strong key={step}>{step}</strong>
             ))}
           </div>
         </aside>
@@ -3138,6 +3705,10 @@ function launchStatusClass(value: SalesKit["status"]) {
 }
 
 function checklistStatusClass(value: SalesKit["checklist"][number]["status"]) {
+  return value.toLowerCase().replace(/\s+/g, "-");
+}
+
+function intakeStatusClass(value: IntakeRecord["status"]) {
   return value.toLowerCase().replace(/\s+/g, "-");
 }
 

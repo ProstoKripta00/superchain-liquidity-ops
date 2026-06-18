@@ -170,6 +170,7 @@ The MVP should produce grant-review artifacts:
 - offer / pricing page with fixed-scope packages, price ranges, timelines, deliverables, and buyer brief actions
 - launch desk with proposal, onboarding email, delivery checklist, buyer FAQ, terms, and sales-kit export
 - contact / request report intake with editable client scope, copy-ready request text, GitHub issue link, Markdown export, and JSON export
+- intake form with client scope fields, chain and metric selection, local saved intake records, public issue consent, Markdown export, JSON export, and saved-record export
 - export pack containing Markdown, CSV, structured JSON, and a manifest-style JSON handoff package
 - automation runbook with report, export-pack, watchlist, source-audit, and scope-refresh jobs
 - service layer with client-ready package briefs, deliverables, acceptance criteria, and service JSON
@@ -302,6 +303,40 @@ Current outputs:
 The section does not submit private data to a server. It generates text, files, and a public GitHub issue URL in the browser. A real client can copy the request into a private channel, open a GitHub issue for public scope discussion, or download the request pack for handoff.
 
 This keeps the sales workflow honest: the app can receive a scoped request, but payment, contracts, sensitive documents, and final delivery terms remain manual until a backend and secure intake process exist.
+
+## Intake Form
+
+The Intake Form is a local client-scope capture workflow. It is meant for the moment after a prospect shows interest and before any unpaid custom analysis starts.
+
+Current fields:
+
+- protocol / project
+- team / company
+- contact name
+- contact route
+- role
+- decision being supported
+- Superchain networks in scope
+- metric focus
+- deliverable format
+- budget
+- deadline
+- source links
+- notes
+- public GitHub issue consent
+
+Current outputs:
+
+- intake Markdown
+- short Telegram/DM intake text
+- intake JSON
+- local saved intake queue
+- saved-record JSON export
+- prefilled public GitHub issue URL
+
+Saved intake forms are stored in the browser's local storage. They are not synced across devices and are not submitted to a server. This is deliberate for the current static GitHub Pages deployment.
+
+The public GitHub issue action is locked until the user checks that a public issue is acceptable. Private contact details, sensitive commercial terms, and non-public documents should stay outside the public issue workflow.
 
 ## Export Pack
 
