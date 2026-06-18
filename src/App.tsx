@@ -27,6 +27,12 @@ import {
 } from "lucide-react";
 import { loadLiquiditySnapshot } from "./api";
 import { buildAutomationRun, type AutomationRun } from "./automation";
+import {
+  loadOutreachCrmRecords,
+  saveOutreachCrmRecords,
+  updateOutreachCrmRecord,
+  type OutreachCrmRecords,
+} from "./crmStorage";
 import { buildChainCoverageRows, buildMarketScopeMetrics } from "./dataEngine";
 import {
   buildExportPack,
@@ -106,13 +112,12 @@ function App() {
   const [selectedProtocolId, setSelectedProtocolId] = useState<string | null>(null);
   const [selectedReportId, setSelectedReportId] = useState<string | null>(null);
   const [selectedLeadId, setSelectedLeadId] = useState<string | null>(null);
-  const [selectedPitchId, setSelectedPitchId] = useState<PitchVariantId>("dm");
   const [selectedServiceOfferId, setSelectedServiceOfferId] = useState<
     ServiceOffer["id"] | null
   >(null);
-  const [leadStatusOverrides, setLeadStatusOverrides] = useState<
-    Partial<Record<string, LeadStatus>>
-  >({});
+  const [crmRecords, setCrmRecords] = useState<OutreachCrmRecords>(() =>
+    loadOutreachCrmRecords(),
+  );
   const [copyFeedback, setCopyFeedback] = useState<{
     label: string;
     protocolId: string;
@@ -165,6 +170,10 @@ function App() {
   useEffect(() => {
     void refreshData();
   }, [refreshData]);
+
+  useEffect(() => {
+    saveOutreachCrmRecords(crmRecords);
+  }, [crmRecords]);
 
   const markets = snapshot?.markets ?? [];
   const chains = snapshot?.chains ?? [];
@@ -300,17 +309,17 @@ function App() {
   const outreachPipeline = useMemo(
     () =>
       buildOutreachPipeline({
+        crmRecords,
         filteredMarkets,
         network,
         protocolScans,
         serviceLayer,
-        statusOverrides: leadStatusOverrides,
         target,
         totals,
       }),
     [
+      crmRecords,
       filteredMarkets,
-      leadStatusOverrides,
       network,
       protocolScans,
       serviceLayer,
@@ -526,16 +535,34 @@ function App() {
     }, 1600);
   };
 
+  const updateLeadCrm = (leadId: string, patch: Parameters<typeof updateOutreachCrmRecord>[2]) => {
+    setCrmRecords((current) => updateOutreachCrmRecord(current, leadId, patch));
+  };
+
   const updateLeadStatus = (leadId: string, status: LeadStatus) => {
-    setLeadStatusOverrides((current) => ({
-      ...current,
-      [leadId]: status,
-    }));
+    updateLeadCrm(leadId, { status });
+  };
+
+  const updateLeadNotes = (leadId: string, notes: string) => {
+    updateLeadCrm(leadId, { notes });
+  };
+
+  const updateLeadLastContacted = (leadId: string, lastContacted: string) => {
+    updateLeadCrm(leadId, { lastContacted });
+  };
+
+  const updateLeadNextFollowUp = (leadId: string, nextFollowUp: string) => {
+    updateLeadCrm(leadId, { nextFollowUp });
+  };
+
+  const updateLeadPitch = (leadId: string, selectedPitchId: PitchVariantId) => {
+    updateLeadCrm(leadId, { selectedPitchId });
   };
 
   const copyLeadPitch = async (lead: OutreachLead, pitchId: PitchVariantId) => {
     const pitch = lead.pitches.find((item) => item.id === pitchId) ?? lead.pitches[0];
     const text = [`Subject: ${pitch.subject}`, "", pitch.body].join("\n");
+    updateLeadPitch(lead.id, pitch.id);
 
     try {
       await writeClipboardText(text);
@@ -826,11 +853,14 @@ function App() {
           onDownloadCsv={downloadOutreachCsv}
           onDownloadJson={downloadOutreachJson}
           onSelectLead={setSelectedLeadId}
-          onSelectPitch={setSelectedPitchId}
+          onSelectPitch={updateLeadPitch}
+          onUpdateLastContacted={updateLeadLastContacted}
           onUpdateLeadStatus={updateLeadStatus}
+          onUpdateNextFollowUp={updateLeadNextFollowUp}
+          onUpdateNotes={updateLeadNotes}
           pipeline={outreachPipeline}
           selectedLead={selectedLead}
-          selectedPitchId={selectedPitchId}
+          selectedPitchId={selectedLead?.selectedPitchId ?? "dm"}
         />
 
         <section className="workbench" id="markets">
@@ -1403,7 +1433,10 @@ function OutreachPipelineSection({
   onDownloadJson,
   onSelectLead,
   onSelectPitch,
+  onUpdateLastContacted,
   onUpdateLeadStatus,
+  onUpdateNextFollowUp,
+  onUpdateNotes,
   pipeline,
   selectedLead,
   selectedPitchId,
@@ -1417,8 +1450,11 @@ function OutreachPipelineSection({
   onDownloadCsv: (pipeline: OutreachPipeline) => void;
   onDownloadJson: (pipeline: OutreachPipeline) => void;
   onSelectLead: (leadId: string) => void;
-  onSelectPitch: (pitchId: PitchVariantId) => void;
+  onSelectPitch: (leadId: string, pitchId: PitchVariantId) => void;
+  onUpdateLastContacted: (leadId: string, lastContacted: string) => void;
   onUpdateLeadStatus: (leadId: string, status: LeadStatus) => void;
+  onUpdateNextFollowUp: (leadId: string, nextFollowUp: string) => void;
+  onUpdateNotes: (leadId: string, notes: string) => void;
   pipeline: OutreachPipeline;
   selectedLead: OutreachLead | null;
   selectedPitchId: PitchVariantId;
@@ -1452,7 +1488,7 @@ function OutreachPipelineSection({
             <Stat label="Scope" value={pipeline.scopeLabel} />
             <Stat label="Leads" value={String(pipeline.leadCount)} />
             <Stat label="Ready" value={String(pipeline.readyCount)} />
-            <Stat label="Offers used" value={String(pipeline.selectedOfferCount)} />
+            <Stat label="Saved CRM" value={String(pipeline.crmRecordCount)} />
           </div>
 
           <div className="outreachActions">
@@ -1483,6 +1519,12 @@ function OutreachPipelineSection({
                   </button>
                   <select
                     value={lead.status}
+                    onInput={(event) =>
+                      onUpdateLeadStatus(
+                        lead.id,
+                        event.currentTarget.value as LeadStatus,
+                      )
+                    }
                     onChange={(event) =>
                       onUpdateLeadStatus(lead.id, event.target.value as LeadStatus)
                     }
@@ -1516,10 +1558,63 @@ function OutreachPipelineSection({
 
               <p>{selectedLead.reason}</p>
 
+              <div className="crmStatusBar">
+                <span>Lead status</span>
+                <div>
+                  {leadStatuses.map((status) => (
+                    <button
+                      className={status === selectedLead.status ? "selected" : ""}
+                      key={status}
+                      onClick={() => onUpdateLeadStatus(selectedLead.id, status)}
+                    >
+                      {status}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               <div className="leadBriefGrid">
                 <Stat label="Segment" value={selectedLead.segment} />
                 <Stat label="Contact target" value={selectedLead.contactTarget} />
                 <Stat label="Next step" value={selectedLead.nextStep} />
+              </div>
+
+              <div className="crmFields">
+                <label>
+                  Last contacted
+                  <input
+                    type="date"
+                    value={selectedLead.lastContacted}
+                    onInput={(event) =>
+                      onUpdateLastContacted(selectedLead.id, event.currentTarget.value)
+                    }
+                    onChange={(event) =>
+                      onUpdateLastContacted(selectedLead.id, event.target.value)
+                    }
+                  />
+                </label>
+                <label>
+                  Next follow-up
+                  <input
+                    type="date"
+                    value={selectedLead.nextFollowUp}
+                    onInput={(event) =>
+                      onUpdateNextFollowUp(selectedLead.id, event.currentTarget.value)
+                    }
+                    onChange={(event) =>
+                      onUpdateNextFollowUp(selectedLead.id, event.target.value)
+                    }
+                  />
+                </label>
+                <label className="crmNotes">
+                  CRM notes
+                  <textarea
+                    placeholder="Who owns growth, where you contacted them, reply summary, next move..."
+                    value={selectedLead.notes}
+                    onInput={(event) => onUpdateNotes(selectedLead.id, event.currentTarget.value)}
+                    onChange={(event) => onUpdateNotes(selectedLead.id, event.target.value)}
+                  />
+                </label>
               </div>
 
               <div className="pitchTabs">
@@ -1527,7 +1622,7 @@ function OutreachPipelineSection({
                   <button
                     className={pitch.id === selectedPitch.id ? "selected" : ""}
                     key={pitch.id}
-                    onClick={() => onSelectPitch(pitch.id)}
+                    onClick={() => onSelectPitch(selectedLead.id, pitch.id)}
                   >
                     {pitch.id === "email" ? <Mail size={16} /> : <MessageSquare size={16} />}
                     {pitch.label}

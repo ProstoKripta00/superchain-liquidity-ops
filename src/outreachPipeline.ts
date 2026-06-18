@@ -24,6 +24,15 @@ export type OutreachPitch = {
   body: string;
 };
 
+export type OutreachCrmRecord = {
+  lastContacted?: string;
+  nextFollowUp?: string;
+  notes?: string;
+  selectedPitchId?: PitchVariantId;
+  status?: LeadStatus;
+  updatedAt?: string;
+};
+
 export type OutreachLead = {
   id: string;
   protocolId: string;
@@ -40,6 +49,10 @@ export type OutreachLead = {
   valueSignal: string;
   nextStep: string;
   contactTarget: string;
+  lastContacted: string;
+  nextFollowUp: string;
+  notes: string;
+  selectedPitchId: PitchVariantId;
   sourceUrls: string[];
   pitches: OutreachPitch[];
 };
@@ -51,6 +64,7 @@ export type OutreachPipeline = {
   leadCount: number;
   readyCount: number;
   contactedCount: number;
+  crmRecordCount: number;
   selectedOfferCount: number;
   leads: OutreachLead[];
   leadsCsv: string;
@@ -59,10 +73,10 @@ export type OutreachPipeline = {
 
 type BuildOutreachPipelineInput = {
   filteredMarkets: DexMarket[];
+  crmRecords?: Partial<Record<string, OutreachCrmRecord>>;
   network: NetworkScope;
   protocolScans: ProtocolScan[];
   serviceLayer: ServiceLayer;
-  statusOverrides?: Partial<Record<string, LeadStatus>>;
   target: "All" | OutcomeTarget;
   totals: MarketScopeMetrics;
 };
@@ -87,14 +101,18 @@ const leadCsvHeader = [
   "valueSignal",
   "nextStep",
   "contactTarget",
+  "selectedPitch",
+  "lastContacted",
+  "nextFollowUp",
+  "notes",
 ];
 
 export function buildOutreachPipeline({
   filteredMarkets,
+  crmRecords = {},
   network,
   protocolScans,
   serviceLayer,
-  statusOverrides = {},
   target,
   totals,
 }: BuildOutreachPipelineInput): OutreachPipeline {
@@ -109,10 +127,12 @@ export function buildOutreachPipeline({
     .sort((left, right) => right.score - left.score)
     .slice(0, 10)
     .map<OutreachLead>((scan, index) => {
+      const crmRecord = crmRecords[scan.id] ?? {};
       const recommendedOfferId = chooseOfferId(scan);
       const offer = offerById[recommendedOfferId] ?? fallbackOffer;
       const defaultStatus = defaultLeadStatus(scan);
-      const status = statusOverrides[scan.id] ?? defaultStatus;
+      const status = crmRecord.status ?? defaultStatus;
+      const selectedPitchId = crmRecord.selectedPitchId ?? "dm";
 
       return {
         id: scan.id,
@@ -130,6 +150,10 @@ export function buildOutreachPipeline({
         valueSignal: buildValueSignal(scan),
         nextStep: buildNextStep(scan, offer),
         contactTarget: buildContactTarget(scan),
+        lastContacted: crmRecord.lastContacted ?? "",
+        nextFollowUp: crmRecord.nextFollowUp ?? "",
+        notes: crmRecord.notes ?? "",
+        selectedPitchId,
         sourceUrls: scan.sourceUrls,
         pitches: buildPitches(scan, offer, scopeLabel),
       };
@@ -150,6 +174,7 @@ export function buildOutreachPipeline({
       leadCount: leads.length,
       readyCount: leads.filter((lead) => lead.status === "Ready to contact").length,
       contactedCount: leads.filter((lead) => lead.status === "Contacted").length,
+      crmRecordCount: Object.values(crmRecords).filter(Boolean).length,
     },
     leads: leads.map(({ pitches: _pitches, ...lead }) => lead),
   };
@@ -161,6 +186,7 @@ export function buildOutreachPipeline({
     leadCount: leads.length,
     readyCount: payload.summary.readyCount,
     contactedCount: payload.summary.contactedCount,
+    crmRecordCount: payload.summary.crmRecordCount,
     selectedOfferCount: new Set(leads.map((lead) => lead.recommendedOfferId)).size,
     leads,
     leadsCsv,
@@ -288,6 +314,10 @@ function buildLeadsCsv(leads: OutreachLead[]) {
       lead.valueSignal,
       lead.nextStep,
       lead.contactTarget,
+      lead.selectedPitchId,
+      lead.lastContacted,
+      lead.nextFollowUp,
+      lead.notes,
     ]
       .map(csvCell)
       .join(","),

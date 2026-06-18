@@ -33,7 +33,7 @@ What works today:
 - export pack builder with report Markdown, protocol CSV, scope CSV, summary JSON, and full JSON handoff pack
 - automation workspace that turns live scanner, reports, export pack and source audit state into a repeatable runbook
 - service layer that packages analytics output into sellable diagnostic, monitoring, and grant evidence offers
-- outreach pipeline with scanner-derived leads, lead statuses, DM/email/follow-up pitch generation, CSV export and JSON export
+- outreach pipeline with scanner-derived leads, persistent local CRM fields, DM/email/follow-up pitch generation, CSV export and JSON export
 - chain-level TVL, DEX volume, and fee totals
 - protocol-level fee attribution when the public feed exposes it
 - source audit for every public endpoint
@@ -53,7 +53,7 @@ What works today:
 7. Open `Export Pack` and download the full JSON handoff pack or individual artifacts.
 8. Open `Automation`, run the workflow and download the generated runbook.
 9. Open `Service Layer`, select a client package, copy the brief, or download the service JSON.
-10. Open `Outreach`, select a protocol lead, review DM/email/follow-up pitches, and export leads.
+10. Open `Outreach`, select a protocol lead, update CRM notes/follow-up dates, review pitches, and export leads.
 11. Filter to `OP Mainnet` or `Base`.
 12. Review DEX market rows for 24h volume, 30d volume, 30d fees, and health labels.
 13. Open `Source audit` and verify the public endpoints.
@@ -89,6 +89,7 @@ Unavailable values are shown as unavailable. The app does not silently substitut
 | Automation | Browser-side job queue and Markdown runbook for report, export, watchlist, and source-audit workflows | Live |
 | Service layer | Client package builder with suggested scopes, deliverables, acceptance criteria, brief export, and service JSON | Live |
 | Outreach pipeline | Lead status board, protocol pitch generator, CSV export, and JSON pipeline export | Live |
+| Persistent CRM | Local browser storage for lead status, selected pitch, notes, last contacted, and next follow-up | Live |
 | Reviewer evidence | CSV export with source URLs and timestamps | Live |
 | Priority pairs | Official OP pair mapping and pool-level ingestion | Planned |
 
@@ -120,7 +121,7 @@ Live data adapters
 Data engine: normalization, ratios, weighted trends, market scoring
         |
         v
-Protocol scanner, protocol health score, reports workspace, export pack, automation runbook, service layer, outreach pipeline, mini reports, scope totals, chain coverage, source audit, CSV export
+Protocol scanner, protocol health score, reports workspace, export pack, automation runbook, service layer, outreach pipeline, persistent CRM, mini reports, scope totals, chain coverage, source audit, CSV export
         |
         v
 Dashboard state and reviewer workflow
@@ -140,7 +141,7 @@ Current stack:
 2. Add pool-level adapters through backend or scheduled static ingestion for sources that do not support reliable browser fetches.
 3. Add 7d/30d before-after reviewer reports.
 4. Add scheduled automation and a small public API surface.
-5. Add persistent CRM storage for lead status and outreach history.
+5. Add backend or shared CRM storage for multi-device outreach history.
 6. Add service CRM handoff fields and outreach status tracking.
 7. Add alerting for markets with declining liquidity, weak fee output, or source degradation.
 8. Publish example final grant reports.
@@ -157,6 +158,7 @@ src/exportPack.ts            Export pack manifest, CSV generation and JSON hando
 src/automation.ts            Browser-side automation job queue and Markdown runbook generator
 src/serviceLayer.ts          Sellable service offer, client brief and service JSON generation
 src/outreachPipeline.ts      Scanner-derived leads, status defaults, pitch generation and lead exports
+src/crmStorage.ts            LocalStorage persistence for outreach lead CRM records
 src/sources.ts               Supported chains and public endpoint URLs
 src/App.tsx                  Dashboard, protocol scanner, reports UI, automation UI, service UI, outreach UI, filters, reviewer pack UI, export flow
 src/styles.css               OP-inspired product UI

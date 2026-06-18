@@ -169,7 +169,7 @@ The MVP should produce grant-review artifacts:
 - export pack containing Markdown, CSV, structured JSON, and a manifest-style JSON handoff package
 - automation runbook with report, export-pack, watchlist, source-audit, and scope-refresh jobs
 - service layer with client-ready package briefs, deliverables, acceptance criteria, and service JSON
-- outreach pipeline with protocol leads, status tracking, generated DM/email/follow-up pitches, CSV export and JSON export
+- outreach pipeline with protocol leads, persistent local CRM fields, generated DM/email/follow-up pitches, CSV export and JSON export
 - chain-level TVL and fee summaries
 - watchlist of underperforming markets
 - 7d/30d trend reports
@@ -282,9 +282,13 @@ Each lead includes:
 - reason for outreach
 - next step
 - contact target guidance
+- selected pitch variant
+- CRM notes
+- last contacted date
+- next follow-up date
 - public source links
 
-The current status board is browser-local. Exported CSV and JSON include the current in-session statuses, but long-term CRM persistence is a later backend or storage step.
+The current CRM is persisted in browser `localStorage`. Exported CSV and JSON include the saved status, selected pitch, notes, last contacted date, and next follow-up date. Backend or shared multi-device CRM persistence remains a later storage step.
 
 ## Initial Live Data Scope
 
