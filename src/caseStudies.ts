@@ -54,7 +54,7 @@ const CASE_STUDY_DEFINITIONS: CaseStudyDefinition[] = [
     decisionQuestion:
       "Does Uniswap have enough Superchain activity to support an incentive-impact evidence pack?",
     fallbackSummary:
-      "Template for measuring whether Uniswap Superchain markets produce enough volume, fees, and source confidence for reviewer evidence.",
+      "Template for measuring whether Uniswap Superchain markets produce enough volume, fees, and source confidence for operator evidence.",
   },
   {
     id: "aerodrome-base",
@@ -70,7 +70,7 @@ const CASE_STUDY_DEFINITIONS: CaseStudyDefinition[] = [
     protocolName: "Velodrome",
     networkFocus: "OP Mainnet",
     decisionQuestion:
-      "Can OP Mainnet liquidity programs show clear before/after impact evidence for DAO or grant updates?",
+      "Can OP Mainnet liquidity programs show clear before/after impact evidence for DAO or incentive updates?",
     fallbackSummary:
       "Template for an OP Mainnet liquidity-program evidence review with public data limitations disclosed.",
   },
@@ -185,7 +185,7 @@ function buildFindings(scan: ProtocolScan) {
   }
 
   if (scan.atRiskMarkets > 0) {
-    findings.push(`${scan.atRiskMarkets} matched markets are At Risk and should be separated from stronger markets before any grant update.`);
+    findings.push(`${scan.atRiskMarkets} matched markets are At Risk and should be separated from stronger markets before any incentive update.`);
   }
 
   return findings;
@@ -210,7 +210,7 @@ function buildLimitations(scan: ProtocolScan, markets: DexMarket[]) {
   }
 
   if (scan.healthScore.confidence < 70) {
-    limitations.push("Data confidence is below 70/100, so reviewer language should stay conservative.");
+    limitations.push("Data confidence is below 70/100, so operator language should stay conservative.");
   }
 
   return limitations;

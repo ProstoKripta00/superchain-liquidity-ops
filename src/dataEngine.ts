@@ -113,7 +113,7 @@ export function buildMarketNote(market: {
   }
 
   if (market.health === "Strong") {
-    return "Live DEX usage is material enough to support reviewer analysis of liquidity and fee outcomes.";
+    return "Live DEX usage is material enough to support operator analysis of liquidity and fee outcomes.";
   }
 
   if (market.fees30dUsd === null) {
@@ -124,7 +124,7 @@ export function buildMarketNote(market: {
     return "Volume exists, but fee capture is light relative to traded volume. This needs fee-efficiency review.";
   }
 
-  return "Mixed live signal. Keep this market in the reviewer watchlist until volume and fee trends strengthen.";
+  return "Mixed live signal. Keep this market in the operator watchlist until volume and fee trends strengthen.";
 }
 
 export function buildMarketScopeMetrics(

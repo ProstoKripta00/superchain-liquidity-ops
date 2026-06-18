@@ -53,7 +53,7 @@ const sampleDefinitions: SampleReportDefinition[] = [
     fallbackSummary:
       "A public diagnostic format for reviewing Superchain market activity, fee visibility, weak spots, and next actions for a major DEX venue.",
     sampleUse:
-      "Send this as a proof-of-work sample before offering a paid diagnostic sprint.",
+      "Send this as a delivery sample before offering a paid diagnostic sprint.",
   },
   {
     id: "velodrome-monitoring",
@@ -72,14 +72,14 @@ const sampleDefinitions: SampleReportDefinition[] = [
     id: "aerodrome-grant-evidence",
     protocolId: "aerodrome",
     protocolName: "Aerodrome",
-    title: "Aerodrome Grant Evidence Pack Sample",
-    serviceType: "Grant Evidence Pack",
-    audience: "Grant reviewers, ecosystem teams, and protocol contributors",
+    title: "Aerodrome DAO / Incentive Evidence Pack Sample",
+    serviceType: "DAO / Incentive Evidence Pack",
+    audience: "Ecosystem teams, growth leads, and protocol contributors",
     fallbackSegment: "Base liquidity hub",
     fallbackSummary:
-      "A grant evidence sample that packages activity, fee visibility, market quality, source limits, and reviewer-ready next steps.",
+      "An incentive evidence sample that packages activity, fee visibility, market quality, source limits, and decision-ready next steps.",
     sampleUse:
-      "Attach this sample when pitching grant reporting, incentive review, or post-program evidence work.",
+      "Attach this sample when pitching DAO reporting, incentive review, or post-program evidence work.",
   },
 ];
 
@@ -170,7 +170,7 @@ function buildSampleReport(
     "",
     "## Client Delivery Boundary",
     "",
-    "- This sample is a proof-of-work artifact, not a security audit.",
+    "- This sample is a delivery example, not a security audit.",
     "- Paid delivery can add custom protocol scope, deeper pool analysis, and recurring update cadence.",
     "- The report is generated from public endpoints and keeps missing values visible.",
     "",
@@ -233,7 +233,7 @@ function buildFallbackSampleReport(
     "",
     "## Client Delivery Boundary",
     "",
-    "- This sample is a proof-of-work format, not a security audit.",
+    "- This sample is a delivery format, not a security audit.",
     "- Paid delivery starts when current protocol data is available and scoped.",
     "- Missing values remain visible instead of being replaced with manual numbers.",
     "",

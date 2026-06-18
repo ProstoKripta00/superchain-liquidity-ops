@@ -177,7 +177,7 @@ export function buildExportPack({
       name: "Protocol report",
       fileName: report.fileName,
       mimeType: "text/markdown;charset=utf-8",
-      description: "Reviewer-ready Markdown mini-report for the selected protocol.",
+      description: "Decision-ready Markdown mini-report for the selected protocol.",
       content: report.markdown,
       sizeLabel: formatBytes(report.markdown.length),
     },

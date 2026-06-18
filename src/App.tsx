@@ -286,7 +286,13 @@ function App() {
     label: string;
   } | null>(null);
   const [automationRunVersion, setAutomationRunVersion] = useState(0);
-  const [operatorMode, setOperatorMode] = useState(false);
+  const [operatorMode, setOperatorMode] = useState(() => {
+    if (typeof window === "undefined") {
+      return false;
+    }
+
+    return new URLSearchParams(window.location.search).get("operator") === "1";
+  });
   const [snapshot, setSnapshot] = useState<LiquiditySnapshot | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -626,6 +632,7 @@ function App() {
         month: "short",
       }).format(new Date(snapshot.updatedAt))
     : "Not loaded";
+  const metricsAreLoading = isLoading || !snapshot;
   const trustProofPack = useMemo(
     () =>
       buildTrustProofPack({
@@ -1408,6 +1415,26 @@ function App() {
     setTemporaryOutreachFeedback("json", "Downloaded");
   };
 
+  const toggleOperatorMode = () => {
+    setOperatorMode((current) => {
+      const next = !current;
+
+      if (typeof window !== "undefined") {
+        const url = new URL(window.location.href);
+
+        if (next) {
+          url.searchParams.set("operator", "1");
+        } else {
+          url.searchParams.delete("operator");
+        }
+
+        window.history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
+      }
+
+      return next;
+    });
+  };
+
   return (
     <div className="app">
       <header className="opHeader">
@@ -1416,55 +1443,50 @@ function App() {
         </div>
         <div className="brandBlock">
           <strong>Superchain Liquidity Ops</strong>
-          <span>Impact Console for DEX liquidity and incentive programs</span>
+          <span>Liquidity impact reports for OP and Superchain teams</span>
         </div>
         <nav className="topNav" aria-label="Product areas">
+          <a href="#snapshot">Snapshot</a>
+          <a href="#what-you-get">What you get</a>
           <a href="#protocol-scanner">Scanner</a>
-          <a href="#reports">Reports</a>
-          <a href="#methodology">Methodology</a>
           <a href="#case-studies">Case studies</a>
-          <a href="#sample-reports">Sample reports</a>
-          <a href="#trust-proof">Trust proof</a>
-          <a href="#request-report">Request report</a>
-          <a href="#export-pack">Export pack</a>
-          <a href="#scheduled-snapshots">Scheduled snapshots</a>
-          <a href="#markets">Live markets</a>
-          <a href="#reviewer-pack">Reviewer pack</a>
+          <a href="#methodology">Methodology</a>
+          <a href="#pricing">Pricing</a>
+          <a className="navCta" href="#request-report">Request 7-day report</a>
           <a href="#sources">Sources</a>
-          {operatorMode ? (
-            <>
-              <a href="#pricing">Pricing</a>
-              <a href="#payment-terms">Payment terms</a>
-              <a href="#launch-desk">Launch desk</a>
-              <a href="#service-layer">Service layer</a>
-              <a href="#lead-targets">Lead targets</a>
-              <a href="#outreach">Outreach</a>
-            </>
-          ) : null}
         </nav>
-        <button
-          className={`operatorToggle ${operatorMode ? "active" : ""}`}
-          onClick={() => setOperatorMode((current) => !current)}
-          type="button"
-        >
-          <Settings2 size={16} />
-          {operatorMode ? "Operator on" : "Operator off"}
-        </button>
       </header>
 
       <main className="main">
         <section className="hero">
           <div className="heroCopy">
-            <p className="eyebrow">Optimism / Superchain public-good proof-of-work</p>
+            <p className="eyebrow">Independent OP / Superchain liquidity intelligence</p>
             <h1>Measure whether liquidity incentives create real DEX outcomes.</h1>
             <p>
-              Open-source impact reporting for protocols and reviewers that need
-              decision-ready evidence: live Superchain DEX volume, fee generation,
-              source freshness, weak markets, and exportable incentive reports.
+              We turn public OP / Superchain DEX data into source-backed reports for
+              protocol teams, growth leads, and ecosystem operators: volume, fees,
+              weak markets, watchlists, and next actions.
             </p>
+            <div className="heroActions">
+              <a href="#request-report">Request 7-day report</a>
+              <a href="#case-studies">View sample case</a>
+            </div>
+            <small>
+              Independent tool. Not affiliated with or endorsed by Optimism Foundation.
+            </small>
           </div>
 
           <aside className="dataPanel">
+            <span className="offerEyebrow">Main offer</span>
+            <h2>7-day Liquidity Impact Report</h2>
+            <p>
+              A focused report for one protocol, DEX, or network scope with PDF,
+              CSV evidence, source audit, weak-market review, and next actions.
+            </p>
+            <div className="offerPrice">
+              <span>Pilot price</span>
+              <strong>$500</strong>
+            </div>
             <div className={`statusDot ${liveState.className}`}>
               <span>{liveState.label}</span>
               <strong>{isLoading ? "Refreshing live data" : liveState.title}</strong>
@@ -1483,49 +1505,27 @@ function App() {
           </aside>
         </section>
 
-        <section className="commandBar">
-          <div className="commandTitle">
-            <SlidersHorizontal size={18} />
-            <span>Scope controls</span>
-          </div>
-          <label>
-            Network
-            <select
-              value={network}
-              onChange={(event) => setNetwork(event.target.value as NetworkScope)}
-            >
-              {networks.map((item) => (
-                <option key={item}>{item}</option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Outcome target
-            <select
-              value={target}
-              onChange={(event) => setTarget(event.target.value as typeof target)}
-            >
-              {targets.map((item) => (
-                <option key={item}>{item}</option>
-              ))}
-            </select>
-          </label>
-          <button className="exportButton" onClick={exportCsv} disabled={filteredMarkets.length === 0}>
-            <ArrowDownToLine size={18} />
-            Export report
-          </button>
-        </section>
-
         {loadError ? <div className="alertPanel">{loadError}</div> : null}
 
-        <section className="metricRail">
-          <Metric icon={<BarChart3 />} label="24h DEX volume" value={compactUsd.format(totals.volume24h)} />
-          <Metric icon={<Layers3 />} label="30d DEX volume" value={compactUsd.format(totals.volume30d)} />
-          <Metric icon={<CircleDollarSign />} label="30d fees" value={formatOptionalUsd(totals.fees30d)} />
-          <Metric icon={<Gauge />} label="Fee / volume" value={formatOptionalPct(totals.feeToVolume)} />
-          <Metric icon={<TrendingUp />} label="7d market trend" value={`${pct.format(totals.weightedChange7d)}%`} />
-          <Metric icon={<Radar />} label="Watchlist markets" value={String(totals.watchCount)} />
+        <section className="snapshotSection" id="snapshot">
+          <div className="sectionHeader">
+            <div>
+              <p className="sectionKicker">Live OP / Superchain Snapshot</p>
+              <h2>Current liquidity evidence scope</h2>
+            </div>
+            <span>{metricsAreLoading ? "Loading public data" : liveState.title}</span>
+          </div>
+          <div className="metricRail">
+            <Metric icon={<BarChart3 />} label="24h DEX volume" value={metricsAreLoading ? "Loading" : compactUsd.format(totals.volume24h)} />
+            <Metric icon={<Layers3 />} label="30d DEX volume" value={metricsAreLoading ? "Loading" : compactUsd.format(totals.volume30d)} />
+            <Metric icon={<CircleDollarSign />} label="30d fees" value={metricsAreLoading ? "Loading" : formatOptionalUsd(totals.fees30d)} />
+            <Metric icon={<Gauge />} label="Fee / volume" value={metricsAreLoading ? "Loading" : formatOptionalPct(totals.feeToVolume)} />
+            <Metric icon={<TrendingUp />} label="7d market trend" value={metricsAreLoading ? "Loading" : `${pct.format(totals.weightedChange7d)}%`} />
+            <Metric icon={<Radar />} label="Watchlist markets" value={metricsAreLoading ? "Loading" : String(totals.watchCount)} />
+          </div>
         </section>
+
+        <WhatYouGetSection />
 
         <section className="protocolScanner" id="protocol-scanner">
           <div className="sectionHeader">
@@ -1639,8 +1639,6 @@ function App() {
           </div>
         </section>
 
-        <MethodologySection />
-
         <ReportsSection
           feedbackFor={(report) =>
             reportFeedback?.protocolId === report.protocolId
@@ -1680,10 +1678,9 @@ function App() {
           selectedReport={selectedSampleReport}
         />
 
-        <StaticSampleFilesSection
-          files={STATIC_SAMPLE_FILES}
-          manifestUrl={STATIC_SAMPLE_MANIFEST_URL}
-        />
+        <MethodologySection />
+
+        <PublicPricingSection />
 
         <TrustProofSection pack={trustProofPack} />
 
@@ -1697,61 +1694,6 @@ function App() {
           onReset={resetRequestForm}
           onUpdate={updateRequestForm}
           pack={requestReportPack}
-        />
-
-        <IntakeFormSection
-          chainOptions={INTAKE_CHAIN_OPTIONS}
-          decisionOptions={INTAKE_DECISIONS}
-          deliverableFormats={INTAKE_DELIVERABLE_FORMATS}
-          feedback={intakeFeedback}
-          form={activeIntakeForm}
-          metricOptions={INTAKE_METRIC_OPTIONS}
-          onCopyIntake={() => void copyIntakeMarkdown(intakePack)}
-          onCopyTelegram={() => void copyIntakeTelegram(intakePack)}
-          onDeleteRecord={deleteIntakeRecord}
-          onDownloadIntake={() => downloadIntakeMarkdown(intakePack)}
-          onDownloadJson={() => downloadIntakeJson(intakePack)}
-          onExportRecords={exportIntakeRecords}
-          onLoadRecord={loadIntakeRecord}
-          onReset={resetIntakeForm}
-          onSave={saveCurrentIntake}
-          onToggleChain={toggleIntakeChain}
-          onToggleMetric={toggleIntakeMetric}
-          onUpdate={updateIntakeForm}
-          pack={intakePack}
-          records={intakeRecords}
-          selectedRecord={selectedIntakeRecord}
-        />
-
-        <ExportPackSection
-          feedback={
-            exportPackFeedback?.protocolId === selectedExportPack?.protocolId
-              ? exportPackFeedback
-              : null
-          }
-          isLoading={isLoading}
-          onCopyHandoff={(pack) => void copyExportPackHandoff(pack)}
-          onDownloadArtifact={downloadExportPackArtifact}
-          onDownloadPack={downloadExportPackJson}
-          pack={selectedExportPack}
-        />
-
-        <AutomationSection
-          feedback={automationFeedback}
-          isLoading={isLoading}
-          onCopyRunbook={() => void copyAutomationRunbook()}
-          onDownloadRunbook={downloadAutomationRunbook}
-          onRun={runAutomation}
-          run={automationRun}
-        />
-
-        <ScheduledSnapshotsSection
-          feedback={scheduledSnapshotFeedback}
-          onCopy={() => void copyScheduledSnapshotPlan(scheduledSnapshotsPack)}
-          onDownloadJson={() => downloadScheduledSnapshotJson(scheduledSnapshotsPack)}
-          onDownloadMarkdown={() => downloadScheduledSnapshotMarkdown(scheduledSnapshotsPack)}
-          onDownloadYaml={() => downloadScheduledSnapshotYaml(scheduledSnapshotsPack)}
-          pack={scheduledSnapshotsPack}
         />
 
         {operatorMode ? (
@@ -1779,6 +1721,66 @@ function App() {
               onCopy={() => void copyPaymentTerms(paymentTermsPack)}
               onDownload={() => downloadPaymentTerms(paymentTermsPack)}
               pack={paymentTermsPack}
+            />
+
+            <StaticSampleFilesSection
+              files={STATIC_SAMPLE_FILES}
+              manifestUrl={STATIC_SAMPLE_MANIFEST_URL}
+            />
+
+            <IntakeFormSection
+              chainOptions={INTAKE_CHAIN_OPTIONS}
+              decisionOptions={INTAKE_DECISIONS}
+              deliverableFormats={INTAKE_DELIVERABLE_FORMATS}
+              feedback={intakeFeedback}
+              form={activeIntakeForm}
+              metricOptions={INTAKE_METRIC_OPTIONS}
+              onCopyIntake={() => void copyIntakeMarkdown(intakePack)}
+              onCopyTelegram={() => void copyIntakeTelegram(intakePack)}
+              onDeleteRecord={deleteIntakeRecord}
+              onDownloadIntake={() => downloadIntakeMarkdown(intakePack)}
+              onDownloadJson={() => downloadIntakeJson(intakePack)}
+              onExportRecords={exportIntakeRecords}
+              onLoadRecord={loadIntakeRecord}
+              onReset={resetIntakeForm}
+              onSave={saveCurrentIntake}
+              onToggleChain={toggleIntakeChain}
+              onToggleMetric={toggleIntakeMetric}
+              onUpdate={updateIntakeForm}
+              pack={intakePack}
+              records={intakeRecords}
+              selectedRecord={selectedIntakeRecord}
+            />
+
+            <ExportPackSection
+              feedback={
+                exportPackFeedback?.protocolId === selectedExportPack?.protocolId
+                  ? exportPackFeedback
+                  : null
+              }
+              isLoading={isLoading}
+              onCopyHandoff={(pack) => void copyExportPackHandoff(pack)}
+              onDownloadArtifact={downloadExportPackArtifact}
+              onDownloadPack={downloadExportPackJson}
+              pack={selectedExportPack}
+            />
+
+            <AutomationSection
+              feedback={automationFeedback}
+              isLoading={isLoading}
+              onCopyRunbook={() => void copyAutomationRunbook()}
+              onDownloadRunbook={downloadAutomationRunbook}
+              onRun={runAutomation}
+              run={automationRun}
+            />
+
+            <ScheduledSnapshotsSection
+              feedback={scheduledSnapshotFeedback}
+              onCopy={() => void copyScheduledSnapshotPlan(scheduledSnapshotsPack)}
+              onDownloadJson={() => downloadScheduledSnapshotJson(scheduledSnapshotsPack)}
+              onDownloadMarkdown={() => downloadScheduledSnapshotMarkdown(scheduledSnapshotsPack)}
+              onDownloadYaml={() => downloadScheduledSnapshotYaml(scheduledSnapshotsPack)}
+              pack={scheduledSnapshotsPack}
             />
 
             <LaunchDeskSection
@@ -1836,12 +1838,45 @@ function App() {
           </section>
         ) : null}
 
+        <section className="commandBar">
+          <div className="commandTitle">
+            <SlidersHorizontal size={18} />
+            <span>Scope controls</span>
+          </div>
+          <label>
+            Network
+            <select
+              value={network}
+              onChange={(event) => setNetwork(event.target.value as NetworkScope)}
+            >
+              {networks.map((item) => (
+                <option key={item}>{item}</option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Outcome target
+            <select
+              value={target}
+              onChange={(event) => setTarget(event.target.value as typeof target)}
+            >
+              {targets.map((item) => (
+                <option key={item}>{item}</option>
+              ))}
+            </select>
+          </label>
+          <button className="exportButton" onClick={exportCsv} disabled={filteredMarkets.length === 0}>
+            <ArrowDownToLine size={18} />
+            Export report
+          </button>
+        </section>
+
         <section className="workbench" id="markets">
           <section className="poolMatrix">
             <div className="sectionHeader">
               <div>
                 <p className="sectionKicker">Live DefiLlama DEX markets</p>
-                <h2>Volume, fees and reviewer watchlist</h2>
+                <h2>Volume, fees and market watchlist</h2>
               </div>
               <span>{isLoading ? "Loading" : `${filteredMarkets.length} markets in scope`}</span>
             </div>
@@ -1889,7 +1924,7 @@ function App() {
                 <>
                   <div className="sectionHeader compactHeader">
                     <div>
-                      <p className="sectionKicker">Reviewer focus</p>
+                      <p className="sectionKicker">Market focus</p>
                       <h2>{selectedMarket.dex}</h2>
                     </div>
                     <Health value={selectedMarket.health} />
@@ -1912,7 +1947,7 @@ function App() {
                   </div>
                 </>
               ) : (
-                <div className="emptyState">Select a live market to inspect reviewer signals.</div>
+                <div className="emptyState">Select a live market to inspect operator signals.</div>
               )}
             </section>
 
@@ -1965,80 +2000,234 @@ function App() {
           </div>
         </section>
 
-        <section className="reviewerPack" id="reviewer-pack">
-          <div className="sectionHeader">
-            <div>
-              <p className="sectionKicker">Grant reviewer pack</p>
-              <h2>How to evaluate this tool against OP outcomes</h2>
-            </div>
-            <span>Evidence-first</span>
-          </div>
+        {operatorMode ? (
+          <>
+            <section className="evidencePack" id="buyer-evidence-pack">
+              <div className="sectionHeader">
+                <div>
+                  <p className="sectionKicker">Buyer evidence pack</p>
+                  <h2>How to evaluate OP / Superchain liquidity outcomes</h2>
+                </div>
+                <span>Operator-only</span>
+              </div>
 
-          <div className="packHero">
-            <div>
-              <strong>Reviewer question</strong>
-              <h2>Does this help Optimism measure DEX liquidity and fee outcomes?</h2>
-              <p>
-                The product maps live Superchain DEX data into a repeatable review workflow:
-                inspect chain coverage, identify markets with weak fee output, export evidence,
-                and compare results against TVL, fee and volume goals.
-              </p>
-            </div>
-            <a href="https://www.opgrants.io/seasons/current/season-9/" target="_blank" rel="noreferrer">
-              OP grant criteria <ExternalLink size={16} />
-            </a>
-          </div>
+              <div className="packHero">
+                <div>
+                  <strong>Buyer question</strong>
+                  <h2>Does this protocol need a deeper liquidity impact report?</h2>
+                  <p>
+                    The product maps live Superchain DEX data into a repeatable
+                    commercial workflow: inspect chain coverage, identify markets
+                    with weak fee output, export evidence, and compare results
+                    against fee, volume and market-health goals.
+                  </p>
+                </div>
+                <a href="#request-report">
+                  Request report <ArrowUpRight size={16} />
+                </a>
+              </div>
 
-          <div className="packGrid">
-            <PackCard
-              icon={<Target />}
-              title="Outcome fit"
-              text="Maps directly to OP grant metrics: DEX liquidity, fee generation, volume efficiency and priority-market monitoring."
-            />
-            <PackCard
-              icon={<DatabaseZap />}
-              title="Verifiable data"
-              text="Uses public DefiLlama endpoints and exposes source status, timestamps and live protocol links."
-            />
-            <PackCard
-              icon={<FileCheck2 />}
-              title="Review workflow"
-              text="Reviewer can filter by Superchain network, inspect watchlists and export CSV evidence for offline analysis."
-            />
-            <PackCard
-              icon={<ShieldCheck />}
-              title="No hidden assumptions"
-              text="Unavailable metrics are marked unavailable instead of being replaced with manual numbers."
-            />
-          </div>
+              <div className="packGrid">
+                <PackCard
+                  icon={<Target />}
+                  title="Outcome fit"
+                  text="Maps to practical liquidity-program questions: DEX volume, fee generation, volume efficiency and priority-market monitoring."
+                />
+                <PackCard
+                  icon={<DatabaseZap />}
+                  title="Verifiable data"
+                  text="Uses public DefiLlama endpoints and exposes source status, timestamps and live protocol links."
+                />
+                <PackCard
+                  icon={<FileCheck2 />}
+                  title="Decision workflow"
+                  text="Protocol teams can filter by Superchain network, inspect watchlists and export CSV evidence for offline analysis."
+                />
+                <PackCard
+                  icon={<ShieldCheck />}
+                  title="No hidden assumptions"
+                  text="Unavailable metrics are marked unavailable instead of being replaced with manual numbers."
+                />
+              </div>
+            </section>
 
-          <div className="milestoneGrid">
-            <PackStep
-              label="Now"
-              title="Live proof-of-work"
-              text="Hosted dashboard, open-source repo, live Superchain DEX market data, source audit and CSV export."
-            />
-            <PackStep
-              label="Next"
-              title="Priority-pair adapter"
-              text="Add OP priority-pair configuration, pair-level metadata and pool-specific ingestion where browser APIs are insufficient."
-            />
-            <PackStep
-              label="Launch"
-              title="Reviewer reports"
-              text="Produce repeatable before/after grant reports with 7d and 30d windows, methodology docs and JSON exports."
-            />
-          </div>
-        </section>
-
-        <section className="impactStrip" id="exports">
-          <Impact icon={<LineChart />} title="Live outcome metrics" text="DEX market volume, chain TVL and fee totals are refreshed from public endpoints." />
-          <Impact icon={<DatabaseZap />} title="No hidden spreadsheet" text="The app does not import a local metric dataset; unavailable endpoints are surfaced as source errors." />
-          <Impact icon={<GitBranch />} title="Reviewer-ready CSV" text="Exports include source URLs, timestamps, DEX slugs and derived health labels." />
-          <Impact icon={<Target />} title="Superchain scope" text="The data layer is scoped to OP Mainnet, Base, Unichain, Mode and Zora." />
-        </section>
+            <section className="impactStrip" id="exports">
+              <Impact icon={<LineChart />} title="Live outcome metrics" text="DEX market volume, chain TVL and fee totals are refreshed from public endpoints." />
+              <Impact icon={<DatabaseZap />} title="No hidden spreadsheet" text="The app does not import a local metric dataset; unavailable endpoints are surfaced as source errors." />
+              <Impact icon={<GitBranch />} title="Decision-ready CSV" text="Exports include source URLs, timestamps, DEX slugs and derived health labels." />
+              <Impact icon={<Target />} title="Superchain scope" text="The data layer is scoped to OP Mainnet, Base, Unichain, Mode and Zora." />
+            </section>
+          </>
+        ) : null}
       </main>
+      <FooterSection onToggleOperatorMode={toggleOperatorMode} operatorMode={operatorMode} />
     </div>
+  );
+}
+
+function WhatYouGetSection() {
+  const deliverables = [
+    {
+      icon: <Printer />,
+      title: "PDF report",
+      text: "A 7-day liquidity impact report that a protocol team can share internally or attach to an incentive update.",
+    },
+    {
+      icon: <DatabaseZap />,
+      title: "CSV evidence",
+      text: "Market rows with volume, fees, health labels, source URLs and timestamps for independent review.",
+    },
+    {
+      icon: <ShieldCheck />,
+      title: "Source audit",
+      text: "Clear disclosure of public endpoints, unavailable fields, and assumptions that were not made.",
+    },
+    {
+      icon: <Target />,
+      title: "Action memo",
+      text: "Three to five concrete next actions around weak markets, fee output, watchlists and follow-up scope.",
+    },
+  ];
+
+  return (
+    <section className="whatYouGetSection" id="what-you-get">
+      <div className="sectionHeader">
+        <div>
+          <p className="sectionKicker">What You Get</p>
+          <h2>A focused report, not another dashboard login</h2>
+        </div>
+        <span>7-day delivery scope</span>
+      </div>
+
+      <div className="deliverableGrid">
+        {deliverables.map((item) => (
+          <article className="deliverableCard" key={item.title}>
+            <div>{item.icon}</div>
+            <h3>{item.title}</h3>
+            <p>{item.text}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function PublicPricingSection() {
+  const offers = [
+    {
+      name: "7-day Liquidity Impact Report",
+      price: "$500 pilot",
+      standard: "$750-$1,500 standard",
+      timeline: "7 days",
+      featured: true,
+      points: [
+        "Protocol / DEX / network scope",
+        "30d volume and fees",
+        "Fee / volume and weak markets",
+        "PDF report, CSV evidence, source audit",
+        "3-5 next actions",
+        "Optional 30-min review call",
+      ],
+    },
+    {
+      name: "Monthly Monitoring",
+      price: "$750-$1,500 / month",
+      standard: "After first report",
+      timeline: "Weekly cadence",
+      featured: false,
+      points: [
+        "Recurring watchlist refresh",
+        "Source-health check",
+        "Weak-market updates",
+        "Short action memo",
+      ],
+    },
+    {
+      name: "DAO / Incentive Evidence Pack",
+      price: "$1,500-$3,000",
+      standard: "After validated case",
+      timeline: "7-10 days",
+      featured: false,
+      points: [
+        "Before/after metric scope",
+        "Decision-ready narrative",
+        "Public-source limitations",
+        "Exportable evidence pack",
+      ],
+    },
+  ];
+
+  return (
+    <section className="buyerPricingSection" id="pricing">
+      <div className="sectionHeader">
+        <div>
+          <p className="sectionKicker">Pricing</p>
+          <h2>Start with one narrow liquidity impact report</h2>
+        </div>
+        <span>No subscription required</span>
+      </div>
+
+      <div className="buyerPricingLead">
+        <h3>Get a 7-day Liquidity Impact Report for your OP / Superchain protocol.</h3>
+        <p>
+          Best for protocol teams that need to understand whether liquidity and
+          incentive programs are producing measurable DEX outcomes before they
+          commit more budget or write an update.
+        </p>
+      </div>
+
+      <div className="buyerPricingGrid">
+        {offers.map((offer) => (
+          <article
+            className={`buyerPricingCard ${offer.featured ? "featured" : ""}`}
+            key={offer.name}
+          >
+            <span>{offer.timeline}</span>
+            <h3>{offer.name}</h3>
+            <strong>{offer.price}</strong>
+            <small>{offer.standard}</small>
+            <ul>
+              {offer.points.map((point) => (
+                <li key={point}>{point}</li>
+              ))}
+            </ul>
+            {offer.featured ? <a href="#request-report">Request 7-day report</a> : null}
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function FooterSection({
+  onToggleOperatorMode,
+  operatorMode,
+}: {
+  onToggleOperatorMode: () => void;
+  operatorMode: boolean;
+}) {
+  return (
+    <footer className="siteFooter">
+      <div>
+        <strong>Superchain Liquidity Ops</strong>
+        <p>
+          Independent reporting tool for OP and Superchain teams. Not affiliated
+          with or endorsed by Optimism Foundation.
+        </p>
+      </div>
+      <nav aria-label="Footer links">
+        <a href="https://github.com/ProstoKripta00/superchain-liquidity-ops" target="_blank" rel="noreferrer">
+          Repository <ExternalLink size={14} />
+        </a>
+        <a href="#methodology">Methodology</a>
+        <a href="#sources">Sources</a>
+        <a href="#request-report">Request report</a>
+      </nav>
+      <button className="footerOperatorToggle" onClick={onToggleOperatorMode} type="button">
+        <Settings2 size={14} />
+        {operatorMode ? "Hide operator tools" : "Operator tools"}
+      </button>
+    </footer>
   );
 }
 
@@ -2066,7 +2255,7 @@ function OfferPricingSection({
     feedback?.action === action ? feedback.label : null;
 
   return (
-    <section className="pricingSection" id="pricing">
+    <section className="pricingSection" id="operator-pricing">
       <div className="sectionHeader">
         <div>
           <p className="sectionKicker">Offer / Pricing</p>
@@ -2827,7 +3016,7 @@ function IntakeFormSection({
               <input
                 value={form.role}
                 onChange={(event) => onUpdate({ role: event.target.value })}
-                placeholder="Growth, grants, BD, founder"
+                placeholder="Growth, ecosystem, BD, founder"
               />
             </label>
             <label>
@@ -2977,7 +3166,7 @@ function ExportPackSection({
       <div className="sectionHeader">
         <div>
           <p className="sectionKicker">Export Pack</p>
-          <h2>One handoff package for protocol evidence and reviewer work</h2>
+          <h2>One handoff package for protocol evidence and operator work</h2>
         </div>
         <span>{pack ? `${pack.artifacts.length} artifacts` : "Waiting for report"}</span>
       </div>
@@ -3996,13 +4185,13 @@ function MethodologySection() {
             The tool does not try to compete with DeFiLlama, Dune, Artemis, or
             Token Terminal. It uses public data to answer a narrower question:
             did liquidity incentives produce real volume, fees, healthier markets,
-            and a reviewer-ready next action?
+            and a decision-ready next action?
           </p>
           <div className="methodologyPillGrid">
             <strong>Before / after evidence</strong>
             <strong>Weak-pair detection</strong>
             <strong>Fee generation checks</strong>
-            <strong>Grant update exports</strong>
+            <strong>Program update exports</strong>
           </div>
         </article>
 
@@ -4037,8 +4226,8 @@ function MethodologySection() {
           <strong>Unavailable metrics stay unavailable.</strong>
           <p>
             The scanner is not a security audit, investment rating, or guarantee
-            that a protocol will pay. It is an evidence triage layer for grant,
-            incentive, and protocol-growth reporting.
+            that liquidity will grow. It is an evidence triage layer for incentive,
+            liquidity-program, and protocol-growth reporting.
           </p>
         </aside>
       </div>
@@ -4075,7 +4264,7 @@ function ReportsSection({
       <div className="sectionHeader">
         <div>
           <p className="sectionKicker">Reports</p>
-          <h2>Protocol report library for case studies and reviewer evidence</h2>
+          <h2>Protocol report library for case studies and buyer evidence</h2>
         </div>
         <span>{items.length > 0 ? `${items.length} live generated` : "Waiting for data"}</span>
       </div>
@@ -4262,7 +4451,7 @@ function CaseStudiesSection({
             <span>Evidence examples</span>
             <strong>Use these instead of vague sample claims</strong>
             <p>
-              Each study answers a reviewer-style question with live scanner data
+              Each study answers an operator-style question with live scanner data
               when available, then separates findings from limitations.
             </p>
           </div>
@@ -4425,7 +4614,7 @@ function SampleReportsSection({
             <strong>Use these before asking protocols to pay</strong>
             <p>
               These samples turn scanner output into public artifacts for protocol
-              grant updates, monitoring workflows, and protocol evidence reviews.
+              program updates, monitoring workflows, and protocol evidence reviews.
             </p>
           </div>
 
@@ -4540,7 +4729,7 @@ function StaticSampleFilesSection({
       <div className="sectionHeader">
         <div>
           <p className="sectionKicker">Static Sample Files</p>
-          <h2>Stable public artifacts for outreach and reviewer previews</h2>
+          <h2>Stable public artifacts for outreach and buyer previews</h2>
         </div>
         <span>{files.length} files</span>
       </div>
@@ -4552,8 +4741,8 @@ function StaticSampleFilesSection({
             <h3>Permanent sample links that work without live data</h3>
             <p>
               These files are served directly from GitHub Pages. Use them in
-              grant drafts, public reviews, and client calls when you need a
-              stable proof-of-work link instead of a generated browser download.
+              DAO updates, public reviews, and client calls when you need a
+              stable delivery example instead of a generated browser download.
             </p>
           </div>
 
@@ -4635,7 +4824,7 @@ function TrustProofSection({ pack }: { pack: TrustProofPack }) {
             <ShieldCheck size={24} />
             <div>
               <span>Proof stack</span>
-              <h3>No fake traction, only links a reviewer can verify</h3>
+              <h3>No fake traction, only links a buyer can verify</h3>
             </div>
           </div>
           <p>{pack.summary}</p>
@@ -4944,7 +5133,7 @@ function buildPricingSheet(layer: ServiceLayer) {
     "",
     "## What You Can Buy",
     "",
-    "Fixed-scope analytics services for protocols, grant teams, and ecosystem operators that need source-backed Superchain DEX volume, fee, liquidity, and market-health evidence.",
+    "Fixed-scope analytics services for protocols, growth teams, DAO contributors, and ecosystem operators that need source-backed Superchain DEX volume, fee, liquidity, and market-health evidence.",
     "",
     "## Packages",
     "",

@@ -369,8 +369,8 @@ function buildOnboardingEmail({
     "",
     `The package I would suggest is ${offer?.name ?? "a focused evidence package"} (${offer?.priceLabel ?? "quote after scope"}, ${offer?.timeline ?? "timeline after scope"}).`,
     selectedSampleReport
-      ? `I can send ${selectedSampleReport.title} as a public proof-of-work sample.`
-      : "I can send a public proof-of-work sample before asking you to commit.",
+      ? `I can send ${selectedSampleReport.title} as a public delivery sample.`
+      : "I can send a public delivery sample before asking you to commit.",
     selectedLead
       ? `Current lead route: ${selectedLead.contactTarget}`
       : "I am looking for the right growth, liquidity, grants or BD owner.",
@@ -425,7 +425,7 @@ function buildDeliveryChecklistMarkdown({
 function buildIntakeQuestions() {
   return [
     "Which protocol, chain, market, or grant program should be covered?",
-    "Who is the reader: growth team, grants team, DAO reviewer, LPs, or BD?",
+    "Who is the reader: growth team, ecosystem team, DAO contributor, LPs, or BD?",
     "What decision should the report support?",
     "What deadline or meeting date should delivery target?",
     "Which metrics matter most: TVL, volume, fees, liquidity depth, incentives, or source audit?",

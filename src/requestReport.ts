@@ -36,16 +36,17 @@ export type RequestReportPack = {
 };
 
 export const REQUEST_TYPES: Array<{ id: RequestReportType; label: string }> = [
-  { id: "diagnostic", label: "Protocol diagnostic" },
-  { id: "monitoring", label: "Monitoring retainer" },
-  { id: "grant-evidence", label: "Grant evidence pack" },
+  { id: "diagnostic", label: "7-day Liquidity Impact Report" },
+  { id: "monitoring", label: "Monthly monitoring" },
+  { id: "grant-evidence", label: "DAO / incentive evidence pack" },
   { id: "custom", label: "Custom scope" },
 ];
 
 export const REQUEST_BUDGETS = [
+  "$500 pilot",
   "$750-$1,500",
-  "$1,000-$2,500/mo",
-  "$2,000-$4,000",
+  "$750-$1,500/mo",
+  "$1,500-$3,000",
   "Need quote",
 ];
 
@@ -69,8 +70,8 @@ export function buildDefaultRequestReportForm({
     contact: selectedLead?.contactUrl ?? selectedLead?.contactTarget ?? "",
     requestType,
     deadline: "",
-    budget: normalizeBudget(selectedOffer?.priceLabel ?? salesKit.priceLabel),
-    notes: `Need ${selectedOffer?.name ?? salesKit.packageName} for ${protocol}.`,
+    budget: "$500 pilot",
+    notes: `Need a 7-day Liquidity Impact Report for ${protocol}: OP / Superchain volume, fees, weak markets, source audit, CSV evidence, PDF report, and next actions.`,
   };
 }
 
@@ -98,10 +99,10 @@ export function buildRequestReportPack({
   const title = `${protocol} ${requestTypeLabel} request`;
   const intakeChecklist = [
     "Confirm the protocol, chain, market scope and reader.",
-    "Confirm the report format: Markdown, CSV, JSON, or full export pack.",
+    "Confirm the report format: PDF report, CSV evidence and source audit.",
     "Refresh live data before final delivery.",
     "Disclose unavailable metrics and source limitations.",
-    "Send the final artifacts only after scope and payment terms are confirmed.",
+    "Confirm whether a 30-minute review call is needed.",
   ];
   const requestMarkdown = [
     "# Request Report",
@@ -116,18 +117,26 @@ export function buildRequestReportPack({
     "",
     "## Selected Package",
     "",
-    `- Package: ${offer?.name ?? salesKit.packageName}`,
-    `- Timeline: ${offer?.timeline ?? salesKit.timeline}`,
+    `- Package: ${requestTypeLabel}`,
+    `- Timeline: ${form.requestType === "diagnostic" ? "7 days" : offer?.timeline ?? salesKit.timeline}`,
     `- Launch status: ${salesKit.status}`,
     `- Readiness score: ${salesKit.readinessScore}/100`,
     "",
     "## Need",
     "",
-    form.notes.trim() || "Client wants a source-backed Superchain liquidity report.",
+    form.notes.trim() || "Client wants a source-backed OP / Superchain liquidity impact report.",
     "",
     "## Deliverables",
     "",
-    ...(offer?.deliverables ?? ["Markdown report", "CSV export", "Source notes"]).map(
+    ...(form.requestType === "diagnostic"
+      ? [
+          "PDF liquidity impact report",
+          "CSV evidence",
+          "Source audit",
+          "Weak-market watchlist",
+          "3-5 next actions",
+        ]
+      : offer?.deliverables ?? ["PDF report", "CSV export", "Source notes"]).map(
       (item) => `- ${item}`,
     ),
     "",
@@ -199,7 +208,7 @@ export function buildRequestReportPack({
     `Deadline: ${deadline}`,
     `Contact: ${contact}`,
     "",
-    form.notes.trim() || "Need source-backed Superchain liquidity evidence.",
+    form.notes.trim() || "Need source-backed OP / Superchain liquidity evidence.",
   ].join("\n");
   const githubIssueUrl = `${ISSUE_REPO_URL}?title=${encodeURIComponent(
     title,
@@ -262,12 +271,12 @@ function normalizeBudget(priceLabel: string) {
   }
 
   if (priceLabel.includes("/mo")) {
-    return "$1,000-$2,500/mo";
+    return "$750-$1,500/mo";
   }
 
-  if (priceLabel.includes("$2,000")) {
-    return "$2,000-$4,000";
+  if (priceLabel.includes("$1,500")) {
+    return "$1,500-$3,000";
   }
 
-  return priceLabel || "Need quote";
+  return priceLabel || "$500 pilot";
 }

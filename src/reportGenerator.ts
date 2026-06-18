@@ -100,7 +100,7 @@ export function buildProtocolMiniReport(
     "- This mini-report uses public DefiLlama browser-accessible endpoints.",
     "- Missing fee or trend values are marked unavailable instead of being replaced with manual estimates.",
     "- This is not a security audit, investment rating, or financial recommendation.",
-    "- The report is intended for protocol growth, grant-readiness, and ecosystem reporting workflows.",
+    "- The report is intended for protocol growth, incentive reporting, internal reviews, DAO updates, and ecosystem evidence when needed.",
     "",
   ]
     .filter((line) => line !== null)
@@ -127,7 +127,7 @@ function buildNextActions(scan: ProtocolScan) {
 
   if (scan.status === "Ready for report") {
     actions.push("Prepare a public one-page case study with CSV evidence and source limitations.");
-    actions.push("Use the report as a grant update or protocol-growth evidence pack before proposing deeper work.");
+    actions.push("Use the report as a liquidity-program update or protocol-growth evidence pack before proposing deeper work.");
   } else if (scan.status === "Monitor") {
     actions.push("Track the same protocol weekly until trend, fee attribution, or confidence improves.");
     actions.push("Use a small diagnostic snapshot instead of proposing a full evidence pack immediately.");

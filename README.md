@@ -1,95 +1,106 @@
 # Superchain Liquidity Ops
 
-Open-source impact reporting for Optimism / Superchain liquidity and incentive programs.
+Independent OP / Superchain liquidity intelligence for teams that need source-backed DEX reports.
 
-Superchain Liquidity Ops helps protocols and reviewers measure whether liquidity incentives produce real DEX volume, fee generation, healthier markets, and reproducible evidence.
+Superchain Liquidity Ops turns public OP and Superchain DEX data into practical reports for protocol teams, growth leads, ecosystem operators, and DAO contributors: volume, fees, weak markets, watchlists, source limits, and next actions.
 
-## Live Demo
+## Live Site
 
 - Public site: https://prostokripta00.github.io/superchain-liquidity-ops/
-- Reviewer pack: `GRANT_REVIEWER_PACK.md`
 - Methodology: `METHODOLOGY.md`
-- Submission draft: `OP_GRANT_SUBMISSION_READY.md`
-- Application copy: `OPTIMISM_APPLICATION.md`
+- Repository: https://github.com/ProstoKripta00/superchain-liquidity-ops
 
-## Product Focus
+Independent tool. Not affiliated with or endorsed by Optimism Foundation.
 
-This project is not trying to compete with DeFiLlama, Dune, Artemis, Token Terminal, Nansen, Flipside, or GeckoTerminal as a raw-data dashboard.
+## Main Offer
 
-The narrower use case is:
+The public product is built around a narrow first sale:
 
 ```text
-Grant / incentive impact evidence packs for Superchain protocols and reviewers.
+7-day Liquidity Impact Report for OP / Superchain markets.
 ```
 
-The app packages public data into decision-ready evidence:
+The report answers:
 
-- what changed after a liquidity or incentive campaign
-- which markets are weak or deteriorating
-- where volume does not produce meaningful fee output
-- what a protocol can show a DAO, foundation, or grant reviewer
-- what next action is supported by the available public data
+- where a protocol has real DEX activity
+- which markets are weak, stale, or underused
+- whether volume is producing visible fee output
+- which public data can be verified by a buyer or DAO
+- what action is justified next
 
-## Current Proof-Of-Work
+Pilot price: `$500`.
 
-The current app is live-data first. It does not display a local metric fixture dataset.
+Standard pricing after initial proof:
+
+- 7-day Liquidity Impact Report: `$750-$1,500`
+- Monthly Monitoring: `$750-$1,500/mo`
+- DAO / Incentive Evidence Pack: `$1,500-$3,000`
+
+## Public Product
+
+The public site exposes the buyer-facing workflow:
+
+1. Live OP / Superchain Snapshot
+2. What You Get
+3. Protocol Scanner
+4. Generated Reports
+5. Sample Case Studies
+6. Methodology
+7. Pricing
+8. Trust / Boundaries
+9. Request Report
+10. Sources
+
+Public sections focus on proof, source transparency, and a clear request path. Internal sales tools are hidden by default.
+
+## Operator Tools
+
+Operator tools are available with:
+
+```text
+?operator=1
+```
+
+They include:
+
+- pricing and service package builder
+- payment / terms block
+- static sample file links
+- intake form
+- export pack builder
+- automation runbook
+- scheduled snapshots plan
+- service layer
+- lead target list
+- outreach pipeline with browser-local CRM fields
+
+These tools support manual commercialization. They are not required for a public buyer to understand the product.
+
+## Current Proof Of Work
 
 Live now:
 
 - browser-accessible DefiLlama ingestion for `OP Mainnet`, `Base`, `Unichain`, `Mode`, and `Zora`
-- network and outcome filters
-- DEX market rows for 24h, 7d, and 30d volume
 - chain-level TVL, DEX volume, and fee totals
+- DEX market rows for 24h, 7d, and 30d volume
 - protocol scanner for Uniswap, Aerodrome, Velodrome, Curve, PancakeSwap, SushiSwap, Balancer, and KIM Exchange
 - protocol health score with grade, confidence, component weights, strengths, risks, and recommendation
-- methodology section with visible formulas and score weights
-- mini report generator with Markdown download and print / save PDF workflow
-- reports workspace with generated protocol reports
-- public case studies for Uniswap, Aerodrome, and Velodrome using live scanner data when available
-- public sample reports and static sample files
-- trust / proof section with public repo, live demo, methodology, source audit, and delivery boundaries
-- contact / request report form and client intake form
-- export pack builder with Markdown, CSV, summary JSON, and handoff JSON
-- automation runbook and scheduled snapshot plan
-- live market table, chain coverage, source audit, and reviewer pack
+- generated Markdown reports with copy, download, and browser print flow
+- public case studies and sample reports
+- request report flow with package, budget, scope, contact, and deliverable checklist
+- source audit with public endpoint links and status
 
-Internal operator tools are hidden behind `Operator mode` in the UI:
-
-- pricing and service package builder
-- payment / terms block
-- launch desk
-- service layer
-- lead target list
-- outreach pipeline with local CRM fields
-
-These tools exist for manual commercialization, but they are not the public grant argument.
-
-## Reviewer Flow
-
-1. Open the public site.
-2. Confirm the live status panel shows source state and refresh time.
-3. Open `Scanner` and review protocol health scores.
-4. Open `Methodology` and check score weights, formulas, and limitations.
-5. Open `Reports` and inspect a generated protocol report.
-6. Export Markdown or use `Print / Save PDF`.
-7. Open `Case studies` and review a concrete public protocol analysis.
-8. Open `Sample reports` and static sample files for artifact examples.
-9. Open `Trust proof` and verify links, boundaries, and source transparency.
-10. Open `Export pack` and download report artifacts.
-11. Open `Scheduled snapshots` to inspect the automation plan.
-12. Open `Sources` and confirm every live number links back to a public endpoint.
+Unavailable values are shown as unavailable. The app does not silently replace missing public data with manual numbers.
 
 ## Data Sources
 
-The browser-first public dashboard uses DefiLlama endpoints that work from GitHub Pages:
+The browser-first dashboard uses DefiLlama endpoints that work from GitHub Pages:
 
 ```text
 https://api.llama.fi/v2/chains
 https://api.llama.fi/overview/dexs/{chain}
 https://api.llama.fi/overview/fees/{chain}
 ```
-
-Unavailable values are shown as unavailable. The app does not silently substitute manual numbers.
 
 ## Scoring Model
 
@@ -125,39 +136,17 @@ Grades:
 - `C`: 45-64
 - `D`: below 45
 
-## Grant Fit
-
-The grant-facing framing is:
-
-```text
-Funding to build an automated open-source Superchain liquidity impact monitoring system with reproducible snapshots, methodology, PDF evidence packs, and public case studies.
-```
-
-Strong grant signals already present:
-
-- open-source repository
-- public live demo
-- public data sources
-- source audit
-- export packs
-- report generator
-- methodology
-- case studies
-- no fake clients or testimonials
-- explicit limitations and non-financial-advice boundary
-
 ## Commercial Path
 
-The practical monetization path is manual or semi-automated evidence reports, not a full SaaS subscription from day one.
+The practical monetization path is manual reporting first, not a full SaaS subscription from day one.
 
-Realistic first offers:
+First buyer path:
 
-- first diagnostic report: `$300-$750`
-- after one strong public case: `$750-$1,500`
-- monitoring retainer: after a client has a recurring reporting need
-- grant evidence pack: `$1,500-$3,000` when it helps a team receive, defend, or report funding
-
-Operator tools in the app support this workflow, but the public product remains focused on ecosystem evidence.
+1. Send the public site and one sample case.
+2. Offer a fixed 7-day report for one protocol, DEX, or network scope.
+3. Deliver PDF/Markdown report, CSV evidence, source audit, weak-market review, and 3-5 next actions.
+4. If the buyer needs recurring visibility, offer monthly monitoring.
+5. If the buyer is preparing DAO, incentive, or ecosystem reporting, package a larger evidence pack.
 
 ## Architecture
 
@@ -175,10 +164,10 @@ Live data adapters
 Data engine: normalization, nullable metrics, ratios, weighted trends, market health
         |
         v
-Protocol scanner, methodology, reports, case studies, export packs, snapshots, source audit
+Protocol scanner, reports, case studies, pricing, request flow, source audit
         |
         v
-Public impact console and optional operator workspace
+Public report sales page and optional operator workspace
 ```
 
 Current stack:
@@ -188,17 +177,6 @@ Current stack:
 - Vite
 - Lucide icons
 - GitHub Pages deployment
-
-## Roadmap
-
-1. Add a real scheduled snapshot job that commits static JSON/CSV artifacts.
-2. Add official Optimism priority-pair configuration.
-3. Add pool-level adapters through backend or scheduled static ingestion where browser APIs are insufficient.
-4. Add before/after campaign windows for incentive reporting.
-5. Improve PDF export beyond browser print.
-6. Publish two public case studies from live data.
-7. Add alerting for declining activity, weak fee output, or source degradation.
-8. Add optional shared backend storage for operator CRM/intake records.
 
 ## Repository Map
 
@@ -212,9 +190,10 @@ src/caseStudies.ts           Public protocol case studies
 src/sampleReports.ts         Public sample report generation
 src/staticSamples.ts         Stable sample file metadata and GitHub Pages URLs
 src/trustProof.ts            Verifiable proof stack and delivery boundaries
-src/exportPack.ts            Export pack manifest, CSV generation, JSON handoff package
-src/automation.ts            Browser-side automation runbook generator
-src/scheduledSnapshots.ts    Snapshot schedule plan, YAML template, JSON export
+src/requestReport.ts         Request report package and buyer intake copy
+src/exportPack.ts            Operator export pack manifest, CSV generation, JSON handoff
+src/automation.ts            Operator automation runbook generator
+src/scheduledSnapshots.ts    Operator snapshot schedule plan, YAML template, JSON export
 src/serviceLayer.ts          Operator service offers and package briefs
 src/leadTargets.ts           Operator lead shortlist
 src/outreachPipeline.ts      Operator outreach pipeline and local CRM fields
@@ -233,7 +212,7 @@ npm run dev
 Open:
 
 ```text
-http://127.0.0.1:5175
+http://127.0.0.1:5175/superchain-liquidity-ops/
 ```
 
 Build:
@@ -242,8 +221,19 @@ Build:
 npm run build
 ```
 
+## Roadmap
+
+1. Add real scheduled snapshots that commit static JSON/CSV artifacts.
+2. Add official OP / Superchain priority-pair configuration.
+3. Add deeper pool-level adapters through backend or scheduled static ingestion.
+4. Add before/after campaign windows for incentive reporting.
+5. Improve PDF export beyond browser print.
+6. Publish more public case studies from live data.
+7. Add alerting for declining activity, weak fee output, or source degradation.
+8. Add optional shared backend storage for operator CRM/intake records.
+
 ## Status
 
-Beta / live proof-of-work.
+Beta / live product proof.
 
-The current version is suitable for demonstrating the reviewer workflow, transparent public data handling, report exports, and the case-study model. The next serious upgrade is real scheduled snapshots.
+The current version is suitable for demonstrating the report workflow, transparent public data handling, case-study model, pricing, and request flow. The next serious upgrade is recurring snapshots and deeper pool-level data.

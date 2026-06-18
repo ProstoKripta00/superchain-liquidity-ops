@@ -15,7 +15,7 @@ export const TRACKED_PROTOCOLS: ProtocolProfile[] = [
     slugs: ["aerodrome-v1", "aerodrome-slipstream"],
     segment: "Base liquidity hub",
     thesis:
-      "Large Base liquidity venue where volume, fee efficiency and pool-level watchlists can become a paid reviewer report.",
+      "Large Base liquidity venue where volume, fee efficiency and pool-level watchlists can become a paid liquidity impact report.",
   },
   {
     id: "velodrome",
@@ -31,7 +31,7 @@ export const TRACKED_PROTOCOLS: ProtocolProfile[] = [
     slugs: ["curve-dex"],
     segment: "Stable liquidity venue",
     thesis:
-      "Stable-pair liquidity activity where fee-to-volume and TVL efficiency can be packaged for grant and treasury reviewers.",
+      "Stable-pair liquidity activity where fee-to-volume and TVL efficiency can be packaged for treasury and growth teams.",
   },
   {
     id: "pancakeswap",

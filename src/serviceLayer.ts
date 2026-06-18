@@ -123,7 +123,7 @@ export function buildServiceLayer({
     {
       id: "monitoring-retainer",
       name: "Liquidity Monitoring Retainer",
-      audience: "Protocol growth, ecosystem, or grants team",
+      audience: "Protocol growth, ecosystem, or DAO operations team",
       priceLabel: "$750-$1,500 / month after pilot",
       timeline: "Weekly after first case",
       status: filteredMarkets.length > 0
@@ -142,7 +142,7 @@ export function buildServiceLayer({
         "Weekly automation runbook",
         "Watchlist of weak or deteriorating markets",
         "Scope CSV export",
-        "Short action memo for protocol or grant stakeholders",
+        "Short action memo for protocol or ecosystem stakeholders",
       ],
       acceptanceCriteria: [
         "Weekly runbook is delivered on the agreed cadence",
@@ -157,8 +157,8 @@ export function buildServiceLayer({
     },
     {
       id: "grant-evidence-pack",
-      name: "Grant Evidence Pack",
-      audience: "Grant recipient, DAO reviewer, or ecosystem operations team",
+      name: "DAO / Incentive Evidence Pack",
+      audience: "Protocol team, DAO contributor, or ecosystem operations team",
       priceLabel: "$1,500-$3,000 after validated case",
       timeline: "7-10 days",
       status: selectedExportPack
@@ -170,20 +170,20 @@ export function buildServiceLayer({
       fitScore: Math.min(100, (selectedProtocol?.healthScore.confidence ?? 40) + 20),
       protocolName,
       problem:
-        "Grant teams need evidence that liquidity programs created measurable DEX activity, fee output and market health, not just screenshots.",
+        "DAO and incentive teams need evidence that liquidity programs created measurable DEX activity, fee output and market health, not just screenshots.",
       salesAngle: selectedExportPack
-        ? `${selectedExportPack.title} already packages Markdown, CSV and JSON artifacts for reviewer handoff.`
+        ? `${selectedExportPack.title} already packages Markdown, CSV and JSON artifacts for operator handoff.`
         : "Create an export pack before pitching this service.",
       operatingCadence: "Project delivery with kickoff, evidence pack, and final handoff.",
       deliverables: [
-        "Reviewer-ready narrative",
+        "Decision-ready narrative",
         "Before/after metric scope",
         "Export pack JSON and CSV artifacts",
         "Methodology and source limitation notes",
       ],
       acceptanceCriteria: [
         "Evidence pack lists the metric scope and public endpoints",
-        "Reviewer can reproduce the exported numbers from dashboard sources",
+        "Buyer can reproduce the exported numbers from dashboard sources",
         "Final handoff separates facts, risks and recommendations",
       ],
       includedArtifacts: selectedExportPack

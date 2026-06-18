@@ -76,7 +76,7 @@ Fee efficiency compares fees generated against liquidity supplied:
 fee_efficiency = 30d_fees / TVL
 ```
 
-This helps reviewers distinguish underused liquidity from markets that generate meaningful activity.
+This helps operators distinguish underused liquidity from markets that generate meaningful activity.
 
 In the live app this concept is represented as 30d fee-to-volume:
 
@@ -190,19 +190,19 @@ Scanner statuses:
 
 The score is intentionally conservative when public data is incomplete. Missing values are not replaced by manual assumptions.
 
-## Reviewer Outputs
+## Report Outputs
 
-The MVP should produce grant-review artifacts:
+The MVP should produce buyer-facing liquidity impact artifacts:
 
 - CSV export by market
 - protocol scanner and health score summary for evidence report preparation
 - Markdown mini-report for a selected protocol
 - reports workspace for selecting, previewing, copying, and downloading generated reports
 - print / save PDF workflow for generated reports and public case studies
-- public case studies for Uniswap, Aerodrome, and Velodrome that answer a concrete reviewer-style decision question
-- public sample reports for client-facing proof-of-work across diagnostic, monitoring, and grant-evidence services
+- public case studies for Uniswap, Aerodrome, and Velodrome that answer a concrete operator-style decision question
+- public sample reports for client-facing examples across diagnostic, monitoring, and DAO/incentive evidence services
 - static sample files for stable Markdown, CSV, JSON, and manifest links that do not depend on live data
-- trust / proof section that links to the public repository, live app, methodology, sample manifest, reviewer pack, source audit, and delivery boundaries
+- trust / proof section that links to the public repository, live app, methodology, sample manifest, source audit, and delivery boundaries
 - contact / request report intake with editable client scope, copy-ready request text, GitHub issue link, Markdown export, and JSON export
 - intake form with client scope fields, chain and metric selection, local saved intake records, public issue consent, Markdown export, JSON export, and saved-record export
 - export pack containing Markdown, CSV, structured JSON, and a manifest-style JSON handoff package
@@ -222,7 +222,7 @@ Operator-only outputs are hidden from the public site by default:
 - lead target list
 - outreach pipeline with contact enrichment and local CRM fields
 
-This separation matters for grant review: the public product is ecosystem evidence infrastructure, while operator mode is the manual commercialization workspace.
+This separation matters for buyer clarity: the public product sells source-backed liquidity reports, while operator mode is the manual commercialization workspace.
 
 ## Mini Report Generator
 
@@ -238,7 +238,7 @@ The mini-report generator converts the selected protocol scan into a Markdown ar
 - next actions
 - methodology notes
 
-The generated report is intended for public examples, grant updates, protocol growth conversations, and optional operator outreach. It uses the same live scanner output and matched market rows shown in the dashboard.
+The generated report is intended for public examples, incentive program updates, protocol growth conversations, DAO updates, and optional operator outreach. It uses the same live scanner output and matched market rows shown in the dashboard.
 
 ## Reports Workspace
 
@@ -250,7 +250,7 @@ Current selection rule:
 - fall back to the top scanner scores when fewer than three protocols are ready
 - generate each report from the same live protocol scan and matched markets used by the selected mini-report workflow
 
-Each report can be selected, previewed as Markdown, copied, or downloaded as an `.md` file. These reports are examples for outreach and reviewer inspection. They are not manually curated endorsements, and they regenerate when the live snapshot changes.
+Each report can be selected, previewed as Markdown, copied, or downloaded as an `.md` file. These reports are examples for outreach and operator inspection. They are not manually curated endorsements, and they regenerate when the live snapshot changes.
 
 ## Public Case Studies
 
@@ -275,17 +275,17 @@ Each case study includes:
 - print / save PDF workflow
 - JSON bundle export
 
-The purpose is to show that the product can turn public data into a reviewer-ready narrative. This is stronger than a generic dashboard screenshot because it explains what the data means, what remains unavailable, and what next action is justified.
+The purpose is to show that the product can turn public data into a decision-ready narrative. This is stronger than a generic dashboard screenshot because it explains what the data means, what remains unavailable, and what next action is justified.
 
 ## Public Sample Reports
 
-Public Sample Reports convert the scanner and mini-report output into client-facing proof-of-work examples.
+Public Sample Reports convert the scanner and mini-report output into client-facing delivery examples.
 
 Current sample types:
 
 - Protocol Diagnostic Sprint sample
 - Liquidity Monitoring Retainer sample
-- Grant Evidence Pack sample
+- DAO / Incentive Evidence Pack sample
 
 When a matching live protocol scan exists, each sample is generated from current scanner data and matched Superchain markets. When live data is unavailable, the sample remains visible as a template fallback and clearly marks unavailable values. This keeps the sales artifact honest while still showing the report structure.
 
@@ -297,19 +297,19 @@ Each sample includes:
 - Markdown report output
 - JSON bundle export for the full public sample library
 
-These samples are designed for public portfolio, outbound sales, and grant/product-review conversations. They are not security audits, investment recommendations, or manually curated endorsements.
+These samples are designed for public portfolio, outbound sales, protocol growth conversations, and DAO/incentive reporting conversations. They are not security audits, investment recommendations, or manually curated endorsements.
 
 ## Static Sample Files
 
 Static Sample Files are stable public artifacts served directly from `public/samples/` on GitHub Pages. They complement the generated sample reports.
 
-The generated sample reports are live and can change when public data changes. Static sample files are intentionally fixed so they can be linked in outreach, grant drafts, README documentation, and client calls without requiring the live dashboard to finish loading.
+The generated sample reports are live and can change when public data changes. Static sample files are intentionally fixed so they can be linked in outreach, DAO updates, README documentation, and client calls without requiring the live dashboard to finish loading.
 
 Current files:
 
 - protocol diagnostic Markdown sample
 - liquidity monitoring Markdown sample
-- grant evidence pack Markdown sample
+- DAO / incentive evidence pack Markdown sample
 - client intake Markdown sample
 - request report Markdown sample
 - market impact CSV sample
@@ -320,7 +320,7 @@ The static files are not live measurements. They are examples of structure, deli
 
 ## Trust / Proof Section
 
-The Trust / Proof section is designed for buyers, grant reviewers, and protocol operators who need to verify the project before responding to an outreach message.
+The Trust / Proof section is designed for buyers, protocol operators, growth leads, and ecosystem teams who need to verify the project before responding to an outreach message.
 
 It uses the current app state plus fixed public links to show:
 
@@ -328,7 +328,6 @@ It uses the current app state plus fixed public links to show:
 - live GitHub Pages dashboard
 - documented methodology
 - static sample manifest
-- grant reviewer pack
 - source audit trail
 - delivery boundaries
 
@@ -351,7 +350,7 @@ Current packages:
 
 - Protocol Diagnostic Sprint
 - Liquidity Monitoring Retainer
-- Grant Evidence Pack
+- DAO / Incentive Evidence Pack
 
 Each package includes:
 
@@ -487,7 +486,7 @@ Current artifacts:
 - protocol summary JSON with score, health components, metrics, recommendation, and source audit context
 - full JSON handoff pack containing the manifest and embedded artifact contents
 
-The pack is generated in the browser from the same live snapshot as the dashboard. It is not a signed audit file or a permanent archive. The purpose is to make protocol outreach, reviewer updates, and later automation easier to hand off without manually copying several screens.
+The pack is generated in the browser from the same live snapshot as the dashboard. It is not a signed audit file or a permanent archive. The purpose is to make protocol outreach, incentive updates, DAO updates, and later automation easier to hand off without manually copying several screens.
 
 ## Automation
 
@@ -538,13 +537,13 @@ The GitHub Actions template is intentionally a starting point, not a hidden clai
 
 ## Service Layer
 
-The Service Layer turns the evidence system into client packages. It does not invent results or guarantee sales. It packages the current scanner, report, export and automation state into offers that can be sent to a protocol, grants team, or ecosystem operator.
+The Service Layer turns the evidence system into client packages. It does not invent results or guarantee sales. It packages the current scanner, report, export and automation state into offers that can be sent to a protocol, growth team, DAO contributor, or ecosystem operator.
 
 Current service offers:
 
 - Protocol Diagnostic Sprint: a fixed-scope report using the selected protocol mini-report and matched market exports
 - Liquidity Monitoring Retainer: weekly runbook, watchlist and source-health monitoring for the selected Superchain scope
-- Grant Evidence Pack: reviewer-ready package for teams that need public evidence around liquidity, volume, fees and source limitations
+- DAO / Incentive Evidence Pack: decision-ready package for teams that need public evidence around liquidity, volume, fees and source limitations
 
 Each offer includes:
 
@@ -657,4 +656,4 @@ Current adapters cover:
 - Zora
 - live DEX market volume, protocol fee attribution when available, source URLs, chain TVL, chain DEX volume, chain fees, and basic health scoring
 
-Later phases can add more Superchain networks, DEXs, alerting, APIs, and automated reviewer reports.
+Later phases can add more Superchain networks, DEXs, alerting, APIs, and automated operator reports.

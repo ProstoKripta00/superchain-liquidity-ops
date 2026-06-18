@@ -72,7 +72,7 @@ export const INTAKE_METRIC_OPTIONS: Array<{ id: IntakeMetricId; label: string }>
 
 export const INTAKE_DECISIONS: Array<{ id: IntakeDecisionId; label: string }> = [
   { id: "growth-budget", label: "Growth budget decision" },
-  { id: "grant-review", label: "Grant review evidence" },
+  { id: "grant-review", label: "DAO / incentive evidence" },
   { id: "lp-update", label: "LP / stakeholder update" },
   { id: "protocol-monitoring", label: "Protocol monitoring" },
   { id: "custom", label: "Custom decision" },
@@ -118,7 +118,7 @@ export function buildDefaultIntakeForm({
     teamName: selectedLead?.protocolName ?? requestForm.protocol,
     contactName: selectedLead?.contactName ?? "",
     contactRoute: selectedLead?.contactUrl || requestForm.contact,
-    role: selectedLead ? "Growth / liquidity owner" : "Founder / growth / grants",
+    role: selectedLead ? "Growth / liquidity owner" : "Founder / growth / ecosystem",
     decision: selectedOffer?.id === "grant-evidence-pack" ? "grant-review" : "growth-budget",
     chains,
     metrics: defaultMetrics(target),

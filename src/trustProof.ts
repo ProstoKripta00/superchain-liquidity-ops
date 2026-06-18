@@ -124,7 +124,7 @@ export function buildTrustProofPack({
         action: "Open manifest",
         category: "Artifacts",
         description:
-          "Stable Markdown, CSV, JSON, and manifest files are served as public proof-of-work examples.",
+          "Stable Markdown, CSV, JSON, and manifest files are served as public delivery examples.",
         href: MANIFEST_URL,
         id: "static-sample-manifest",
         proof: `${staticSampleCount} static sample files`,
@@ -132,15 +132,15 @@ export function buildTrustProofPack({
         title: "Static sample manifest",
       },
       {
-        action: "Open pack",
-        category: "Reviewer",
+        action: "View cases",
+        category: "Evidence",
         description:
-          "Grant-style evidence, scope, milestones, budget, risks, and reviewer workflow are packaged in one public document.",
-        href: `${REPO_URL}/blob/main/GRANT_REVIEWER_PACK.md`,
-        id: "reviewer-pack",
-        proof: "GRANT_REVIEWER_PACK.md",
-        status: "Documented",
-        title: "Reviewer pack",
+          "Public case studies show how live scanner data becomes a buyer-readable liquidity impact narrative.",
+        href: `${LIVE_APP_URL}#case-studies`,
+        id: "public-case-studies",
+        proof: "Live-generated case study workflow",
+        status: "Live",
+        title: "Public case studies",
       },
       {
         action: "Check sources",
@@ -183,7 +183,7 @@ export function buildTrustProofPack({
       },
       {
         label: "Sample reports",
-        note: "Generated proof-of-work reports",
+        note: "Generated product reports",
         value: String(sampleReportCount),
       },
       {
@@ -192,22 +192,12 @@ export function buildTrustProofPack({
         value: String(staticSampleCount),
       },
       {
-        label: "Service packages",
-        note: `${serviceReadyCount} ready of ${serviceOfferCount}`,
-        value: `${serviceReadyCount}/${serviceOfferCount}`,
-      },
-      {
-        label: "Launch readiness",
-        note: launchStatus,
-        value: `${readinessScore}%`,
-      },
-      {
-        label: "Saved intakes",
-        note: "Browser local storage",
-        value: String(savedIntakeCount),
+        label: "Request flow",
+        note: "Public report request section",
+        value: "Live",
       },
     ],
     summary:
-      "A compact proof layer for buyers and reviewers: public source code, live demo, methodology, sample artifacts, source audit, and clear delivery boundaries without fake traction claims.",
+      "A compact proof layer for buyers and operators: public source code, live demo, methodology, sample artifacts, source audit, and clear delivery boundaries without fake traction claims.",
   };
 }

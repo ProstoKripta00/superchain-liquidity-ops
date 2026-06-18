@@ -38,14 +38,14 @@ export const STATIC_SAMPLE_FILES: StaticSampleFile[] = [
   },
   {
     id: "grant-evidence-pack",
-    title: "Grant Evidence Pack",
-    category: "Reviewer proof",
+    title: "DAO / Incentive Evidence Pack",
+    category: "Decision proof",
     format: "Markdown",
     fileName: "grant-evidence-pack-sample.md",
     href: `${SAMPLE_BASE_URL}grant-evidence-pack-sample.md`,
     description:
-      "Reviewer-ready sample that maps DEX activity, fees, market health and source transparency.",
-    useCase: "Attach to grant-reporting or ecosystem evidence pitches.",
+      "Decision-ready sample that maps DEX activity, fees, market health and source transparency.",
+    useCase: "Attach to DAO, incentive-reporting, or ecosystem evidence pitches.",
   },
   {
     id: "client-intake",
