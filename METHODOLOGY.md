@@ -169,6 +169,7 @@ The MVP should produce grant-review artifacts:
 - public sample reports for client-facing proof-of-work across diagnostic, monitoring, and grant-evidence services
 - offer / pricing page with fixed-scope packages, price ranges, timelines, deliverables, and buyer brief actions
 - launch desk with proposal, onboarding email, delivery checklist, buyer FAQ, terms, and sales-kit export
+- contact / request report intake with editable client scope, copy-ready request text, GitHub issue link, Markdown export, and JSON export
 - export pack containing Markdown, CSV, structured JSON, and a manifest-style JSON handoff package
 - automation runbook with report, export-pack, watchlist, source-audit, and scope-refresh jobs
 - service layer with client-ready package briefs, deliverables, acceptance criteria, and service JSON
@@ -279,6 +280,28 @@ Readiness inputs:
 - service-layer readiness
 
 The Launch Desk is intentionally manual. It does not send messages, collect payment, or sign contracts. Its purpose is to make the project usable for a real first client: copy the proposal, confirm scope, agree payment method outside the app, deliver the report and exports, then save follow-up state in the CRM.
+
+## Contact / Request Report
+
+The Contact / Request Report section turns the selected package and lead context into a client intake surface. It is designed to make the public demo usable as a service entry point without requiring a backend.
+
+Current outputs:
+
+- editable protocol/project field
+- editable contact route field
+- request type selector
+- deadline field
+- budget selector
+- notes field
+- copy-ready Markdown request
+- short Telegram/DM request text
+- prefilled GitHub issue link
+- request JSON export
+- delivery guardrails
+
+The section does not submit private data to a server. It generates text, files, and a public GitHub issue URL in the browser. A real client can copy the request into a private channel, open a GitHub issue for public scope discussion, or download the request pack for handoff.
+
+This keeps the sales workflow honest: the app can receive a scoped request, but payment, contracts, sensitive documents, and final delivery terms remain manual until a backend and secure intake process exist.
 
 ## Export Pack
 

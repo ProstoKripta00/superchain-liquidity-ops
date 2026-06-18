@@ -53,6 +53,15 @@ import {
 } from "./outreachPipeline";
 import { buildProtocolMiniReport } from "./reportGenerator";
 import {
+  REQUEST_BUDGETS,
+  REQUEST_TYPES,
+  buildDefaultRequestReportForm,
+  buildRequestReportPack,
+  type RequestReportForm,
+  type RequestReportPack,
+  type RequestReportType,
+} from "./requestReport";
+import {
   buildSampleReports,
   buildSampleReportsJson,
   type SampleReport,
@@ -122,6 +131,11 @@ type ServiceFeedbackAction =
   | "download-pricing"
   | "json";
 type OutreachFeedbackAction = "pitch" | "csv" | "json";
+type RequestFeedbackAction =
+  | "copy-request"
+  | "copy-telegram"
+  | "download-request"
+  | "download-json";
 const leadStatuses: LeadStatus[] = [
   "New",
   "Ready to contact",
@@ -143,6 +157,7 @@ function App() {
   const [selectedServiceOfferId, setSelectedServiceOfferId] = useState<
     ServiceOffer["id"] | null
   >(null);
+  const [requestForm, setRequestForm] = useState<RequestReportForm | null>(null);
   const [crmRecords, setCrmRecords] = useState<OutreachCrmRecords>(() =>
     loadOutreachCrmRecords(),
   );
@@ -178,6 +193,10 @@ function App() {
   } | null>(null);
   const [outreachFeedback, setOutreachFeedback] = useState<{
     action: OutreachFeedbackAction;
+    label: string;
+  } | null>(null);
+  const [requestFeedback, setRequestFeedback] = useState<{
+    action: RequestFeedbackAction;
     label: string;
   } | null>(null);
   const [automationRunVersion, setAutomationRunVersion] = useState(0);
@@ -396,6 +415,33 @@ function App() {
       serviceLayer,
     ],
   );
+  const defaultRequestForm = useMemo(
+    () =>
+      buildDefaultRequestReportForm({
+        salesKit,
+        selectedLead,
+        selectedOffer: selectedServiceOffer,
+      }),
+    [salesKit, selectedLead, selectedServiceOffer],
+  );
+  const activeRequestForm = requestForm ?? defaultRequestForm;
+  const requestReportPack = useMemo(
+    () =>
+      buildRequestReportPack({
+        form: activeRequestForm,
+        salesKit,
+        selectedLead,
+        selectedOffer: selectedServiceOffer,
+        serviceLayer,
+      }),
+    [
+      activeRequestForm,
+      salesKit,
+      selectedLead,
+      selectedServiceOffer,
+      serviceLayer,
+    ],
+  );
 
   const chainRows = useMemo(
     () => buildChainCoverageRows(chains, network),
@@ -559,6 +605,68 @@ function App() {
       "application/json;charset=utf-8",
     );
     setTemporaryLaunchFeedback("download-json", "Downloaded");
+  };
+
+  const setTemporaryRequestFeedback = (
+    action: RequestFeedbackAction,
+    label: string,
+  ) => {
+    setRequestFeedback({ action, label });
+
+    window.setTimeout(() => {
+      setRequestFeedback((current) =>
+        current?.action === action ? null : current,
+      );
+    }, 1600);
+  };
+
+  const updateRequestForm = (patch: Partial<RequestReportForm>) => {
+    setRequestForm((current) => ({
+      ...defaultRequestForm,
+      ...current,
+      ...patch,
+    }));
+  };
+
+  const resetRequestForm = () => {
+    setRequestForm(null);
+    setTemporaryRequestFeedback("copy-request", "Reset");
+  };
+
+  const copyRequestMarkdown = async (pack: RequestReportPack) => {
+    try {
+      await writeClipboardText(pack.requestMarkdown);
+      setTemporaryRequestFeedback("copy-request", "Copied");
+    } catch {
+      setTemporaryRequestFeedback("copy-request", "Request ready");
+    }
+  };
+
+  const copyTelegramRequest = async (pack: RequestReportPack) => {
+    try {
+      await writeClipboardText(pack.telegramCopy);
+      setTemporaryRequestFeedback("copy-telegram", "Copied");
+    } catch {
+      setTemporaryRequestFeedback("copy-telegram", "Text ready");
+    }
+  };
+
+  const downloadRequestMarkdown = (pack: RequestReportPack) => {
+    downloadTextFile(
+      "superchain-request-report.md",
+      pack.requestMarkdown,
+      "text/markdown;charset=utf-8",
+    );
+    setTemporaryRequestFeedback("download-request", "Downloaded");
+  };
+
+  const downloadRequestJson = (pack: RequestReportPack) => {
+    downloadTextFile(
+      "superchain-request-report.json",
+      pack.requestJson,
+      "application/json;charset=utf-8",
+    );
+    setTemporaryRequestFeedback("download-json", "Downloaded");
   };
 
   const setTemporaryExportPackFeedback = (
@@ -812,6 +920,7 @@ function App() {
           <a href="#sample-reports">Sample reports</a>
           <a href="#pricing">Pricing</a>
           <a href="#launch-desk">Launch desk</a>
+          <a href="#request-report">Request report</a>
           <a href="#export-pack">Export pack</a>
           <a href="#automation">Automation</a>
           <a href="#service-layer">Service layer</a>
@@ -1052,6 +1161,18 @@ function App() {
           onDownloadChecklist={() => downloadDeliveryChecklist(salesKit)}
           onDownloadJson={() => downloadSalesKitJson(salesKit)}
           onDownloadProposal={() => downloadLaunchProposal(salesKit)}
+        />
+
+        <RequestReportSection
+          feedback={requestFeedback}
+          form={activeRequestForm}
+          onCopyRequest={() => void copyRequestMarkdown(requestReportPack)}
+          onCopyTelegram={() => void copyTelegramRequest(requestReportPack)}
+          onDownloadJson={() => downloadRequestJson(requestReportPack)}
+          onDownloadRequest={() => downloadRequestMarkdown(requestReportPack)}
+          onReset={resetRequestForm}
+          onUpdate={updateRequestForm}
+          pack={requestReportPack}
         />
 
         <ExportPackSection
@@ -1573,6 +1694,196 @@ function LaunchDeskSection({
             <strong key={term}>{term}</strong>
           ))}
         </section>
+      </div>
+    </section>
+  );
+}
+
+function RequestReportSection({
+  feedback,
+  form,
+  onCopyRequest,
+  onCopyTelegram,
+  onDownloadJson,
+  onDownloadRequest,
+  onReset,
+  onUpdate,
+  pack,
+}: {
+  feedback: {
+    action: RequestFeedbackAction;
+    label: string;
+  } | null;
+  form: RequestReportForm;
+  onCopyRequest: () => void;
+  onCopyTelegram: () => void;
+  onDownloadJson: () => void;
+  onDownloadRequest: () => void;
+  onReset: () => void;
+  onUpdate: (patch: Partial<RequestReportForm>) => void;
+  pack: RequestReportPack;
+}) {
+  const feedbackFor = (action: RequestFeedbackAction) =>
+    feedback?.action === action ? feedback.label : null;
+  const budgetOptions = Array.from(new Set([form.budget, ...REQUEST_BUDGETS]));
+  const preview = pack.requestMarkdown.split("\n").slice(0, 34).join("\n");
+
+  return (
+    <section className="requestReportSection" id="request-report">
+      <div className="sectionHeader">
+        <div>
+          <p className="sectionKicker">Contact / Request Report</p>
+          <h2>Make it easy for a client to request a paid report</h2>
+        </div>
+        <span>{pack.title}</span>
+      </div>
+
+      <div className="requestLayout">
+        <article className="requestLead">
+          <div className="requestTitle">
+            <span>Request pack</span>
+            <h3>{pack.summary}</h3>
+            <small>{new Date(pack.generatedAt).toLocaleString()}</small>
+          </div>
+
+          <div className="requestMetaGrid">
+            <Stat label="Protocol" value={form.protocol || "Not set"} />
+            <Stat label="Budget" value={form.budget || "Need quote"} />
+            <Stat label="Deadline" value={form.deadline || "Flexible"} />
+            <Stat label="Route" value={form.contact || "Manual"} />
+          </div>
+
+          <div className="requestActions">
+            <button type="button" onClick={onCopyRequest}>
+              <FileCheck2 size={17} />
+              {feedbackFor("copy-request") ?? "Copy request"}
+            </button>
+            <button type="button" onClick={onCopyTelegram}>
+              <MessageSquare size={17} />
+              {feedbackFor("copy-telegram") ?? "Copy Telegram text"}
+            </button>
+            <button type="button" onClick={onDownloadRequest}>
+              <ArrowDownToLine size={17} />
+              {feedbackFor("download-request") ?? "Download request"}
+            </button>
+            <button type="button" onClick={onDownloadJson}>
+              <DatabaseZap size={17} />
+              {feedbackFor("download-json") ?? "Download JSON"}
+            </button>
+            <a
+              className="requestOpenIssue"
+              href={pack.githubIssueUrl}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <GitBranch size={17} />
+              Open GitHub issue
+              <ExternalLink size={15} />
+            </a>
+          </div>
+
+          <pre className="requestPreview">{preview}</pre>
+        </article>
+
+        <aside className="requestFormPanel">
+          <div className="requestFormHead">
+            <div>
+              <span>Client intake</span>
+              <strong>Scope, contact, budget and delivery date</strong>
+            </div>
+            <button type="button" onClick={onReset}>
+              <RefreshCcw size={16} />
+              Reset
+            </button>
+          </div>
+
+          <div className="requestFields">
+            <label>
+              Protocol / project
+              <input
+                value={form.protocol}
+                onChange={(event) => onUpdate({ protocol: event.target.value })}
+                placeholder="Protocol name"
+              />
+            </label>
+            <label>
+              Contact route
+              <input
+                value={form.contact}
+                onChange={(event) => onUpdate({ contact: event.target.value })}
+                placeholder="Telegram, email, X, Discord, GitHub"
+              />
+            </label>
+            <label>
+              Request type
+              <select
+                value={form.requestType}
+                onChange={(event) =>
+                  onUpdate({ requestType: event.target.value as RequestReportType })
+                }
+              >
+                {REQUEST_TYPES.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Deadline
+              <input
+                type="date"
+                value={form.deadline}
+                onChange={(event) => onUpdate({ deadline: event.target.value })}
+              />
+            </label>
+            <label>
+              Budget
+              <select
+                value={form.budget}
+                onChange={(event) => onUpdate({ budget: event.target.value })}
+              >
+                {budgetOptions.map((item) => (
+                  <option key={item}>{item}</option>
+                ))}
+              </select>
+            </label>
+            <label className="requestNotes">
+              Notes
+              <textarea
+                value={form.notes}
+                onChange={(event) => onUpdate({ notes: event.target.value })}
+                placeholder="What should the report answer?"
+              />
+            </label>
+          </div>
+
+          <div className="requestRoutes">
+            {pack.contactRoutes.map((route) =>
+              route.href ? (
+                <a href={route.href} key={route.id} target="_blank" rel="noreferrer">
+                  <span>{route.label}</span>
+                  <strong>{route.value}</strong>
+                  <small>{route.note}</small>
+                  <ExternalLink size={15} />
+                </a>
+              ) : (
+                <div className="requestRoute" key={route.id}>
+                  <span>{route.label}</span>
+                  <strong>{route.value}</strong>
+                  <small>{route.note}</small>
+                </div>
+              ),
+            )}
+          </div>
+
+          <div className="requestChecklist">
+            <span>Delivery guardrails</span>
+            {pack.intakeChecklist.map((item) => (
+              <strong key={item}>{item}</strong>
+            ))}
+          </div>
+        </aside>
       </div>
     </section>
   );

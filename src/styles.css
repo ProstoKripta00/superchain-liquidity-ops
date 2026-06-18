@@ -1862,6 +1862,272 @@ select {
   line-height: 1.45;
 }
 
+.requestReportSection {
+  margin-bottom: 20px;
+  padding: 22px;
+  background: #ffffff;
+  border: 1px solid #e6e6e6;
+  border-radius: 22px;
+  box-shadow: 0 16px 40px rgba(15, 15, 15, 0.08);
+}
+
+.requestReportSection .sectionHeader span {
+  max-width: 420px;
+  overflow-wrap: anywhere;
+  text-align: right;
+}
+
+.requestLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 460px;
+  gap: 14px;
+  align-items: start;
+}
+
+.requestLead,
+.requestFormPanel {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  padding: 18px;
+  border-radius: 16px;
+}
+
+.requestLead {
+  color: #ffffff;
+  background: #0f0f0f;
+}
+
+.requestFormPanel {
+  color: #0f0f0f;
+  background: #f7f7f7;
+  border: 1px solid #e6e6e6;
+}
+
+.requestTitle span,
+.requestFormHead span,
+.requestRoutes span,
+.requestRoute span,
+.requestChecklist span {
+  display: block;
+  color: #ff0421;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.requestTitle h3 {
+  margin: 8px 0 6px;
+  color: #ffffff;
+  font-size: 32px;
+  line-height: 1.05;
+}
+
+.requestTitle small {
+  color: #a8a8a8;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.requestMetaGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.requestMetaGrid .stat {
+  background: #1d1d1d;
+}
+
+.requestMetaGrid .stat span {
+  color: #929292;
+}
+
+.requestMetaGrid .stat strong {
+  color: #ffffff;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.requestActions {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.requestActions button,
+.requestOpenIssue {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 10px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border: 0;
+  border-radius: 12px;
+  font-weight: 950;
+  line-height: 1.15;
+  text-align: center;
+  text-decoration: none;
+}
+
+.requestActions button:first-child {
+  color: #ffffff;
+  background: #ff0421;
+}
+
+.requestOpenIssue {
+  color: #ffffff;
+  background: #242424;
+}
+
+.requestPreview {
+  max-height: 390px;
+  margin: 0;
+  overflow: auto;
+  padding: 16px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.requestFormHead {
+  display: flex;
+  gap: 12px;
+  align-items: start;
+  justify-content: space-between;
+}
+
+.requestFormHead strong {
+  display: block;
+  margin-top: 5px;
+  font-size: 24px;
+  line-height: 1.08;
+}
+
+.requestFormHead button {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 7px;
+  min-height: 38px;
+  padding: 0 12px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border: 0;
+  border-radius: 999px;
+  font-weight: 950;
+}
+
+.requestFields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.requestFields label {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  color: #5a5a5a;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.requestFields input,
+.requestFields select,
+.requestFields textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 12px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border: 1px solid #dddddd;
+  border-radius: 12px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 850;
+  text-transform: none;
+}
+
+.requestFields textarea {
+  min-height: 128px;
+  padding: 12px;
+  resize: vertical;
+  line-height: 1.45;
+}
+
+.requestNotes {
+  grid-column: 1 / -1;
+}
+
+.requestRoutes {
+  display: grid;
+  gap: 8px;
+}
+
+.requestRoutes a,
+.requestRoute {
+  position: relative;
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  padding: 12px 40px 12px 12px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border: 1px solid #e6e6e6;
+  border-left: 5px solid #ff0421;
+  border-radius: 12px;
+  text-decoration: none;
+}
+
+.requestRoutes a svg {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  color: #ff0421;
+}
+
+.requestRoutes strong,
+.requestRoute strong {
+  font-size: 13px;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.requestRoutes small,
+.requestRoute small {
+  color: #5a5a5a;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.requestChecklist {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border-radius: 12px;
+}
+
+.requestChecklist strong {
+  display: block;
+  padding: 9px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border-radius: 9px;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
 .exportPackSection {
   margin-bottom: 20px;
   padding: 22px;
@@ -3745,6 +4011,7 @@ select {
   .pricingGrid,
   .launchDeskLayout,
   .launchProofGrid,
+  .requestLayout,
   .exportPackLayout,
   .automationLayout,
   .serviceLayerLayout,
@@ -3827,6 +4094,9 @@ select {
   .launchTitle,
   .launchStats,
   .launchActions,
+  .requestMetaGrid,
+  .requestActions,
+  .requestFields,
   .exportPackStats,
   .exportPackActions,
   .automationStats,
@@ -3857,6 +4127,15 @@ select {
   }
 
   .sampleReportHeader {
+    display: grid;
+  }
+
+  .requestReportSection .sectionHeader span {
+    max-width: none;
+    text-align: left;
+  }
+
+  .requestFormHead {
     display: grid;
   }
 
