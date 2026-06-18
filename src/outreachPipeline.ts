@@ -16,6 +16,36 @@ export type LeadStatus =
   | "Lost";
 
 export type PitchVariantId = "dm" | "email" | "follow-up";
+export type ContactChannel =
+  | "X"
+  | "Discord"
+  | "Telegram"
+  | "Email"
+  | "GitHub"
+  | "Docs"
+  | "Other";
+export type ContactEnrichmentStatus =
+  | "Not started"
+  | "Researching"
+  | "Contact found"
+  | "Needs verification";
+
+export const CONTACT_CHANNELS: ContactChannel[] = [
+  "X",
+  "Discord",
+  "Telegram",
+  "Email",
+  "GitHub",
+  "Docs",
+  "Other",
+];
+
+export const CONTACT_ENRICHMENT_STATUSES: ContactEnrichmentStatus[] = [
+  "Not started",
+  "Researching",
+  "Contact found",
+  "Needs verification",
+];
 
 export type OutreachPitch = {
   id: PitchVariantId;
@@ -24,7 +54,19 @@ export type OutreachPitch = {
   body: string;
 };
 
+export type ContactCandidate = {
+  label: string;
+  channel: ContactChannel;
+  url: string;
+  reason: string;
+};
+
 export type OutreachCrmRecord = {
+  contactChannel?: ContactChannel;
+  contactName?: string;
+  contactUrl?: string;
+  enrichmentConfidence?: number;
+  enrichmentStatus?: ContactEnrichmentStatus;
   lastContacted?: string;
   nextFollowUp?: string;
   notes?: string;
@@ -49,6 +91,13 @@ export type OutreachLead = {
   valueSignal: string;
   nextStep: string;
   contactTarget: string;
+  contactChannel: ContactChannel;
+  contactName: string;
+  contactUrl: string;
+  contactCandidates: ContactCandidate[];
+  enrichmentConfidence: number;
+  enrichmentStatus: ContactEnrichmentStatus;
+  enrichmentSummary: string;
   lastContacted: string;
   nextFollowUp: string;
   notes: string;
@@ -64,6 +113,7 @@ export type OutreachPipeline = {
   leadCount: number;
   readyCount: number;
   contactedCount: number;
+  enrichedCount: number;
   crmRecordCount: number;
   selectedOfferCount: number;
   leads: OutreachLead[];
@@ -101,6 +151,11 @@ const leadCsvHeader = [
   "valueSignal",
   "nextStep",
   "contactTarget",
+  "contactChannel",
+  "contactName",
+  "contactUrl",
+  "enrichmentStatus",
+  "enrichmentConfidence",
   "selectedPitch",
   "lastContacted",
   "nextFollowUp",
@@ -133,6 +188,12 @@ export function buildOutreachPipeline({
       const defaultStatus = defaultLeadStatus(scan);
       const status = crmRecord.status ?? defaultStatus;
       const selectedPitchId = crmRecord.selectedPitchId ?? "dm";
+      const contactUrl = crmRecord.contactUrl ?? "";
+      const contactChannel = crmRecord.contactChannel ?? recommendContactChannel(scan);
+      const enrichmentStatus = crmRecord.enrichmentStatus ?? defaultEnrichmentStatus(contactUrl);
+      const enrichmentConfidence =
+        crmRecord.enrichmentConfidence ?? defaultEnrichmentConfidence(contactUrl, scan);
+      const contactCandidates = buildContactCandidates(scan);
 
       return {
         id: scan.id,
@@ -150,6 +211,17 @@ export function buildOutreachPipeline({
         valueSignal: buildValueSignal(scan),
         nextStep: buildNextStep(scan, offer),
         contactTarget: buildContactTarget(scan),
+        contactChannel,
+        contactName: crmRecord.contactName ?? "",
+        contactUrl,
+        contactCandidates,
+        enrichmentConfidence,
+        enrichmentStatus,
+        enrichmentSummary: buildEnrichmentSummary(
+          enrichmentStatus,
+          contactChannel,
+          enrichmentConfidence,
+        ),
         lastContacted: crmRecord.lastContacted ?? "",
         nextFollowUp: crmRecord.nextFollowUp ?? "",
         notes: crmRecord.notes ?? "",
@@ -174,6 +246,8 @@ export function buildOutreachPipeline({
       leadCount: leads.length,
       readyCount: leads.filter((lead) => lead.status === "Ready to contact").length,
       contactedCount: leads.filter((lead) => lead.status === "Contacted").length,
+      enrichedCount: leads.filter((lead) => lead.enrichmentStatus === "Contact found")
+        .length,
       crmRecordCount: Object.values(crmRecords).filter(Boolean).length,
     },
     leads: leads.map(({ pitches: _pitches, ...lead }) => lead),
@@ -186,6 +260,7 @@ export function buildOutreachPipeline({
     leadCount: leads.length,
     readyCount: payload.summary.readyCount,
     contactedCount: payload.summary.contactedCount,
+    enrichedCount: payload.summary.enrichedCount,
     crmRecordCount: payload.summary.crmRecordCount,
     selectedOfferCount: new Set(leads.map((lead) => lead.recommendedOfferId)).size,
     leads,
@@ -237,6 +312,88 @@ function buildNextStep(scan: ProtocolScan, offer: ServiceOffer) {
 function buildContactTarget(scan: ProtocolScan) {
   const cleanName = scan.name.toLowerCase().replace(/[^a-z0-9]/g, "");
   return `X/Discord/BD lead for ${scan.name}; try @${cleanName} or the protocol docs contact page.`;
+}
+
+function recommendContactChannel(scan: ProtocolScan): ContactChannel {
+  if (scan.score >= 70) {
+    return "X";
+  }
+
+  if (scan.marketCount >= 4) {
+    return "Discord";
+  }
+
+  return "Docs";
+}
+
+function defaultEnrichmentStatus(contactUrl: string): ContactEnrichmentStatus {
+  return contactUrl ? "Contact found" : "Not started";
+}
+
+function defaultEnrichmentConfidence(contactUrl: string, scan: ProtocolScan) {
+  if (contactUrl) {
+    return 80;
+  }
+
+  if (scan.score >= 70) {
+    return 55;
+  }
+
+  if (scan.marketCount >= 3) {
+    return 45;
+  }
+
+  return 35;
+}
+
+function buildEnrichmentSummary(
+  status: ContactEnrichmentStatus,
+  channel: ContactChannel,
+  confidence: number,
+) {
+  return `${status} via ${channel}; ${confidence}/100 confidence.`;
+}
+
+function buildContactCandidates(scan: ProtocolScan): ContactCandidate[] {
+  const protocolQuery = encodeURIComponent(scan.name);
+  const outreachQuery = encodeURIComponent(
+    `${scan.name} protocol growth liquidity BD contact`,
+  );
+  const discordQuery = encodeURIComponent(`${scan.name} protocol Discord`);
+  const githubQuery = encodeURIComponent(`${scan.name} protocol`);
+
+  return [
+    {
+      label: "X search",
+      channel: "X",
+      url: `https://x.com/search?q=${outreachQuery}&src=typed_query`,
+      reason: "Find protocol, growth, BD, grants, or liquidity owner accounts.",
+    },
+    {
+      label: "Docs / contact search",
+      channel: "Docs",
+      url: `https://www.google.com/search?q=${outreachQuery}`,
+      reason: "Find official docs, team page, contact form, or ecosystem profile.",
+    },
+    {
+      label: "Discord search",
+      channel: "Discord",
+      url: `https://www.google.com/search?q=${discordQuery}`,
+      reason: "Find community server, contributor channels, or partnership contacts.",
+    },
+    {
+      label: "GitHub search",
+      channel: "GitHub",
+      url: `https://github.com/search?q=${githubQuery}&type=repositories`,
+      reason: "Find public repositories and active maintainers before pitching technical work.",
+    },
+    ...scan.sourceUrls.slice(0, 2).map((url, index) => ({
+      label: `Metric source ${index + 1}`,
+      channel: "Docs" as ContactChannel,
+      url,
+      reason: "Verify the public data source before sending a contact pitch.",
+    })),
+  ];
 }
 
 function buildPitches(
@@ -314,6 +471,11 @@ function buildLeadsCsv(leads: OutreachLead[]) {
       lead.valueSignal,
       lead.nextStep,
       lead.contactTarget,
+      lead.contactChannel,
+      lead.contactName,
+      lead.contactUrl,
+      lead.enrichmentStatus,
+      String(lead.enrichmentConfidence),
       lead.selectedPitchId,
       lead.lastContacted,
       lead.nextFollowUp,

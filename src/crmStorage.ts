@@ -1,4 +1,12 @@
-import type { LeadStatus, OutreachCrmRecord, PitchVariantId } from "./outreachPipeline";
+import {
+  CONTACT_CHANNELS,
+  CONTACT_ENRICHMENT_STATUSES,
+  type ContactChannel,
+  type ContactEnrichmentStatus,
+  type LeadStatus,
+  type OutreachCrmRecord,
+  type PitchVariantId,
+} from "./outreachPipeline";
 
 export type OutreachCrmRecords = Record<string, OutreachCrmRecord>;
 
@@ -83,6 +91,18 @@ function sanitizeRecord(record: unknown): OutreachCrmRecord | null {
       ? source.selectedPitchId
       : undefined;
   const sanitized: OutreachCrmRecord = {
+    contactChannel:
+      typeof source.contactChannel === "string" && isContactChannel(source.contactChannel)
+        ? source.contactChannel
+        : undefined,
+    contactName: sanitizeText(source.contactName),
+    contactUrl: sanitizeUrl(source.contactUrl),
+    enrichmentConfidence: sanitizeConfidence(source.enrichmentConfidence),
+    enrichmentStatus:
+      typeof source.enrichmentStatus === "string" &&
+      isContactEnrichmentStatus(source.enrichmentStatus)
+        ? source.enrichmentStatus
+        : undefined,
     lastContacted: sanitizeDate(source.lastContacted),
     nextFollowUp: sanitizeDate(source.nextFollowUp),
     notes: sanitizeText(source.notes),
@@ -112,12 +132,44 @@ function sanitizeDate(value: unknown) {
   return value;
 }
 
+function sanitizeUrl(value: unknown) {
+  const sanitized = sanitizeText(value);
+
+  if (!sanitized) {
+    return undefined;
+  }
+
+  if (!/^https?:\/\/\S+$/i.test(sanitized)) {
+    return undefined;
+  }
+
+  return sanitized.slice(0, 500);
+}
+
+function sanitizeConfidence(value: unknown) {
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    return undefined;
+  }
+
+  return Math.min(100, Math.max(0, Math.round(value)));
+}
+
 function isLeadStatus(value: string): value is LeadStatus {
   return leadStatuses.includes(value as LeadStatus);
 }
 
 function isPitchId(value: string): value is PitchVariantId {
   return pitchIds.includes(value as PitchVariantId);
+}
+
+function isContactChannel(value: string): value is ContactChannel {
+  return CONTACT_CHANNELS.includes(value as ContactChannel);
+}
+
+function isContactEnrichmentStatus(
+  value: string,
+): value is ContactEnrichmentStatus {
+  return CONTACT_ENRICHMENT_STATUSES.includes(value as ContactEnrichmentStatus);
 }
 
 function canUseLocalStorage() {

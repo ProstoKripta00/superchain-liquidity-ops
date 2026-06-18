@@ -34,7 +34,7 @@ What works today:
 - export pack builder with report Markdown, protocol CSV, scope CSV, summary JSON, and full JSON handoff pack
 - automation workspace that turns live scanner, reports, export pack and source audit state into a repeatable runbook
 - service layer that packages analytics output into sellable diagnostic, monitoring, and grant evidence offers
-- outreach pipeline with scanner-derived leads, persistent local CRM fields, DM/email/follow-up pitch generation, CSV export and JSON export
+- outreach pipeline with scanner-derived leads, contact enrichment, persistent local CRM fields, DM/email/follow-up pitch generation, CSV export and JSON export
 - chain-level TVL, DEX volume, and fee totals
 - protocol-level fee attribution when the public feed exposes it
 - source audit for every public endpoint
@@ -56,7 +56,7 @@ What works today:
 9. Open `Export Pack` and download the full JSON handoff pack or individual artifacts.
 10. Open `Automation`, run the workflow and download the generated runbook.
 11. Open `Service Layer`, select a client package, copy the brief, or download the service JSON.
-12. Open `Outreach`, select a protocol lead, update CRM notes/follow-up dates, review pitches, and export leads.
+12. Open `Outreach`, select a protocol lead, enrich the contact route, update CRM notes/follow-up dates, review pitches, and export leads.
 13. Filter to `OP Mainnet` or `Base`.
 14. Review DEX market rows for 24h volume, 30d volume, 30d fees, and health labels.
 15. Open `Source audit` and verify the public endpoints.
@@ -93,7 +93,8 @@ Unavailable values are shown as unavailable. The app does not silently substitut
 | Automation | Browser-side job queue and Markdown runbook for report, export, watchlist, and source-audit workflows | Live |
 | Service layer | Client package builder with suggested scopes, deliverables, acceptance criteria, brief export, and service JSON | Live |
 | Outreach pipeline | Lead status board, protocol pitch generator, CSV export, and JSON pipeline export | Live |
-| Persistent CRM | Local browser storage for lead status, selected pitch, notes, last contacted, and next follow-up | Live |
+| Contact enrichment | Suggested research links, contact channel, contact URL, owner, status, and confidence fields | Live |
+| Persistent CRM | Local browser storage for lead status, contact enrichment, selected pitch, notes, last contacted, and next follow-up | Live |
 | Reviewer evidence | CSV export with source URLs and timestamps | Live |
 | Priority pairs | Official OP pair mapping and pool-level ingestion | Planned |
 
@@ -125,7 +126,7 @@ Live data adapters
 Data engine: normalization, ratios, weighted trends, market scoring
         |
         v
-Protocol scanner, protocol health score, reports workspace, public sample reports, export pack, automation runbook, service layer, outreach pipeline, persistent CRM, mini reports, scope totals, chain coverage, source audit, CSV export
+Protocol scanner, protocol health score, reports workspace, public sample reports, export pack, automation runbook, service layer, outreach pipeline, contact enrichment, persistent CRM, mini reports, scope totals, chain coverage, source audit, CSV export
         |
         v
 Dashboard state and reviewer workflow
@@ -162,8 +163,8 @@ src/sampleReports.ts         Public proof-of-work sample reports for client-faci
 src/exportPack.ts            Export pack manifest, CSV generation and JSON handoff package
 src/automation.ts            Browser-side automation job queue and Markdown runbook generator
 src/serviceLayer.ts          Sellable service offer, client brief and service JSON generation
-src/outreachPipeline.ts      Scanner-derived leads, status defaults, pitch generation and lead exports
-src/crmStorage.ts            LocalStorage persistence for outreach lead CRM records
+src/outreachPipeline.ts      Scanner-derived leads, contact enrichment, status defaults, pitch generation and lead exports
+src/crmStorage.ts            LocalStorage persistence for outreach lead CRM and contact enrichment records
 src/sources.ts               Supported chains and public endpoint URLs
 src/App.tsx                  Dashboard, protocol scanner, reports UI, automation UI, service UI, outreach UI, filters, reviewer pack UI, export flow
 src/styles.css               OP-inspired product UI

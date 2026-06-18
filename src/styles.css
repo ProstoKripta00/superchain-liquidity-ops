@@ -2183,7 +2183,7 @@ select {
 
 .outreachStats {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 8px;
 }
 
@@ -2285,6 +2285,11 @@ select {
   color: #666666;
   font-size: 12px;
   line-height: 1.3;
+}
+
+.leadRow .leadContactHint {
+  color: #ff0421;
+  font-weight: 900;
 }
 
 .leadRow em {
@@ -2411,6 +2416,127 @@ select {
   color: #ffffff;
   font-size: 12px;
   overflow-wrap: anywhere;
+}
+
+.contactEnrichment {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border-radius: 14px;
+}
+
+.contactEnrichmentHead {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.contactEnrichmentHead span,
+.contactCandidates span {
+  display: block;
+  color: #ff0421;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.contactEnrichmentHead strong {
+  display: block;
+  margin-top: 5px;
+  font-size: 16px;
+  line-height: 1.25;
+}
+
+.contactConfidence {
+  display: inline-flex;
+  flex-shrink: 0;
+  gap: 7px;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 11px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border-radius: 999px;
+}
+
+.contactFields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.contactFields label {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  color: #5a5a5a;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.contactFields input,
+.contactFields select {
+  width: 100%;
+  min-width: 0;
+  color: #0f0f0f;
+  background: #f4f4f4;
+  border: 1px solid #dedede;
+  border-radius: 12px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: none;
+}
+
+.contactFields input,
+.contactFields select {
+  min-height: 42px;
+  padding: 0 12px;
+}
+
+.contactFields input[type="range"] {
+  padding: 0;
+  accent-color: #ff0421;
+}
+
+.contactFields input:focus,
+.contactFields select:focus {
+  border-color: #ff0421;
+  outline: none;
+}
+
+.contactConfidenceField {
+  grid-column: 1 / -1;
+}
+
+.contactCandidates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  padding-top: 2px;
+}
+
+.contactCandidates span {
+  width: 100%;
+}
+
+.contactCandidates a {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 9px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 900;
+  text-decoration: none;
 }
 
 .crmFields {
@@ -3168,6 +3294,7 @@ select {
   .leadRow,
   .leadRow button,
   .leadBriefGrid,
+  .contactFields,
   .crmFields,
   .pitchTabs,
   .artifactRow,
@@ -3188,5 +3315,9 @@ select {
 
   .sampleReportBadge {
     width: fit-content;
+  }
+
+  .contactEnrichmentHead {
+    display: grid;
   }
 }

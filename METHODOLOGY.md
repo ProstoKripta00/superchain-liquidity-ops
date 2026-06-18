@@ -170,7 +170,7 @@ The MVP should produce grant-review artifacts:
 - export pack containing Markdown, CSV, structured JSON, and a manifest-style JSON handoff package
 - automation runbook with report, export-pack, watchlist, source-audit, and scope-refresh jobs
 - service layer with client-ready package briefs, deliverables, acceptance criteria, and service JSON
-- outreach pipeline with protocol leads, persistent local CRM fields, generated DM/email/follow-up pitches, CSV export and JSON export
+- outreach pipeline with protocol leads, contact enrichment, persistent local CRM fields, generated DM/email/follow-up pitches, CSV export and JSON export
 - chain-level TVL and fee summaries
 - watchlist of underperforming markets
 - 7d/30d trend reports
@@ -305,13 +305,21 @@ Each lead includes:
 - reason for outreach
 - next step
 - contact target guidance
+- contact enrichment status
+- preferred contact channel
+- contact owner or handle
+- contact URL
+- enrichment confidence
+- research links for X, docs/search, Discord, GitHub, and metric sources
 - selected pitch variant
 - CRM notes
 - last contacted date
 - next follow-up date
 - public source links
 
-The current CRM is persisted in browser `localStorage`. Exported CSV and JSON include the saved status, selected pitch, notes, last contacted date, and next follow-up date. Backend or shared multi-device CRM persistence remains a later storage step.
+Contact enrichment does not invent private emails or verified contacts. It provides a structured research workflow and stores only user-entered contact data plus suggested public research links. This keeps outreach honest while making it faster to move a protocol from scanner lead to contacted lead.
+
+The current CRM is persisted in browser `localStorage`. Exported CSV and JSON include the saved status, contact enrichment fields, selected pitch, notes, last contacted date, and next follow-up date. Backend or shared multi-device CRM persistence remains a later storage step.
 
 ## Initial Live Data Scope
 

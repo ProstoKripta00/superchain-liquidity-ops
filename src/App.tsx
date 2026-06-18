@@ -41,7 +41,11 @@ import {
   type ExportPackArtifactId,
 } from "./exportPack";
 import {
+  CONTACT_CHANNELS,
+  CONTACT_ENRICHMENT_STATUSES,
   buildOutreachPipeline,
+  type ContactChannel,
+  type ContactEnrichmentStatus,
   type LeadStatus,
   type OutreachLead,
   type OutreachPipeline,
@@ -614,6 +618,35 @@ function App() {
     updateLeadCrm(leadId, { nextFollowUp });
   };
 
+  const updateLeadContactName = (leadId: string, contactName: string) => {
+    updateLeadCrm(leadId, { contactName });
+  };
+
+  const updateLeadContactChannel = (
+    leadId: string,
+    contactChannel: ContactChannel,
+  ) => {
+    updateLeadCrm(leadId, { contactChannel });
+  };
+
+  const updateLeadContactUrl = (leadId: string, contactUrl: string) => {
+    updateLeadCrm(leadId, { contactUrl });
+  };
+
+  const updateLeadEnrichmentConfidence = (
+    leadId: string,
+    enrichmentConfidence: number,
+  ) => {
+    updateLeadCrm(leadId, { enrichmentConfidence });
+  };
+
+  const updateLeadEnrichmentStatus = (
+    leadId: string,
+    enrichmentStatus: ContactEnrichmentStatus,
+  ) => {
+    updateLeadCrm(leadId, { enrichmentStatus });
+  };
+
   const updateLeadPitch = (leadId: string, selectedPitchId: PitchVariantId) => {
     updateLeadCrm(leadId, { selectedPitchId });
   };
@@ -919,12 +952,19 @@ function App() {
 
         <OutreachPipelineSection
           feedback={outreachFeedback}
+          contactChannels={CONTACT_CHANNELS}
+          contactEnrichmentStatuses={CONTACT_ENRICHMENT_STATUSES}
           leadStatuses={leadStatuses}
           onCopyPitch={(lead, pitchId) => void copyLeadPitch(lead, pitchId)}
           onDownloadCsv={downloadOutreachCsv}
           onDownloadJson={downloadOutreachJson}
           onSelectLead={setSelectedLeadId}
           onSelectPitch={updateLeadPitch}
+          onUpdateContactChannel={updateLeadContactChannel}
+          onUpdateContactName={updateLeadContactName}
+          onUpdateContactUrl={updateLeadContactUrl}
+          onUpdateEnrichmentConfidence={updateLeadEnrichmentConfidence}
+          onUpdateEnrichmentStatus={updateLeadEnrichmentStatus}
           onUpdateLastContacted={updateLeadLastContacted}
           onUpdateLeadStatus={updateLeadStatus}
           onUpdateNextFollowUp={updateLeadNextFollowUp}
@@ -1498,12 +1538,19 @@ function ServiceLayerSection({
 
 function OutreachPipelineSection({
   feedback,
+  contactChannels,
+  contactEnrichmentStatuses,
   leadStatuses,
   onCopyPitch,
   onDownloadCsv,
   onDownloadJson,
   onSelectLead,
   onSelectPitch,
+  onUpdateContactChannel,
+  onUpdateContactName,
+  onUpdateContactUrl,
+  onUpdateEnrichmentConfidence,
+  onUpdateEnrichmentStatus,
   onUpdateLastContacted,
   onUpdateLeadStatus,
   onUpdateNextFollowUp,
@@ -1516,12 +1563,25 @@ function OutreachPipelineSection({
     action: OutreachFeedbackAction;
     label: string;
   } | null;
+  contactChannels: ContactChannel[];
+  contactEnrichmentStatuses: ContactEnrichmentStatus[];
   leadStatuses: LeadStatus[];
   onCopyPitch: (lead: OutreachLead, pitchId: PitchVariantId) => void;
   onDownloadCsv: (pipeline: OutreachPipeline) => void;
   onDownloadJson: (pipeline: OutreachPipeline) => void;
   onSelectLead: (leadId: string) => void;
   onSelectPitch: (leadId: string, pitchId: PitchVariantId) => void;
+  onUpdateContactChannel: (leadId: string, contactChannel: ContactChannel) => void;
+  onUpdateContactName: (leadId: string, contactName: string) => void;
+  onUpdateContactUrl: (leadId: string, contactUrl: string) => void;
+  onUpdateEnrichmentConfidence: (
+    leadId: string,
+    enrichmentConfidence: number,
+  ) => void;
+  onUpdateEnrichmentStatus: (
+    leadId: string,
+    enrichmentStatus: ContactEnrichmentStatus,
+  ) => void;
   onUpdateLastContacted: (leadId: string, lastContacted: string) => void;
   onUpdateLeadStatus: (leadId: string, status: LeadStatus) => void;
   onUpdateNextFollowUp: (leadId: string, nextFollowUp: string) => void;
@@ -1542,7 +1602,7 @@ function OutreachPipelineSection({
       <div className="sectionHeader">
         <div>
           <p className="sectionKicker">Outreach Pipeline</p>
-          <h2>Find protocol leads, generate pitches and export the list</h2>
+          <h2>Find protocol leads, enrich contacts and export the list</h2>
         </div>
         <span>{pipeline.readyCount} ready</span>
       </div>
@@ -1559,6 +1619,7 @@ function OutreachPipelineSection({
             <Stat label="Scope" value={pipeline.scopeLabel} />
             <Stat label="Leads" value={String(pipeline.leadCount)} />
             <Stat label="Ready" value={String(pipeline.readyCount)} />
+            <Stat label="Enriched" value={String(pipeline.enrichedCount)} />
             <Stat label="Saved CRM" value={String(pipeline.crmRecordCount)} />
           </div>
 
@@ -1585,6 +1646,9 @@ function OutreachPipelineSection({
                     <span>
                       <strong>{lead.protocolName}</strong>
                       <small>{lead.valueSignal}</small>
+                      <small className="leadContactHint">
+                        {lead.enrichmentStatus} / {lead.contactChannel}
+                      </small>
                     </span>
                     <em>{lead.score}</em>
                   </button>
@@ -1648,6 +1712,131 @@ function OutreachPipelineSection({
                 <Stat label="Segment" value={selectedLead.segment} />
                 <Stat label="Contact target" value={selectedLead.contactTarget} />
                 <Stat label="Next step" value={selectedLead.nextStep} />
+              </div>
+
+              <div className="contactEnrichment">
+                <div className="contactEnrichmentHead">
+                  <div>
+                    <span>Contact enrichment</span>
+                    <strong>{selectedLead.enrichmentSummary}</strong>
+                  </div>
+                  <div className="contactConfidence">
+                    <Network size={17} />
+                    <strong>{selectedLead.enrichmentConfidence}</strong>
+                  </div>
+                </div>
+
+                <div className="contactFields">
+                  <label>
+                    Contact owner
+                    <input
+                      placeholder="Name, handle, role, or team"
+                      type="text"
+                      value={selectedLead.contactName}
+                      onInput={(event) =>
+                        onUpdateContactName(selectedLead.id, event.currentTarget.value)
+                      }
+                      onChange={(event) =>
+                        onUpdateContactName(selectedLead.id, event.target.value)
+                      }
+                    />
+                  </label>
+                  <label>
+                    Channel
+                    <select
+                      value={selectedLead.contactChannel}
+                      onInput={(event) =>
+                        onUpdateContactChannel(
+                          selectedLead.id,
+                          event.currentTarget.value as ContactChannel,
+                        )
+                      }
+                      onChange={(event) =>
+                        onUpdateContactChannel(
+                          selectedLead.id,
+                          event.target.value as ContactChannel,
+                        )
+                      }
+                    >
+                      {contactChannels.map((channel) => (
+                        <option key={channel}>{channel}</option>
+                      ))}
+                    </select>
+                  </label>
+                  <label>
+                    Contact URL
+                    <input
+                      placeholder="https://..."
+                      type="url"
+                      value={selectedLead.contactUrl}
+                      onInput={(event) =>
+                        onUpdateContactUrl(selectedLead.id, event.currentTarget.value)
+                      }
+                      onChange={(event) =>
+                        onUpdateContactUrl(selectedLead.id, event.target.value)
+                      }
+                    />
+                  </label>
+                  <label>
+                    Enrichment status
+                    <select
+                      value={selectedLead.enrichmentStatus}
+                      onInput={(event) =>
+                        onUpdateEnrichmentStatus(
+                          selectedLead.id,
+                          event.currentTarget.value as ContactEnrichmentStatus,
+                        )
+                      }
+                      onChange={(event) =>
+                        onUpdateEnrichmentStatus(
+                          selectedLead.id,
+                          event.target.value as ContactEnrichmentStatus,
+                        )
+                      }
+                    >
+                      {contactEnrichmentStatuses.map((status) => (
+                        <option key={status}>{status}</option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="contactConfidenceField">
+                    Confidence
+                    <input
+                      max="100"
+                      min="0"
+                      type="range"
+                      value={selectedLead.enrichmentConfidence}
+                      onInput={(event) =>
+                        onUpdateEnrichmentConfidence(
+                          selectedLead.id,
+                          Number(event.currentTarget.value),
+                        )
+                      }
+                      onChange={(event) =>
+                        onUpdateEnrichmentConfidence(
+                          selectedLead.id,
+                          Number(event.target.value),
+                        )
+                      }
+                    />
+                  </label>
+                </div>
+
+                <div className="contactCandidates">
+                  <span>Research links</span>
+                  {selectedLead.contactCandidates.map((candidate) => (
+                    <a
+                      href={candidate.url}
+                      key={`${selectedLead.id}-${candidate.label}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      title={candidate.reason}
+                    >
+                      {candidate.label}
+                      <ExternalLink size={14} />
+                    </a>
+                  ))}
+                </div>
               </div>
 
               <div className="crmFields">
