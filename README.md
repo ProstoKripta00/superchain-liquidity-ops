@@ -30,6 +30,7 @@ What works today:
 - protocol health score with grade, confidence, component breakdown, strengths, risks, and recommendation
 - mini report generator for reviewer-ready Markdown reports per selected protocol
 - reports workspace with scanner-selected protocol reports, Markdown preview, copy, and download actions
+- public sample reports for client-facing proof-of-work examples across diagnostic, monitoring, and grant-evidence services
 - export pack builder with report Markdown, protocol CSV, scope CSV, summary JSON, and full JSON handoff pack
 - automation workspace that turns live scanner, reports, export pack and source audit state into a repeatable runbook
 - service layer that packages analytics output into sellable diagnostic, monitoring, and grant evidence offers
@@ -50,15 +51,17 @@ What works today:
 4. Open `Reports` and inspect the scanner-selected report queue.
 5. Select a protocol report and review the Markdown preview.
 6. Copy the Markdown report or download the `.md` file.
-7. Open `Export Pack` and download the full JSON handoff pack or individual artifacts.
-8. Open `Automation`, run the workflow and download the generated runbook.
-9. Open `Service Layer`, select a client package, copy the brief, or download the service JSON.
-10. Open `Outreach`, select a protocol lead, update CRM notes/follow-up dates, review pitches, and export leads.
-11. Filter to `OP Mainnet` or `Base`.
-12. Review DEX market rows for 24h volume, 30d volume, 30d fees, and health labels.
-13. Open `Source audit` and verify the public endpoints.
-14. Export the CSV report.
-15. Compare the exported evidence against the target outcomes: DEX activity, fee generation, and market health.
+7. Open `Sample Reports` and review the public proof-of-work examples.
+8. Copy a sample report, download the `.md`, or download the sample JSON bundle.
+9. Open `Export Pack` and download the full JSON handoff pack or individual artifacts.
+10. Open `Automation`, run the workflow and download the generated runbook.
+11. Open `Service Layer`, select a client package, copy the brief, or download the service JSON.
+12. Open `Outreach`, select a protocol lead, update CRM notes/follow-up dates, review pitches, and export leads.
+13. Filter to `OP Mainnet` or `Base`.
+14. Review DEX market rows for 24h volume, 30d volume, 30d fees, and health labels.
+15. Open `Source audit` and verify the public endpoints.
+16. Export the CSV report.
+17. Compare the exported evidence against the target outcomes: DEX activity, fee generation, and market health.
 
 ## Data Sources
 
@@ -85,6 +88,7 @@ Unavailable values are shown as unavailable. The app does not silently substitut
 | Protocol health score | Activity, fee capture, trend, coverage, quality, confidence | Live |
 | Mini report generator | Markdown report with summary, metrics, score, markets, risks, next actions | Live |
 | Reports workspace | Scanner-selected protocol reports with queue, preview, copy, and download actions | Live |
+| Public sample reports | Client-ready proof-of-work samples with Markdown and JSON export | Live |
 | Export pack | JSON handoff pack plus Markdown, CSV, and structured summary artifacts | Live |
 | Automation | Browser-side job queue and Markdown runbook for report, export, watchlist, and source-audit workflows | Live |
 | Service layer | Client package builder with suggested scopes, deliverables, acceptance criteria, brief export, and service JSON | Live |
@@ -121,7 +125,7 @@ Live data adapters
 Data engine: normalization, ratios, weighted trends, market scoring
         |
         v
-Protocol scanner, protocol health score, reports workspace, export pack, automation runbook, service layer, outreach pipeline, persistent CRM, mini reports, scope totals, chain coverage, source audit, CSV export
+Protocol scanner, protocol health score, reports workspace, public sample reports, export pack, automation runbook, service layer, outreach pipeline, persistent CRM, mini reports, scope totals, chain coverage, source audit, CSV export
         |
         v
 Dashboard state and reviewer workflow
@@ -154,6 +158,7 @@ src/dataEngine.ts            Shared metric normalization, aggregation and scorin
 src/protocols.ts             Tracked protocol profiles and slug matchers
 src/scanner.ts               Protocol readiness scoring and next-action logic
 src/reportGenerator.ts       Markdown mini-report generation for selected protocols
+src/sampleReports.ts         Public proof-of-work sample reports for client-facing delivery examples
 src/exportPack.ts            Export pack manifest, CSV generation and JSON handoff package
 src/automation.ts            Browser-side automation job queue and Markdown runbook generator
 src/serviceLayer.ts          Sellable service offer, client brief and service JSON generation

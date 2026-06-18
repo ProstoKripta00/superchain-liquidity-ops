@@ -166,6 +166,7 @@ The MVP should produce grant-review artifacts:
 - protocol scanner and health score summary for outreach and report preparation
 - Markdown mini-report for a selected protocol
 - reports workspace for selecting, previewing, copying, and downloading generated reports
+- public sample reports for client-facing proof-of-work across diagnostic, monitoring, and grant-evidence services
 - export pack containing Markdown, CSV, structured JSON, and a manifest-style JSON handoff package
 - automation runbook with report, export-pack, watchlist, source-audit, and scope-refresh jobs
 - service layer with client-ready package briefs, deliverables, acceptance criteria, and service JSON
@@ -202,6 +203,28 @@ Current selection rule:
 - generate each report from the same live protocol scan and matched markets used by the selected mini-report workflow
 
 Each report can be selected, previewed as Markdown, copied, or downloaded as an `.md` file. These reports are examples for outreach and reviewer inspection. They are not manually curated endorsements, and they regenerate when the live snapshot changes.
+
+## Public Sample Reports
+
+Public Sample Reports convert the scanner and mini-report output into client-facing proof-of-work examples.
+
+Current sample types:
+
+- Protocol Diagnostic Sprint sample
+- Liquidity Monitoring Retainer sample
+- Grant Evidence Pack sample
+
+When a matching live protocol scan exists, each sample is generated from current scanner data and matched Superchain markets. When live data is unavailable, the sample remains visible as a template fallback and clearly marks unavailable values. This keeps the sales artifact honest while still showing the report structure.
+
+Each sample includes:
+
+- service type and intended audience
+- summary and key scanner metrics
+- commercial use case
+- Markdown report output
+- JSON bundle export for the full public sample library
+
+These samples are designed for public portfolio, outbound sales, and grant/product-review conversations. They are not security audits, investment recommendations, or manually curated endorsements.
 
 ## Export Pack
 

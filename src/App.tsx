@@ -49,6 +49,12 @@ import {
 } from "./outreachPipeline";
 import { buildProtocolMiniReport } from "./reportGenerator";
 import {
+  buildSampleReports,
+  buildSampleReportsJson,
+  type SampleReport,
+  type SampleReportId,
+} from "./sampleReports";
+import {
   buildServiceLayer,
   type ServiceLayer,
   type ServiceOffer,
@@ -92,6 +98,7 @@ type ReportLibraryItem = {
   report: ProtocolMiniReport;
 };
 
+type SampleReportFeedbackAction = "copy" | "download" | "json";
 type ExportPackFeedbackAction = ExportPackArtifactId | "pack-json" | "handoff";
 type AutomationFeedbackAction = "run" | "copy" | "download";
 type ServiceFeedbackAction = "copy-brief" | "download-brief" | "json";
@@ -111,6 +118,8 @@ function App() {
   const [selectedMarketId, setSelectedMarketId] = useState<string | null>(null);
   const [selectedProtocolId, setSelectedProtocolId] = useState<string | null>(null);
   const [selectedReportId, setSelectedReportId] = useState<string | null>(null);
+  const [selectedSampleReportId, setSelectedSampleReportId] =
+    useState<SampleReportId | null>(null);
   const [selectedLeadId, setSelectedLeadId] = useState<string | null>(null);
   const [selectedServiceOfferId, setSelectedServiceOfferId] = useState<
     ServiceOffer["id"] | null
@@ -125,6 +134,11 @@ function App() {
   const [reportFeedback, setReportFeedback] = useState<{
     label: string;
     protocolId: string;
+  } | null>(null);
+  const [sampleReportFeedback, setSampleReportFeedback] = useState<{
+    action: SampleReportFeedbackAction;
+    label: string;
+    reportId?: SampleReportId;
   } | null>(null);
   const [exportPackFeedback, setExportPackFeedback] = useState<{
     action: ExportPackFeedbackAction;
@@ -231,6 +245,14 @@ function App() {
   const selectedReportItem =
     reportItems.find((item) => item.report.protocolId === selectedReportId) ??
     reportItems[0] ??
+    null;
+  const sampleReports = useMemo(
+    () => buildSampleReports({ markets, protocolScans }),
+    [markets, protocolScans],
+  );
+  const selectedSampleReport =
+    sampleReports.find((report) => report.id === selectedSampleReportId) ??
+    sampleReports[0] ??
     null;
 
   const totals = useMemo(
@@ -400,6 +422,43 @@ function App() {
         current?.protocolId === report.protocolId ? null : current,
       );
     }, 1600);
+  };
+
+  const setTemporarySampleReportFeedback = (
+    action: SampleReportFeedbackAction,
+    label: string,
+    reportId?: SampleReportId,
+  ) => {
+    setSampleReportFeedback({ action, label, reportId });
+
+    window.setTimeout(() => {
+      setSampleReportFeedback((current) =>
+        current?.action === action && current.reportId === reportId ? null : current,
+      );
+    }, 1600);
+  };
+
+  const copySampleReport = async (report: SampleReport) => {
+    try {
+      await writeClipboardText(report.markdown);
+      setTemporarySampleReportFeedback("copy", "Copied", report.id);
+    } catch {
+      setTemporarySampleReportFeedback("copy", "Sample ready", report.id);
+    }
+  };
+
+  const downloadSampleReport = (report: SampleReport) => {
+    downloadTextFile(report.fileName, report.markdown, "text/markdown;charset=utf-8");
+    setTemporarySampleReportFeedback("download", "Downloaded", report.id);
+  };
+
+  const downloadSampleReportsJson = (reports: SampleReport[]) => {
+    downloadTextFile(
+      "superchain-public-sample-reports.json",
+      buildSampleReportsJson(reports),
+      "application/json;charset=utf-8",
+    );
+    setTemporarySampleReportFeedback("json", "Downloaded");
   };
 
   const setTemporaryExportPackFeedback = (
@@ -603,6 +662,7 @@ function App() {
         <nav className="topNav" aria-label="Product areas">
           <a href="#protocol-scanner">Protocol scanner</a>
           <a href="#reports">Reports</a>
+          <a href="#sample-reports">Sample reports</a>
           <a href="#export-pack">Export pack</a>
           <a href="#automation">Automation</a>
           <a href="#service-layer">Service layer</a>
@@ -812,6 +872,17 @@ function App() {
           onDownload={downloadMiniReport}
           onSelectReport={setSelectedReportId}
           selectedItem={selectedReportItem}
+        />
+
+        <SampleReportsSection
+          feedback={sampleReportFeedback}
+          isLoading={isLoading}
+          items={sampleReports}
+          onCopy={(report) => void copySampleReport(report)}
+          onDownload={downloadSampleReport}
+          onDownloadJson={downloadSampleReportsJson}
+          onSelectReport={setSelectedSampleReportId}
+          selectedReport={selectedSampleReport}
         />
 
         <ExportPackSection
@@ -1817,6 +1888,149 @@ function ReportsSection({
             </div>
           </article>
         )}
+      </div>
+    </section>
+  );
+}
+
+function SampleReportsSection({
+  feedback,
+  isLoading,
+  items,
+  onCopy,
+  onDownload,
+  onDownloadJson,
+  onSelectReport,
+  selectedReport,
+}: {
+  feedback: {
+    action: SampleReportFeedbackAction;
+    label: string;
+    reportId?: SampleReportId;
+  } | null;
+  isLoading: boolean;
+  items: SampleReport[];
+  onCopy: (report: SampleReport) => void;
+  onDownload: (report: SampleReport) => void;
+  onDownloadJson: (reports: SampleReport[]) => void;
+  onSelectReport: (reportId: SampleReportId) => void;
+  selectedReport: SampleReport | null;
+}) {
+  const selectedFeedback =
+    selectedReport && feedback?.reportId === selectedReport.id ? feedback : null;
+  const preview = selectedReport
+    ? selectedReport.markdown.split("\n").slice(0, 34).join("\n")
+    : "";
+
+  return (
+    <section className="sampleReportsSection" id="sample-reports">
+      <div className="sectionHeader">
+        <div>
+          <p className="sectionKicker">Public Sample Reports</p>
+          <h2>Client-ready examples that show what the service delivers</h2>
+        </div>
+        <span>{items.length > 0 ? `${items.length} samples` : "Waiting for data"}</span>
+      </div>
+
+      <div className="sampleReportsLayout">
+        <aside className="sampleReportQueue">
+          <div className="sampleReportQueueHeader">
+            <span>Proof-of-work library</span>
+            <strong>Use these before asking protocols to pay</strong>
+            <p>
+              These samples turn scanner output into public artifacts for protocol
+              outreach, monitoring retainers, and grant evidence pitches.
+            </p>
+          </div>
+
+          <div className="sampleReportList">
+            {items.length > 0 ? (
+              items.map((report) => (
+                <button
+                  className={`sampleReportItem ${
+                    report.id === selectedReport?.id ? "selected" : ""
+                  }`}
+                  key={report.id}
+                  onClick={() => onSelectReport(report.id)}
+                >
+                  <FileText size={18} />
+                  <span>
+                    <strong>{report.title}</strong>
+                    <small>{report.serviceType}</small>
+                  </span>
+                  <em>{report.status === "Live generated" ? "Live" : "Template"}</em>
+                </button>
+              ))
+            ) : (
+              <div className="emptyState">
+                {isLoading
+                  ? "Preparing public sample reports from live scanner data..."
+                  : "No sample reports are available yet."}
+              </div>
+            )}
+          </div>
+        </aside>
+
+        <article className="sampleReportReader">
+          {selectedReport ? (
+            <>
+              <div className="sampleReportHeader">
+                <div>
+                  <span>{selectedReport.status}</span>
+                  <h3>{selectedReport.title}</h3>
+                  <small>{new Date(selectedReport.generatedAt).toLocaleString()}</small>
+                </div>
+                <div className="sampleReportBadge">
+                  <Target size={18} />
+                  <strong>{selectedReport.protocolName}</strong>
+                </div>
+              </div>
+
+              <p className="sampleReportSummary">{selectedReport.summary}</p>
+
+              <div className="sampleReportStats">
+                {selectedReport.metrics.map((metric) => (
+                  <div key={`${selectedReport.id}-${metric.label}`}>
+                    <span>{metric.label}</span>
+                    <strong>{metric.value}</strong>
+                  </div>
+                ))}
+              </div>
+
+              <div className="sampleReportUse">
+                <div>
+                  <DatabaseZap size={18} />
+                  <span>Commercial use</span>
+                </div>
+                <p>{selectedReport.sampleUse}</p>
+                <small>{selectedReport.audience}</small>
+              </div>
+
+              <pre className="sampleReportPreview">{preview}</pre>
+
+              <div className="sampleReportActions">
+                <button onClick={() => onCopy(selectedReport)}>
+                  <FileCheck2 size={17} />
+                  {selectedFeedback?.action === "copy"
+                    ? selectedFeedback.label
+                    : "Copy sample"}
+                </button>
+                <button onClick={() => onDownload(selectedReport)}>
+                  <ArrowDownToLine size={17} />
+                  {selectedFeedback?.action === "download"
+                    ? selectedFeedback.label
+                    : "Download .md"}
+                </button>
+                <button onClick={() => onDownloadJson(items)}>
+                  <ArrowDownToLine size={17} />
+                  {feedback?.action === "json" ? feedback.label : "Download sample JSON"}
+                </button>
+              </div>
+            </>
+          ) : (
+            <div className="emptyState">Select a public sample report to preview it.</div>
+          )}
+        </article>
       </div>
     </section>
   );

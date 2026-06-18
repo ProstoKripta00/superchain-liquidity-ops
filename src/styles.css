@@ -1050,6 +1050,282 @@ select {
   text-align: center;
 }
 
+.sampleReportsSection {
+  margin-bottom: 20px;
+  padding: 22px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border: 1px solid #e6e6e6;
+  border-radius: 22px;
+  box-shadow: 0 16px 40px rgba(15, 15, 15, 0.08);
+}
+
+.sampleReportsLayout {
+  display: grid;
+  grid-template-columns: 420px minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.sampleReportQueue,
+.sampleReportReader {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  padding: 18px;
+  border-radius: 16px;
+}
+
+.sampleReportQueue {
+  color: #ffffff;
+  background: #0f0f0f;
+}
+
+.sampleReportReader {
+  color: #0f0f0f;
+  background: #f7f7f7;
+}
+
+.sampleReportQueueHeader span,
+.sampleReportQueueHeader strong,
+.sampleReportQueueHeader p,
+.sampleReportHeader span,
+.sampleReportHeader h3,
+.sampleReportHeader small {
+  display: block;
+}
+
+.sampleReportQueueHeader span,
+.sampleReportHeader span {
+  color: #ff0421;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.sampleReportQueueHeader strong {
+  margin-top: 7px;
+  font-size: 28px;
+  line-height: 1.05;
+}
+
+.sampleReportQueueHeader p {
+  margin: 10px 0 0;
+  color: #d8d8d8;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.sampleReportList {
+  display: grid;
+  gap: 10px;
+}
+
+.sampleReportItem {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  min-height: 84px;
+  padding: 12px;
+  color: #ffffff;
+  background: #1a1a1a;
+  border: 1px solid #2c2c2c;
+  border-left: 5px solid transparent;
+  border-radius: 12px;
+  text-align: left;
+}
+
+.sampleReportItem.selected,
+.sampleReportItem:hover {
+  border-left-color: #ff0421;
+  background: #242424;
+}
+
+.sampleReportItem svg {
+  color: #ff5a6d;
+}
+
+.sampleReportItem span,
+.sampleReportItem strong,
+.sampleReportItem small {
+  display: block;
+  min-width: 0;
+}
+
+.sampleReportItem strong {
+  font-size: 15px;
+  line-height: 1.2;
+}
+
+.sampleReportItem small {
+  margin-top: 5px;
+  color: #b9b9b9;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.sampleReportItem em {
+  display: inline-flex;
+  min-width: 64px;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border-radius: 999px;
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 950;
+}
+
+.sampleReportHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.sampleReportHeader h3 {
+  margin: 6px 0 4px;
+  font-size: 30px;
+  line-height: 1.08;
+}
+
+.sampleReportHeader small {
+  color: #6a6a6a;
+  font-size: 13px;
+  font-weight: 850;
+  line-height: 1.35;
+}
+
+.sampleReportBadge {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 12px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border-radius: 999px;
+  font-size: 13px;
+}
+
+.sampleReportSummary {
+  margin-bottom: 0;
+  color: #424242;
+  line-height: 1.55;
+}
+
+.sampleReportStats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.sampleReportStats div {
+  min-width: 0;
+  padding: 12px;
+  background: #ffffff;
+  border: 1px solid #e6e6e6;
+  border-radius: 12px;
+}
+
+.sampleReportStats span,
+.sampleReportStats strong {
+  display: block;
+}
+
+.sampleReportStats span {
+  color: #6a6a6a;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.sampleReportStats strong {
+  margin-top: 5px;
+  font-size: 16px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.sampleReportUse {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border-radius: 14px;
+}
+
+.sampleReportUse div {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #ff5a6d;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.sampleReportUse p,
+.sampleReportUse small {
+  margin: 0;
+  line-height: 1.45;
+}
+
+.sampleReportUse p {
+  color: #ffffff;
+  font-weight: 850;
+}
+
+.sampleReportUse small {
+  color: #bdbdbd;
+  font-size: 13px;
+}
+
+.sampleReportPreview {
+  max-height: 380px;
+  margin: 0;
+  overflow: auto;
+  padding: 16px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.sampleReportActions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.sampleReportActions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 10px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border: 0;
+  border-radius: 12px;
+  font-weight: 950;
+  line-height: 1.2;
+}
+
+.sampleReportActions button:first-child {
+  background: #ff0421;
+}
+
 .exportPackSection {
   margin-bottom: 20px;
   padding: 22px;
@@ -2802,6 +3078,7 @@ select {
   .workbench,
   .scannerGrid,
   .reportsLayout,
+  .sampleReportsLayout,
   .exportPackLayout,
   .automationLayout,
   .serviceLayerLayout,
@@ -2874,6 +3151,9 @@ select {
   .reportReaderStats,
   .reportActions,
   .reportWorkflow,
+  .sampleReportStats,
+  .sampleReportActions,
+  .sampleReportItem,
   .exportPackStats,
   .exportPackActions,
   .automationStats,
@@ -2900,5 +3180,13 @@ select {
 
   .reportReaderStats .wideStat {
     grid-column: auto;
+  }
+
+  .sampleReportHeader {
+    display: grid;
+  }
+
+  .sampleReportBadge {
+    width: fit-content;
   }
 }
