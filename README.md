@@ -40,6 +40,7 @@ What works today:
 - intake form with client scope fields, chain/metric focus, public issue consent, local saved intake queue, Markdown export, JSON export, and saved-record export
 - export pack builder with report Markdown, protocol CSV, scope CSV, summary JSON, and full JSON handoff pack
 - automation workspace that turns live scanner, reports, export pack and source audit state into a repeatable runbook
+- scheduled snapshots plan with daily/weekly snapshot schedules, artifact manifest, GitHub Actions cron template, Markdown export, YAML export, and JSON export
 - service layer that packages analytics output into sellable diagnostic, monitoring, and grant evidence offers
 - lead target list with A/B/C priority tiers, urgency score, cash angle, next action, copy-ready Markdown and CSV/JSON export
 - outreach pipeline with scanner-derived leads, contact enrichment, persistent local CRM fields, DM/email/follow-up pitch generation, CSV export and JSON export
@@ -72,15 +73,16 @@ What works today:
 17. Open `Intake Form`, capture the client scope, select chains and metrics, save the intake locally, or export the intake pack.
 18. Open `Export Pack` and download the full JSON handoff pack or individual artifacts.
 19. Open `Automation`, run the workflow and download the generated runbook.
-20. Open `Service Layer`, select a client package, copy the brief, or download the service JSON.
-21. Open `Lead Targets`, review the A/B/C priority list, copy the Markdown shortlist, or export CSV/JSON.
-22. Open the highest priority target in `Outreach` and enrich the contact route.
-23. Open `Outreach`, select a protocol lead, update CRM notes/follow-up dates, review pitches, and export leads.
-24. Filter to `OP Mainnet` or `Base`.
-25. Review DEX market rows for 24h volume, 30d volume, 30d fees, and health labels.
-26. Open `Source audit` and verify the public endpoints.
-27. Export the CSV report.
-28. Compare the exported evidence against the target outcomes: DEX activity, fee generation, and market health.
+20. Open `Scheduled Snapshots`, review the daily/weekly schedule, copy the plan, or download the Markdown/YAML/JSON outputs.
+21. Open `Service Layer`, select a client package, copy the brief, or download the service JSON.
+22. Open `Lead Targets`, review the A/B/C priority list, copy the Markdown shortlist, or export CSV/JSON.
+23. Open the highest priority target in `Outreach` and enrich the contact route.
+24. Open `Outreach`, select a protocol lead, update CRM notes/follow-up dates, review pitches, and export leads.
+25. Filter to `OP Mainnet` or `Base`.
+26. Review DEX market rows for 24h volume, 30d volume, 30d fees, and health labels.
+27. Open `Source audit` and verify the public endpoints.
+28. Export the CSV report.
+29. Compare the exported evidence against the target outcomes: DEX activity, fee generation, and market health.
 
 ## Data Sources
 
@@ -117,6 +119,7 @@ Unavailable values are shown as unavailable. The app does not silently substitut
 | Intake form | Client scope capture, chain/metric choices, saved local intake queue, public issue consent, Markdown and JSON exports | Live |
 | Export pack | JSON handoff pack plus Markdown, CSV, and structured summary artifacts | Live |
 | Automation | Browser-side job queue and Markdown runbook for report, export, watchlist, and source-audit workflows | Live |
+| Scheduled snapshots | Daily/weekly snapshot schedule, artifact manifest, GitHub Actions cron template, Markdown/YAML/JSON export | Live |
 | Service layer | Client package builder with suggested scopes, deliverables, acceptance criteria, brief export, and service JSON | Live |
 | Lead target list | A/B/C prioritized protocol shortlist with urgency score, cash angle, next action, Markdown copy, CSV export and JSON export | Live |
 | Outreach pipeline | Lead status board, protocol pitch generator, CSV export, and JSON pipeline export | Live |
@@ -153,7 +156,7 @@ Live data adapters
 Data engine: normalization, ratios, weighted trends, market scoring
         |
         v
-Protocol scanner, protocol health score, reports workspace, public sample reports, static sample files, trust / proof section, offer / pricing page, payment / terms block, launch desk, request report intake, intake form, export pack, automation runbook, service layer, lead target list, outreach pipeline, contact enrichment, persistent CRM, mini reports, scope totals, chain coverage, source audit, CSV export
+Protocol scanner, protocol health score, reports workspace, public sample reports, static sample files, trust / proof section, offer / pricing page, payment / terms block, launch desk, request report intake, intake form, export pack, automation runbook, scheduled snapshots, service layer, lead target list, outreach pipeline, contact enrichment, persistent CRM, mini reports, scope totals, chain coverage, source audit, CSV export
         |
         v
 Dashboard state and reviewer workflow
@@ -192,6 +195,7 @@ src/trustProof.ts            Verifiable proof stack, trust metrics and delivery-
 src/paymentTerms.ts          Payment structure, delivery gates, manual payment terms and Markdown export
 src/exportPack.ts            Export pack manifest, CSV generation and JSON handoff package
 src/automation.ts            Browser-side automation job queue and Markdown runbook generator
+src/scheduledSnapshots.ts    Daily/weekly snapshot plan, artifact manifest, GitHub Actions YAML and JSON export
 src/serviceLayer.ts          Sellable service offer, pricing page data, client brief and service JSON generation
 src/leadTargets.ts           A/B/C lead shortlist, urgency scoring, cash angle, next action and target exports
 src/salesKit.ts              Launch desk proposal, onboarding email, checklist, FAQ, terms and sales-kit export

@@ -95,6 +95,10 @@ import {
   type SampleReportId,
 } from "./sampleReports";
 import {
+  buildScheduledSnapshotsPack,
+  type ScheduledSnapshotsPack,
+} from "./scheduledSnapshots";
+import {
   buildSalesKit,
   type SalesKit,
 } from "./salesKit";
@@ -157,6 +161,7 @@ type LaunchFeedbackAction =
   | "download-json";
 type ExportPackFeedbackAction = ExportPackArtifactId | "pack-json" | "handoff";
 type AutomationFeedbackAction = "run" | "copy" | "download";
+type ScheduledSnapshotFeedbackAction = "copy" | "download-md" | "download-yaml" | "download-json";
 type ServiceFeedbackAction =
   | "copy-brief"
   | "download-brief"
@@ -234,6 +239,10 @@ function App() {
   } | null>(null);
   const [automationFeedback, setAutomationFeedback] = useState<{
     action: AutomationFeedbackAction;
+    label: string;
+  } | null>(null);
+  const [scheduledSnapshotFeedback, setScheduledSnapshotFeedback] = useState<{
+    action: ScheduledSnapshotFeedbackAction;
     label: string;
   } | null>(null);
   const [serviceFeedback, setServiceFeedback] = useState<{
@@ -467,6 +476,27 @@ function App() {
         pipeline: outreachPipeline,
       }),
     [outreachPipeline],
+  );
+  const scheduledSnapshotsPack = useMemo(
+    () =>
+      buildScheduledSnapshotsPack({
+        automationRun,
+        leadTargetList,
+        network,
+        selectedExportPack,
+        snapshot,
+        target,
+        totals,
+      }),
+    [
+      automationRun,
+      leadTargetList,
+      network,
+      selectedExportPack,
+      snapshot,
+      target,
+      totals,
+    ],
   );
   const salesKit = useMemo(
     () =>
@@ -1007,6 +1037,55 @@ function App() {
     setTemporaryAutomationFeedback("download", "Downloaded");
   };
 
+  const setTemporaryScheduledSnapshotFeedback = (
+    action: ScheduledSnapshotFeedbackAction,
+    label: string,
+  ) => {
+    setScheduledSnapshotFeedback({ action, label });
+
+    window.setTimeout(() => {
+      setScheduledSnapshotFeedback((current) =>
+        current?.action === action ? null : current,
+      );
+    }, 1600);
+  };
+
+  const copyScheduledSnapshotPlan = async (pack: ScheduledSnapshotsPack) => {
+    try {
+      await writeClipboardText(pack.markdown);
+      setTemporaryScheduledSnapshotFeedback("copy", "Copied");
+    } catch {
+      setTemporaryScheduledSnapshotFeedback("copy", "Plan ready");
+    }
+  };
+
+  const downloadScheduledSnapshotMarkdown = (pack: ScheduledSnapshotsPack) => {
+    downloadTextFile(
+      "superchain-scheduled-snapshots.md",
+      pack.markdown,
+      "text/markdown;charset=utf-8",
+    );
+    setTemporaryScheduledSnapshotFeedback("download-md", "Downloaded");
+  };
+
+  const downloadScheduledSnapshotYaml = (pack: ScheduledSnapshotsPack) => {
+    downloadTextFile(
+      "scheduled-superchain-snapshots.yml",
+      pack.githubActionYaml,
+      "text/yaml;charset=utf-8",
+    );
+    setTemporaryScheduledSnapshotFeedback("download-yaml", "Downloaded");
+  };
+
+  const downloadScheduledSnapshotJson = (pack: ScheduledSnapshotsPack) => {
+    downloadTextFile(
+      "superchain-scheduled-snapshots.json",
+      pack.json,
+      "application/json;charset=utf-8",
+    );
+    setTemporaryScheduledSnapshotFeedback("download-json", "Downloaded");
+  };
+
   const setTemporaryServiceFeedback = (
     action: ServiceFeedbackAction,
     label: string,
@@ -1267,6 +1346,7 @@ function App() {
           <a href="#intake-form">Intake form</a>
           <a href="#export-pack">Export pack</a>
           <a href="#automation">Automation</a>
+          <a href="#scheduled-snapshots">Scheduled snapshots</a>
           <a href="#service-layer">Service layer</a>
           <a href="#lead-targets">Lead targets</a>
           <a href="#outreach">Outreach</a>
@@ -1578,6 +1658,15 @@ function App() {
           onDownloadRunbook={downloadAutomationRunbook}
           onRun={runAutomation}
           run={automationRun}
+        />
+
+        <ScheduledSnapshotsSection
+          feedback={scheduledSnapshotFeedback}
+          onCopy={() => void copyScheduledSnapshotPlan(scheduledSnapshotsPack)}
+          onDownloadJson={() => downloadScheduledSnapshotJson(scheduledSnapshotsPack)}
+          onDownloadMarkdown={() => downloadScheduledSnapshotMarkdown(scheduledSnapshotsPack)}
+          onDownloadYaml={() => downloadScheduledSnapshotYaml(scheduledSnapshotsPack)}
+          pack={scheduledSnapshotsPack}
         />
 
         <ServiceLayerSection
@@ -2930,6 +3019,124 @@ function AutomationSection({
             ))}
           </div>
         </aside>
+      </div>
+    </section>
+  );
+}
+
+function ScheduledSnapshotsSection({
+  feedback,
+  onCopy,
+  onDownloadJson,
+  onDownloadMarkdown,
+  onDownloadYaml,
+  pack,
+}: {
+  feedback: {
+    action: ScheduledSnapshotFeedbackAction;
+    label: string;
+  } | null;
+  onCopy: () => void;
+  onDownloadJson: () => void;
+  onDownloadMarkdown: () => void;
+  onDownloadYaml: () => void;
+  pack: ScheduledSnapshotsPack;
+}) {
+  const feedbackFor = (action: ScheduledSnapshotFeedbackAction) =>
+    feedback?.action === action ? feedback.label : null;
+
+  return (
+    <section className="scheduledSnapshotsSection" id="scheduled-snapshots">
+      <div className="sectionHeader">
+        <div>
+          <p className="sectionKicker">Scheduled Snapshots</p>
+          <h2>Keep daily and weekly evidence without manual screenshots</h2>
+        </div>
+        <span>{pack.readyCount}/{pack.schedules.length} ready</span>
+      </div>
+
+      <div className="scheduledSnapshotsLayout">
+        <article className="scheduledSnapshotsLead">
+          <div className="scheduledSnapshotsTitle">
+            <RefreshCcw size={24} />
+            <div>
+              <span>Snapshot plan</span>
+              <h3>{pack.summary}</h3>
+              <small>{new Date(pack.generatedAt).toLocaleString()}</small>
+            </div>
+          </div>
+
+          <div className="scheduledSnapshotsStats">
+            <Stat label="Ready" value={String(pack.readyCount)} />
+            <Stat label="Watch" value={String(pack.watchCount)} />
+            <Stat label="Blocked" value={String(pack.blockedCount)} />
+            <Stat label="Next UTC" value={new Date(pack.nextSnapshotUtc).toLocaleString()} />
+          </div>
+
+          <div className="scheduledSnapshotActions">
+            <button onClick={onCopy}>
+              <FileCheck2 size={17} />
+              {feedbackFor("copy") ?? "Copy plan"}
+            </button>
+            <button onClick={onDownloadMarkdown}>
+              <ArrowDownToLine size={17} />
+              {feedbackFor("download-md") ?? "Download .md"}
+            </button>
+            <button onClick={onDownloadYaml}>
+              <GitBranch size={17} />
+              {feedbackFor("download-yaml") ?? "Download Actions YAML"}
+            </button>
+            <button onClick={onDownloadJson}>
+              <DatabaseZap size={17} />
+              {feedbackFor("download-json") ?? "Download JSON"}
+            </button>
+          </div>
+
+          <pre className="scheduledSnapshotPreview">{pack.githubActionYaml}</pre>
+        </article>
+
+        <aside className="snapshotArtifactPanel">
+          <span>Artifact manifest</span>
+          {pack.artifactPlan.map((item) => (
+            <div className="snapshotArtifactItem" key={item.label}>
+              <strong>{item.label}</strong>
+              <small>{item.value}</small>
+            </div>
+          ))}
+          <div className="snapshotBoundary">
+            <ShieldCheck size={18} />
+            <p>
+              Static GitHub Pages can export this plan. Recurring execution needs
+              GitHub Actions, a backend worker, or another external scheduler.
+            </p>
+          </div>
+        </aside>
+
+        <div className="snapshotScheduleGrid">
+          {pack.schedules.map((schedule) => (
+            <article
+              className={`snapshotScheduleCard ${snapshotStatusClass(schedule.status)}`}
+              key={schedule.id}
+            >
+              <div className="snapshotScheduleHead">
+                <span>{schedule.cadence}</span>
+                <strong>{schedule.status}</strong>
+              </div>
+              <h3>{schedule.title}</h3>
+              <p>{schedule.detail}</p>
+              <div className="snapshotScheduleMeta">
+                <Stat label="Cron" value={schedule.cron} />
+                <Stat label="Next UTC" value={new Date(schedule.nextRunUtc).toLocaleString()} />
+                <Stat label="Owner" value={schedule.owner} />
+                <Stat label="Retention" value={schedule.retention} />
+              </div>
+              <div className="snapshotOutput">
+                <FileText size={17} />
+                <span>{schedule.artifactName}</span>
+              </div>
+            </article>
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -4300,6 +4507,10 @@ function launchStatusClass(value: SalesKit["status"]) {
 }
 
 function checklistStatusClass(value: SalesKit["checklist"][number]["status"]) {
+  return value.toLowerCase().replace(/\s+/g, "-");
+}
+
+function snapshotStatusClass(value: string) {
   return value.toLowerCase().replace(/\s+/g, "-");
 }
 

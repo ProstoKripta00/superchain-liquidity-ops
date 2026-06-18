@@ -176,6 +176,7 @@ The MVP should produce grant-review artifacts:
 - intake form with client scope fields, chain and metric selection, local saved intake records, public issue consent, Markdown export, JSON export, and saved-record export
 - export pack containing Markdown, CSV, structured JSON, and a manifest-style JSON handoff package
 - automation runbook with report, export-pack, watchlist, source-audit, and scope-refresh jobs
+- scheduled snapshots plan with daily/weekly schedules, artifact manifest, GitHub Actions cron template, Markdown export, YAML export, and JSON export
 - service layer with client-ready package briefs, deliverables, acceptance criteria, and service JSON
 - lead target list with A/B/C priority tiers, urgency score, cash angle, next action, Markdown copy, CSV export and JSON export
 - outreach pipeline with protocol leads, contact enrichment, persistent local CRM fields, generated DM/email/follow-up pitches, CSV export and JSON export
@@ -437,6 +438,39 @@ Current job types:
 - source audit: checks whether public data endpoints are OK, degraded, or blocking
 
 Each automation run generates a Markdown runbook with status, scope, job counts, outputs, next-run instructions, and the reason for each job. Browser automation is intentionally conservative: a blocked source or missing selection stays visible instead of being hidden behind a successful-looking export.
+
+## Scheduled Snapshots
+
+Scheduled Snapshots turn the automation state into a recurring evidence plan.
+
+The public GitHub Pages app cannot run background jobs by itself. It can generate the plan, export the manifest, and provide a GitHub Actions cron template. Actual recurring execution requires GitHub Actions, a backend worker, or another external scheduler.
+
+Current snapshot schedules:
+
+- daily Superchain scope summary
+- daily market impact CSV
+- weekly selected protocol export pack
+- weekly lead target snapshot
+- daily source audit snapshot
+
+Each schedule includes:
+
+- status
+- cadence
+- cron expression
+- next run time in UTC
+- owner
+- artifact name
+- retention rule
+- detail explaining why the schedule is ready, watch, or blocked
+
+Current exports:
+
+- Markdown snapshot plan
+- GitHub Actions YAML template
+- JSON manifest
+
+The GitHub Actions template is intentionally a starting point, not a hidden claim that the repository already has backend storage. A production implementation should add an actual `npm run snapshot` script or backend job that writes files into `snapshots/YYYY/MM/DD/`, creates a manifest, and commits/uploads artifacts according to the chosen retention policy.
 
 ## Service Layer
 

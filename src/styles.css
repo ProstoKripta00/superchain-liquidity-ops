@@ -3712,6 +3712,304 @@ select {
   overflow-wrap: anywhere;
 }
 
+.scheduledSnapshotsSection {
+  margin-bottom: 20px;
+  padding: 22px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border: 1px solid #2f2f2f;
+  border-radius: 22px;
+  box-shadow: 0 16px 40px rgba(15, 15, 15, 0.12);
+}
+
+.scheduledSnapshotsSection .sectionHeader {
+  color: #ffffff;
+}
+
+.scheduledSnapshotsSection .sectionKicker {
+  color: #ff5a6d;
+}
+
+.scheduledSnapshotsSection .sectionHeader span {
+  color: #0f0f0f;
+  background: #ffffff;
+}
+
+.scheduledSnapshotsLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 410px;
+  gap: 14px;
+  align-items: start;
+}
+
+.scheduledSnapshotsLead,
+.snapshotArtifactPanel {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  padding: 18px;
+  border-radius: 16px;
+}
+
+.scheduledSnapshotsLead {
+  color: #0f0f0f;
+  background: #ffffff;
+}
+
+.snapshotArtifactPanel {
+  color: #ffffff;
+  background: #181818;
+}
+
+.scheduledSnapshotsTitle {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.scheduledSnapshotsTitle > svg {
+  color: #ff0421;
+}
+
+.scheduledSnapshotsTitle span,
+.snapshotArtifactPanel > span,
+.snapshotArtifactItem strong {
+  display: block;
+  color: #ff0421;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.scheduledSnapshotsTitle h3 {
+  margin: 5px 0 0;
+  font-size: 32px;
+  line-height: 1.05;
+}
+
+.scheduledSnapshotsTitle small {
+  display: block;
+  margin-top: 7px;
+  color: #6b6b6b;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.scheduledSnapshotsStats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.scheduledSnapshotsStats .stat {
+  background: #f4f4f4;
+}
+
+.scheduledSnapshotsStats .stat strong {
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.scheduledSnapshotActions {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.scheduledSnapshotActions button {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #ffffff;
+  background: #ff0421;
+  border: 0;
+  border-radius: 12px;
+  font-weight: 950;
+  line-height: 1.15;
+}
+
+.scheduledSnapshotActions button:nth-child(2) {
+  background: #0f0f0f;
+}
+
+.scheduledSnapshotActions button:nth-child(3) {
+  color: #0f0f0f;
+  background: #f2f2f2;
+}
+
+.scheduledSnapshotActions button:nth-child(4) {
+  background: #323232;
+}
+
+.scheduledSnapshotPreview {
+  max-height: 260px;
+  margin: 0;
+  overflow: auto;
+  padding: 14px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.snapshotArtifactItem {
+  padding: 12px;
+  background: #0f0f0f;
+  border: 1px solid #2b2b2b;
+  border-left: 5px solid #ff0421;
+  border-radius: 12px;
+}
+
+.snapshotArtifactItem small {
+  display: block;
+  margin-top: 5px;
+  color: #d8d8d8;
+  font-size: 12px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.snapshotBoundary {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  padding: 12px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border-radius: 12px;
+}
+
+.snapshotBoundary svg {
+  color: #ff0421;
+}
+
+.snapshotBoundary p {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 850;
+  line-height: 1.35;
+}
+
+.snapshotScheduleGrid {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.snapshotScheduleCard {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  padding: 16px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border: 1px solid #e6e6e6;
+  border-top: 6px solid #ff0421;
+  border-radius: 16px;
+}
+
+.snapshotScheduleCard.watch {
+  border-top-color: #ffbe00;
+}
+
+.snapshotScheduleCard.blocked {
+  border-top-color: #777777;
+}
+
+.snapshotScheduleHead {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.snapshotScheduleHead span,
+.snapshotScheduleHead strong {
+  display: inline-flex;
+  min-height: 28px;
+  align-items: center;
+  padding: 0 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.snapshotScheduleHead span {
+  color: #ffffff;
+  background: #0f0f0f;
+}
+
+.snapshotScheduleHead strong {
+  color: #ffffff;
+  background: #ff0421;
+}
+
+.snapshotScheduleCard.watch .snapshotScheduleHead strong {
+  color: #0f0f0f;
+  background: #ffbe00;
+}
+
+.snapshotScheduleCard.blocked .snapshotScheduleHead strong {
+  background: #777777;
+}
+
+.snapshotScheduleCard h3 {
+  margin: 0;
+  font-size: 21px;
+  line-height: 1.08;
+}
+
+.snapshotScheduleCard p {
+  margin: 0;
+  color: #4d4d4d;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.snapshotScheduleMeta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.snapshotScheduleMeta .stat {
+  background: #f4f4f4;
+}
+
+.snapshotScheduleMeta .stat strong {
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+
+.snapshotOutput {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+  padding: 10px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border-radius: 12px;
+}
+
+.snapshotOutput svg {
+  color: #ff5a6d;
+}
+
+.snapshotOutput span {
+  font-size: 12px;
+  font-weight: 950;
+  overflow-wrap: anywhere;
+}
+
 .serviceLayerSection {
   margin-bottom: 20px;
   padding: 22px;
@@ -5468,6 +5766,8 @@ select {
   .intakeLayout,
   .exportPackLayout,
   .automationLayout,
+  .scheduledSnapshotsLayout,
+  .snapshotScheduleGrid,
   .serviceLayerLayout,
   .leadTargetLayout,
   .leadTargetGrid,
@@ -5574,6 +5874,9 @@ select {
   .automationStats,
   .automationActions,
   .automationJobRow,
+  .scheduledSnapshotsStats,
+  .scheduledSnapshotActions,
+  .snapshotScheduleMeta,
   .serviceStats,
   .serviceActions,
   .serviceOfferCard,
