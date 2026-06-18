@@ -105,7 +105,12 @@ type ReportLibraryItem = {
 type SampleReportFeedbackAction = "copy" | "download" | "json";
 type ExportPackFeedbackAction = ExportPackArtifactId | "pack-json" | "handoff";
 type AutomationFeedbackAction = "run" | "copy" | "download";
-type ServiceFeedbackAction = "copy-brief" | "download-brief" | "json";
+type ServiceFeedbackAction =
+  | "copy-brief"
+  | "download-brief"
+  | "copy-pricing"
+  | "download-pricing"
+  | "json";
 type OutreachFeedbackAction = "pitch" | "csv" | "json";
 const leadStatuses: LeadStatus[] = [
   "New",
@@ -576,6 +581,24 @@ function App() {
     setTemporaryServiceFeedback("download-brief", "Downloaded");
   };
 
+  const copyPricingSheet = async (layer: ServiceLayer) => {
+    try {
+      await writeClipboardText(buildPricingSheet(layer));
+      setTemporaryServiceFeedback("copy-pricing", "Copied");
+    } catch {
+      setTemporaryServiceFeedback("copy-pricing", "Pricing ready");
+    }
+  };
+
+  const downloadPricingSheet = (layer: ServiceLayer) => {
+    downloadTextFile(
+      "superchain-offer-pricing.md",
+      buildPricingSheet(layer),
+      "text/markdown;charset=utf-8",
+    );
+    setTemporaryServiceFeedback("download-pricing", "Downloaded");
+  };
+
   const downloadServiceJson = (layer: ServiceLayer) => {
     downloadTextFile(
       "superchain-service-layer.json",
@@ -696,6 +719,7 @@ function App() {
           <a href="#protocol-scanner">Protocol scanner</a>
           <a href="#reports">Reports</a>
           <a href="#sample-reports">Sample reports</a>
+          <a href="#pricing">Pricing</a>
           <a href="#export-pack">Export pack</a>
           <a href="#automation">Automation</a>
           <a href="#service-layer">Service layer</a>
@@ -916,6 +940,16 @@ function App() {
           onDownloadJson={downloadSampleReportsJson}
           onSelectReport={setSelectedSampleReportId}
           selectedReport={selectedSampleReport}
+        />
+
+        <OfferPricingSection
+          feedback={serviceFeedback}
+          layer={serviceLayer}
+          onCopyBrief={(offer) => void copyServiceBrief(offer)}
+          onCopyPricing={() => void copyPricingSheet(serviceLayer)}
+          onDownloadPricing={() => downloadPricingSheet(serviceLayer)}
+          onSelectOffer={setSelectedServiceOfferId}
+          selectedOffer={selectedServiceOffer}
         />
 
         <ExportPackSection
@@ -1177,6 +1211,134 @@ function App() {
         </section>
       </main>
     </div>
+  );
+}
+
+function OfferPricingSection({
+  feedback,
+  layer,
+  onCopyBrief,
+  onCopyPricing,
+  onDownloadPricing,
+  onSelectOffer,
+  selectedOffer,
+}: {
+  feedback: {
+    action: ServiceFeedbackAction;
+    label: string;
+  } | null;
+  layer: ServiceLayer;
+  onCopyBrief: (offer: ServiceOffer) => void;
+  onCopyPricing: () => void;
+  onDownloadPricing: () => void;
+  onSelectOffer: (offerId: ServiceOffer["id"]) => void;
+  selectedOffer: ServiceOffer | null;
+}) {
+  const feedbackFor = (action: ServiceFeedbackAction) =>
+    feedback?.action === action ? feedback.label : null;
+
+  return (
+    <section className="pricingSection" id="pricing">
+      <div className="sectionHeader">
+        <div>
+          <p className="sectionKicker">Offer / Pricing</p>
+          <h2>Clear packages for teams that need liquidity evidence</h2>
+        </div>
+        <span>{layer.readyCount} ready to sell</span>
+      </div>
+
+      <div className="pricingLead">
+        <article className="pricingCopy">
+          <span>Commercial page</span>
+          <h3>Buy a narrow report first. Expand only when the data proves value.</h3>
+          <p>
+            These packages turn the live scanner, public sample reports, export pack
+            and outreach workflow into fixed-scope services with visible price ranges,
+            delivery timelines and acceptance criteria.
+          </p>
+
+          <div className="pricingStats">
+            <Stat label="Scope" value={layer.scopeLabel} />
+            <Stat label="Recommended" value={layer.recommendedOfferName} />
+            <Stat label="Pipeline" value={layer.totalPipelineLabel} />
+            <Stat label="Updated" value={new Date(layer.generatedAt).toLocaleDateString()} />
+          </div>
+
+          <div className="pricingActions">
+            <button onClick={onCopyPricing}>
+              <FileCheck2 size={17} />
+              {feedbackFor("copy-pricing") ?? "Copy pricing sheet"}
+            </button>
+            <button onClick={onDownloadPricing}>
+              <ArrowDownToLine size={17} />
+              {feedbackFor("download-pricing") ?? "Download pricing .md"}
+            </button>
+          </div>
+        </article>
+
+        <aside className="pricingProcess">
+          <span>Buyer path</span>
+          <strong>1. Pick a package</strong>
+          <strong>2. Confirm protocol scope</strong>
+          <strong>3. Deliver report and export pack</strong>
+          <strong>4. Move to monitoring if useful</strong>
+        </aside>
+      </div>
+
+      <div className="pricingGrid">
+        {layer.offers.map((offer) => {
+          const isSelected = offer.id === selectedOffer?.id;
+
+          return (
+            <article
+              className={`pricingCard ${serviceStatusClass(offer.status)} ${
+                isSelected ? "selected" : ""
+              }`}
+              key={offer.id}
+            >
+              <div className="pricingCardHead">
+                <span>{offer.status}</span>
+                <strong>{offer.priceLabel}</strong>
+              </div>
+
+              <h3>{offer.name}</h3>
+              <p>{offer.audience}</p>
+
+              <div className="pricingMiniStats">
+                <Stat label="Timeline" value={offer.timeline} />
+                <Stat label="Fit" value={`${offer.fitScore}/100`} />
+                <Stat label="Protocol" value={offer.protocolName} />
+              </div>
+
+              <div className="pricingProblem">
+                <Target size={18} />
+                <strong>{offer.salesAngle}</strong>
+              </div>
+
+              <div className="pricingDeliverables">
+                <span>Included</span>
+                {offer.deliverables.map((item) => (
+                  <strong key={item}>{item}</strong>
+                ))}
+              </div>
+
+              <div className="pricingCardActions">
+                <button onClick={() => onSelectOffer(offer.id)}>
+                  <Route size={17} />
+                  {isSelected ? "Selected" : "Select package"}
+                </button>
+                <button onClick={() => onCopyBrief(offer)}>
+                  <FileCheck2 size={17} />
+                  {isSelected && feedbackFor("copy-brief")
+                    ? feedbackFor("copy-brief")
+                    : "Copy buyer brief"}
+                </button>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </section>
   );
 }
 
@@ -2422,6 +2584,60 @@ function formatOptionalPct(value: number | null) {
 
 function serviceStatusClass(value: ServiceOffer["status"]) {
   return value.toLowerCase().replace(/\s+/g, "-");
+}
+
+function buildPricingSheet(layer: ServiceLayer) {
+  return [
+    "# Superchain Liquidity Ops Offer / Pricing",
+    "",
+    `Generated: ${layer.generatedAt}`,
+    `Scope: ${layer.scopeLabel}`,
+    `Recommended offer: ${layer.recommendedOfferName}`,
+    `Ready packages: ${layer.readyCount}/${layer.offers.length}`,
+    "",
+    "## What You Can Buy",
+    "",
+    "Fixed-scope analytics services for protocols, grant teams, and ecosystem operators that need source-backed Superchain DEX volume, fee, liquidity, and market-health evidence.",
+    "",
+    "## Packages",
+    "",
+    ...layer.offers.flatMap((offer) => [
+      `### ${offer.name}`,
+      "",
+      `Price: ${offer.priceLabel}`,
+      `Timeline: ${offer.timeline}`,
+      `Status: ${offer.status}`,
+      `Audience: ${offer.audience}`,
+      `Fit score: ${offer.fitScore}/100`,
+      "",
+      "Problem:",
+      offer.problem,
+      "",
+      "Sales angle:",
+      offer.salesAngle,
+      "",
+      "Deliverables:",
+      ...offer.deliverables.map((item) => `- ${item}`),
+      "",
+      "Acceptance criteria:",
+      ...offer.acceptanceCriteria.map((item) => `- ${item}`),
+      "",
+      "Included artifacts:",
+      ...offer.includedArtifacts.map((item) => `- ${item}`),
+      "",
+    ]),
+    "## Delivery Boundary",
+    "",
+    "- The work is analytics, reporting, source audit, and operating evidence.",
+    "- It is not a smart-contract security audit, investment recommendation, or guaranteed growth outcome.",
+    "- Missing public metrics stay visible instead of being replaced with manual guesses.",
+    "- Scope is confirmed before delivery starts.",
+    "",
+    "## Next Step",
+    "",
+    "Pick one package, confirm the protocol or Superchain scope, then send a sample report plus the buyer brief.",
+    "",
+  ].join("\n");
 }
 
 function buildProtocolSummary(scan: ProtocolScan) {

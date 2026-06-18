@@ -167,6 +167,7 @@ The MVP should produce grant-review artifacts:
 - Markdown mini-report for a selected protocol
 - reports workspace for selecting, previewing, copying, and downloading generated reports
 - public sample reports for client-facing proof-of-work across diagnostic, monitoring, and grant-evidence services
+- offer / pricing page with fixed-scope packages, price ranges, timelines, deliverables, and buyer brief actions
 - export pack containing Markdown, CSV, structured JSON, and a manifest-style JSON handoff package
 - automation runbook with report, export-pack, watchlist, source-audit, and scope-refresh jobs
 - service layer with client-ready package briefs, deliverables, acceptance criteria, and service JSON
@@ -225,6 +226,29 @@ Each sample includes:
 - JSON bundle export for the full public sample library
 
 These samples are designed for public portfolio, outbound sales, and grant/product-review conversations. They are not security audits, investment recommendations, or manually curated endorsements.
+
+## Offer / Pricing Page
+
+The Offer / Pricing page converts the Service Layer into a public sales surface.
+
+Current packages:
+
+- Protocol Diagnostic Sprint
+- Liquidity Monitoring Retainer
+- Grant Evidence Pack
+
+Each package includes:
+
+- price range
+- timeline
+- audience
+- readiness status
+- fit score
+- deliverables
+- buyer brief copy
+- pricing sheet export
+
+The pricing page is not a payment processor and does not create a binding contract. It is a manual sales page designed to make the service understandable before outreach starts. The pricing ranges are intentionally fixed-scope so the seller can avoid custom unpaid analysis before a client confirms interest.
 
 ## Export Pack
 

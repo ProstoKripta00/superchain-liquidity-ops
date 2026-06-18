@@ -1326,6 +1326,265 @@ select {
   background: #ff0421;
 }
 
+.pricingSection {
+  margin-bottom: 20px;
+  padding: 22px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border: 1px solid #e6e6e6;
+  border-radius: 22px;
+  box-shadow: 0 16px 40px rgba(15, 15, 15, 0.08);
+}
+
+.pricingSection .sectionHeader span {
+  color: #ffffff;
+  background: #0f0f0f;
+}
+
+.pricingLead {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 14px;
+  align-items: stretch;
+  margin-bottom: 14px;
+}
+
+.pricingCopy,
+.pricingProcess,
+.pricingCard {
+  min-width: 0;
+  border-radius: 16px;
+}
+
+.pricingCopy {
+  display: grid;
+  gap: 14px;
+  padding: 20px;
+  color: #ffffff;
+  background: #0f0f0f;
+}
+
+.pricingCopy span,
+.pricingProcess span,
+.pricingCardHead span,
+.pricingDeliverables span {
+  display: block;
+  color: #ff5a6d;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.pricingCopy h3 {
+  margin: 0;
+  max-width: 900px;
+  color: #ffffff;
+  font-size: 38px;
+  line-height: 1.02;
+}
+
+.pricingCopy p {
+  max-width: 980px;
+  margin: 0;
+  color: #d8d8d8;
+  line-height: 1.55;
+}
+
+.pricingStats,
+.pricingMiniStats {
+  display: grid;
+  gap: 8px;
+}
+
+.pricingStats {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.pricingStats .stat {
+  background: #1d1d1d;
+}
+
+.pricingStats .stat span {
+  color: #929292;
+}
+
+.pricingStats .stat strong {
+  color: #ffffff;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.pricingActions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.pricingActions button,
+.pricingCardActions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  border: 0;
+  border-radius: 12px;
+  font-weight: 950;
+  line-height: 1.2;
+}
+
+.pricingActions button {
+  color: #ffffff;
+  background: #ff0421;
+}
+
+.pricingActions button:last-child {
+  color: #0f0f0f;
+  background: #ffffff;
+}
+
+.pricingProcess {
+  display: grid;
+  gap: 10px;
+  align-content: center;
+  padding: 18px;
+  color: #0f0f0f;
+  background: #f4f4f4;
+  border: 1px solid #e6e6e6;
+}
+
+.pricingProcess strong {
+  display: block;
+  padding: 12px;
+  background: #ffffff;
+  border-left: 5px solid #ff0421;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.25;
+}
+
+.pricingGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.pricingCard {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+  padding: 18px;
+  background: #f7f7f7;
+  border: 1px solid #e6e6e6;
+  border-top: 6px solid #ffbe00;
+}
+
+.pricingCard.ready-to-sell {
+  border-top-color: #ff0421;
+}
+
+.pricingCard.blocked {
+  border-top-color: #777777;
+}
+
+.pricingCard.selected {
+  box-shadow: 0 14px 32px rgba(255, 4, 33, 0.16);
+}
+
+.pricingCardHead {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.pricingCardHead strong {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  padding: 0 10px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border-radius: 999px;
+  font-size: 13px;
+  text-align: right;
+}
+
+.pricingCard h3 {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.05;
+}
+
+.pricingCard p {
+  margin: 0;
+  color: #4d4d4d;
+  line-height: 1.45;
+}
+
+.pricingMiniStats {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.pricingMiniStats .stat {
+  background: #ffffff;
+}
+
+.pricingMiniStats .stat strong {
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.pricingProblem {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  padding: 12px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border-radius: 12px;
+}
+
+.pricingProblem svg {
+  color: #ff5a6d;
+}
+
+.pricingProblem strong {
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.pricingDeliverables {
+  display: grid;
+  gap: 7px;
+}
+
+.pricingDeliverables strong {
+  display: block;
+  padding: 10px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border-radius: 10px;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.pricingCardActions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.pricingCardActions button {
+  color: #ffffff;
+  background: #0f0f0f;
+}
+
+.pricingCardActions button:first-child {
+  background: #ff0421;
+}
+
 .exportPackSection {
   margin-bottom: 20px;
   padding: 22px;
@@ -3205,6 +3464,8 @@ select {
   .scannerGrid,
   .reportsLayout,
   .sampleReportsLayout,
+  .pricingLead,
+  .pricingGrid,
   .exportPackLayout,
   .automationLayout,
   .serviceLayerLayout,
@@ -3280,6 +3541,10 @@ select {
   .sampleReportStats,
   .sampleReportActions,
   .sampleReportItem,
+  .pricingStats,
+  .pricingMiniStats,
+  .pricingActions,
+  .pricingCardActions,
   .exportPackStats,
   .exportPackActions,
   .automationStats,
