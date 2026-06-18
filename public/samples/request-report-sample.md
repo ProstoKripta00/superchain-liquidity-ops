@@ -4,24 +4,24 @@ Generated: static sample
 Project: Superchain Liquidity Ops
 Protocol / client: Example Protocol
 Contact route: Not provided in public sample
-Request type: Grant evidence pack
-Suggested budget: $2,000-$4,000
+Request type: DAO / incentive evidence pack
+Suggested budget: $1,500-$3,000
 Target deadline: Flexible
 
 ## Selected Package
 
-- Package: Grant Evidence Pack
+- Package: DAO / Incentive Evidence Pack
 - Timeline: 7-10 days
 - Launch status: Sample
 - Readiness score: Static sample
 
 ## Need
 
-Client wants a source-backed Superchain liquidity report that can be used for protocol, LP, or grant-review conversations.
+Client wants a source-backed Superchain liquidity report that can be used for protocol, LP, DAO, or ecosystem conversations.
 
 ## Deliverables
 
-- Reviewer-ready narrative.
+- Decision-ready narrative.
 - Before/after metric scope.
 - Export pack JSON and CSV artifacts.
 - Methodology and source limitation notes.
@@ -29,5 +29,5 @@ Client wants a source-backed Superchain liquidity report that can be used for pr
 ## Acceptance Criteria
 
 - Evidence pack lists the metric scope and public endpoints.
-- Reviewer can reproduce exported numbers from dashboard sources.
+- Stakeholders can reproduce exported numbers from dashboard sources.
 - Final handoff separates facts, risks, and recommendations.

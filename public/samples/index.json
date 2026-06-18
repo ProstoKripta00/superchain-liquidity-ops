@@ -2,7 +2,7 @@
   "generatedAt": "static-sample",
   "product": "Superchain Liquidity Ops",
   "type": "static-sample-file-manifest",
-  "description": "Stable public sample files for client outreach, grant-review demos, and service delivery previews.",
+  "description": "Stable public sample files for client outreach, buyer previews, and service delivery examples.",
   "files": [
     {
       "id": "protocol-diagnostic",
@@ -19,11 +19,11 @@
       "useCase": "Show weekly monitoring structure."
     },
     {
-      "id": "grant-evidence-pack",
-      "title": "Grant Evidence Pack Sample",
+      "id": "incentive-evidence-pack",
+      "title": "DAO / Incentive Evidence Pack Sample",
       "format": "markdown",
-      "path": "samples/grant-evidence-pack-sample.md",
-      "useCase": "Show reviewer-ready evidence structure."
+      "path": "samples/incentive-evidence-pack-sample.md",
+      "useCase": "Show decision-ready evidence structure."
     },
     {
       "id": "client-intake",

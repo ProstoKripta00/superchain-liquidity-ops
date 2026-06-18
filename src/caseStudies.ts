@@ -195,7 +195,7 @@ function buildFallbackFindings(definition: CaseStudyDefinition) {
   return [
     `${definition.protocolName} should be evaluated with 30d volume, 30d fees, fee/volume, 7d trend, and source freshness.`,
     "The final case study should separate live facts from recommendations.",
-    "The output should answer the decision question before asking for a deeper paid report or grant-funded automation.",
+    "The output should answer the decision question before asking for a deeper paid report or monitoring workflow.",
   ];
 }
 

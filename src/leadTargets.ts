@@ -174,7 +174,7 @@ function buildTargetNextAction(lead: OutreachLead, tier: LeadTargetTier) {
   }
 
   if (tier === "B - enrich next") {
-    return "Find the official growth, BD, grants, or liquidity owner before pitching.";
+    return "Find the official growth, BD, ecosystem, or liquidity owner before pitching.";
   }
 
   if (lead.status === "Contacted") {

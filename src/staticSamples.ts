@@ -37,12 +37,12 @@ export const STATIC_SAMPLE_FILES: StaticSampleFile[] = [
     useCase: "Use when selling recurring monitoring.",
   },
   {
-    id: "grant-evidence-pack",
+    id: "incentive-evidence-pack",
     title: "DAO / Incentive Evidence Pack",
     category: "Decision proof",
     format: "Markdown",
-    fileName: "grant-evidence-pack-sample.md",
-    href: `${SAMPLE_BASE_URL}grant-evidence-pack-sample.md`,
+    fileName: "incentive-evidence-pack-sample.md",
+    href: `${SAMPLE_BASE_URL}incentive-evidence-pack-sample.md`,
     description:
       "Decision-ready sample that maps DEX activity, fees, market health and source transparency.",
     useCase: "Attach to DAO, incentive-reporting, or ecosystem evidence pitches.",

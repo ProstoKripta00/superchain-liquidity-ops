@@ -373,7 +373,7 @@ function buildOnboardingEmail({
       : "I can send a public delivery sample before asking you to commit.",
     selectedLead
       ? `Current lead route: ${selectedLead.contactTarget}`
-      : "I am looking for the right growth, liquidity, grants or BD owner.",
+      : "I am looking for the right growth, liquidity, ecosystem or BD owner.",
     "",
     `Current launch status: ${status}.`,
     "",
@@ -424,12 +424,12 @@ function buildDeliveryChecklistMarkdown({
 
 function buildIntakeQuestions() {
   return [
-    "Which protocol, chain, market, or grant program should be covered?",
+    "Which protocol, chain, market, or incentive program should be covered?",
     "Who is the reader: growth team, ecosystem team, DAO contributor, LPs, or BD?",
     "What decision should the report support?",
     "What deadline or meeting date should delivery target?",
     "Which metrics matter most: TVL, volume, fees, liquidity depth, incentives, or source audit?",
-    "Which public links, dashboards, grant pages, or docs should be included?",
+    "Which public links, dashboards, incentive pages, or docs should be included?",
     "What final format is needed: Markdown, PDF-ready text, CSV, JSON, or all artifacts?",
   ];
 }

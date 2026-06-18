@@ -13,7 +13,7 @@ Product: Superchain Liquidity Ops
 
 ## Scope
 
-- Decision supported: Grant review evidence
+- Decision supported: DAO / incentive evidence
 - Chains: OP Mainnet, Base
 - Metrics: TVL, DEX volume, fees, source audit
 - Deliverable format: Full export pack
@@ -27,7 +27,7 @@ Product: Superchain Liquidity Ops
 
 ## Notes
 
-The client wants a source-backed report that can be shared with reviewers and internal stakeholders.
+The client wants a source-backed report that can be shared with protocol operators and internal stakeholders.
 
 ## Next Steps
 

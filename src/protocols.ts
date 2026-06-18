@@ -7,7 +7,7 @@ export const TRACKED_PROTOCOLS: ProtocolProfile[] = [
     slugs: ["uniswap-v2", "uniswap-v3", "uniswap-v4"],
     segment: "Core Superchain liquidity venue",
     thesis:
-      "High-volume Superchain DEX activity that can support grant, LP and ecosystem reporting around priority liquidity outcomes.",
+      "High-volume Superchain DEX activity that can support LP, DAO and ecosystem reporting around priority liquidity outcomes.",
   },
   {
     id: "aerodrome",

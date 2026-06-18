@@ -367,7 +367,7 @@ function buildContactCandidates(scan: ProtocolScan): ContactCandidate[] {
       label: "X search",
       channel: "X",
       url: `https://x.com/search?q=${outreachQuery}&src=typed_query`,
-      reason: "Find protocol, growth, BD, grants, or liquidity owner accounts.",
+      reason: "Find protocol, growth, BD, ecosystem, or liquidity owner accounts.",
     },
     {
       label: "Docs / contact search",
@@ -427,7 +427,7 @@ function buildPitches(
       body: [
         `Hi ${scan.name} team,`,
         "",
-        `I am building Superchain Liquidity Ops, an open-source analytics workflow for protocols and grants teams that need evidence around DEX volume, fee output and market health.`,
+        `I am building Superchain Liquidity Ops, an open-source analytics workflow for protocols and ecosystem teams that need evidence around DEX volume, fee output and market health.`,
         "",
         `Your current scanner signal: ${valueSignal}`,
         `Recommended package: ${offer.name} (${offer.priceLabel})`,

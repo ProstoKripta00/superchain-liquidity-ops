@@ -21,7 +21,6 @@ import {
   RefreshCcw,
   Route,
   Send,
-  Settings2,
   ShieldCheck,
   SlidersHorizontal,
   Target,
@@ -286,7 +285,7 @@ function App() {
     label: string;
   } | null>(null);
   const [automationRunVersion, setAutomationRunVersion] = useState(0);
-  const [operatorMode, setOperatorMode] = useState(() => {
+  const [operatorMode] = useState(() => {
     if (typeof window === "undefined") {
       return false;
     }
@@ -1415,26 +1414,6 @@ function App() {
     setTemporaryOutreachFeedback("json", "Downloaded");
   };
 
-  const toggleOperatorMode = () => {
-    setOperatorMode((current) => {
-      const next = !current;
-
-      if (typeof window !== "undefined") {
-        const url = new URL(window.location.href);
-
-        if (next) {
-          url.searchParams.set("operator", "1");
-        } else {
-          url.searchParams.delete("operator");
-        }
-
-        window.history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
-      }
-
-      return next;
-    });
-  };
-
   return (
     <div className="app">
       <header className="opHeader">
@@ -1496,7 +1475,7 @@ function App() {
               <Stat label="Protocols scanned" value={String(protocolScans.length)} />
               <Stat label="Sources checked" value={String(snapshot?.sources.length ?? 0)} />
               <Stat label="Last refresh" value={lastUpdated} />
-              <Stat label="No local dataset" value="Live-first" />
+              <Stat label="Data policy" value="Public-source only" />
             </div>
             <button className="refreshButton" onClick={refreshData} disabled={isLoading}>
               <RefreshCcw size={18} />
@@ -2060,7 +2039,7 @@ function App() {
           </>
         ) : null}
       </main>
-      <FooterSection onToggleOperatorMode={toggleOperatorMode} operatorMode={operatorMode} />
+      <FooterSection />
     </div>
   );
 }
@@ -2199,13 +2178,7 @@ function PublicPricingSection() {
   );
 }
 
-function FooterSection({
-  onToggleOperatorMode,
-  operatorMode,
-}: {
-  onToggleOperatorMode: () => void;
-  operatorMode: boolean;
-}) {
+function FooterSection() {
   return (
     <footer className="siteFooter">
       <div>
@@ -2223,10 +2196,6 @@ function FooterSection({
         <a href="#sources">Sources</a>
         <a href="#request-report">Request report</a>
       </nav>
-      <button className="footerOperatorToggle" onClick={onToggleOperatorMode} type="button">
-        <Settings2 size={14} />
-        {operatorMode ? "Hide operator tools" : "Operator tools"}
-      </button>
     </footer>
   );
 }

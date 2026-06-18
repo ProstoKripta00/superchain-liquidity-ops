@@ -122,7 +122,7 @@ function buildOpportunity(
   },
 ) {
   if (status === "Ready for report") {
-    return `${profile.name} has enough live Superchain activity to package a paid grant-readiness or ecosystem performance report.`;
+    return `${profile.name} has enough live Superchain activity to package a paid liquidity-readiness or ecosystem performance report.`;
   }
 
   if (status === "Monitor") {

@@ -6540,7 +6540,7 @@ select {
 
 .siteFooter {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: 18px;
   align-items: center;
   width: min(1500px, calc(100% - 60px));
@@ -6574,8 +6574,7 @@ select {
   gap: 8px;
 }
 
-.siteFooter a,
-.footerOperatorToggle {
+.siteFooter a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -6591,13 +6590,8 @@ select {
   text-decoration: none;
 }
 
-.siteFooter a:hover,
-.footerOperatorToggle:hover {
+.siteFooter a:hover {
   border-color: #ff0421;
-}
-
-.footerOperatorToggle {
-  color: #b8b8b8;
 }
 
 @media (max-width: 1180px) {
@@ -6657,6 +6651,24 @@ select {
     grid-template-columns: 1fr;
   }
 
+  .opHeader,
+  .brandBlock,
+  .brandBlock strong,
+  .brandBlock span,
+  .topNav,
+  .topNav a,
+  .hero,
+  .heroCopy,
+  .heroCopy .eyebrow,
+  .heroCopy h1,
+  .heroCopy p,
+  .heroCopy small,
+  .dataPanel {
+    max-width: 100%;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
   .topNav {
     justify-content: flex-start;
   }
@@ -6667,11 +6679,21 @@ select {
 
   .heroCopy,
   .dataPanel {
+    padding: 22px;
     border-radius: 18px;
   }
 
   h1 {
-    font-size: 40px;
+    font-size: 34px;
+    line-height: 1.04;
+  }
+
+  .heroCopy {
+    min-height: auto;
+  }
+
+  .heroCopy > p:not(.eyebrow) {
+    font-size: 16px;
   }
 
   .commandBar {
