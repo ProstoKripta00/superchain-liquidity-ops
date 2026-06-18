@@ -70,6 +70,10 @@ import {
   type OutreachPipeline,
   type PitchVariantId,
 } from "./outreachPipeline";
+import {
+  buildLeadTargetList,
+  type LeadTargetList,
+} from "./leadTargets";
 import { buildProtocolMiniReport } from "./reportGenerator";
 import {
   REQUEST_BUDGETS,
@@ -160,6 +164,7 @@ type ServiceFeedbackAction =
   | "download-pricing"
   | "json";
 type PaymentTermsFeedbackAction = "copy" | "download";
+type LeadTargetFeedbackAction = "copy" | "download-csv" | "download-json";
 type OutreachFeedbackAction = "pitch" | "csv" | "json";
 type RequestFeedbackAction =
   | "copy-request"
@@ -237,6 +242,10 @@ function App() {
   } | null>(null);
   const [paymentTermsFeedback, setPaymentTermsFeedback] = useState<{
     action: PaymentTermsFeedbackAction;
+    label: string;
+  } | null>(null);
+  const [leadTargetFeedback, setLeadTargetFeedback] = useState<{
+    action: LeadTargetFeedbackAction;
     label: string;
   } | null>(null);
   const [outreachFeedback, setOutreachFeedback] = useState<{
@@ -452,6 +461,13 @@ function App() {
     outreachPipeline.leads.find((lead) => lead.status === "Ready to contact") ??
     outreachPipeline.leads[0] ??
     null;
+  const leadTargetList = useMemo(
+    () =>
+      buildLeadTargetList({
+        pipeline: outreachPipeline,
+      }),
+    [outreachPipeline],
+  );
   const salesKit = useMemo(
     () =>
       buildSalesKit({
@@ -1080,6 +1096,57 @@ function App() {
     setTemporaryPaymentTermsFeedback("download", "Downloaded");
   };
 
+  const setTemporaryLeadTargetFeedback = (
+    action: LeadTargetFeedbackAction,
+    label: string,
+  ) => {
+    setLeadTargetFeedback({ action, label });
+
+    window.setTimeout(() => {
+      setLeadTargetFeedback((current) =>
+        current?.action === action ? null : current,
+      );
+    }, 1600);
+  };
+
+  const copyLeadTargetList = async (list: LeadTargetList) => {
+    try {
+      await writeClipboardText(list.markdown);
+      setTemporaryLeadTargetFeedback("copy", "Copied");
+    } catch {
+      setTemporaryLeadTargetFeedback("copy", "List ready");
+    }
+  };
+
+  const downloadLeadTargetCsv = (list: LeadTargetList) => {
+    downloadTextFile(
+      "superchain-lead-target-list.csv",
+      list.csv,
+      "text/csv;charset=utf-8",
+    );
+    setTemporaryLeadTargetFeedback("download-csv", "Downloaded");
+  };
+
+  const downloadLeadTargetJson = (list: LeadTargetList) => {
+    downloadTextFile(
+      "superchain-lead-target-list.json",
+      list.json,
+      "application/json;charset=utf-8",
+    );
+    setTemporaryLeadTargetFeedback("download-json", "Downloaded");
+  };
+
+  const openLeadTarget = (leadId: string) => {
+    setSelectedLeadId(leadId);
+    window.setTimeout(() => {
+      window.location.hash = "outreach";
+      document.getElementById("outreach")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, 0);
+  };
+
   const setTemporaryOutreachFeedback = (
     action: OutreachFeedbackAction,
     label: string,
@@ -1201,6 +1268,7 @@ function App() {
           <a href="#export-pack">Export pack</a>
           <a href="#automation">Automation</a>
           <a href="#service-layer">Service layer</a>
+          <a href="#lead-targets">Lead targets</a>
           <a href="#outreach">Outreach</a>
           <a href="#markets">Live markets</a>
           <a href="#networks">Chain metrics</a>
@@ -1520,6 +1588,15 @@ function App() {
           onDownloadJson={downloadServiceJson}
           onSelectOffer={setSelectedServiceOfferId}
           selectedOffer={selectedServiceOffer}
+        />
+
+        <LeadTargetListSection
+          feedback={leadTargetFeedback}
+          list={leadTargetList}
+          onCopy={() => void copyLeadTargetList(leadTargetList)}
+          onDownloadCsv={() => downloadLeadTargetCsv(leadTargetList)}
+          onDownloadJson={() => downloadLeadTargetJson(leadTargetList)}
+          onOpenLead={openLeadTarget}
         />
 
         <OutreachPipelineSection
@@ -3016,6 +3093,142 @@ function ServiceLayerSection({
   );
 }
 
+function LeadTargetListSection({
+  feedback,
+  list,
+  onCopy,
+  onDownloadCsv,
+  onDownloadJson,
+  onOpenLead,
+}: {
+  feedback: {
+    action: LeadTargetFeedbackAction;
+    label: string;
+  } | null;
+  list: LeadTargetList;
+  onCopy: () => void;
+  onDownloadCsv: () => void;
+  onDownloadJson: () => void;
+  onOpenLead: (leadId: string) => void;
+}) {
+  const feedbackFor = (action: LeadTargetFeedbackAction) =>
+    feedback?.action === action ? feedback.label : null;
+  const topTarget = list.targets[0] ?? null;
+
+  return (
+    <section className="leadTargetSection" id="lead-targets">
+      <div className="sectionHeader">
+        <div>
+          <p className="sectionKicker">Lead Target List</p>
+          <h2>Pick who to contact first and why they might pay</h2>
+        </div>
+        <span>{list.pitchNowCount} pitch now</span>
+      </div>
+
+      <div className="leadTargetLayout">
+        <article className="leadTargetLead">
+          <div className="leadTargetTitle">
+            <Target size={24} />
+            <div>
+              <span>Priority shortlist</span>
+              <h3>{list.summary}</h3>
+              <small>{new Date(list.generatedAt).toLocaleString()}</small>
+            </div>
+          </div>
+
+          <div className="leadTargetStats">
+            <Stat label="Targets" value={String(list.topTargetCount)} />
+            <Stat label="Pitch now" value={String(list.pitchNowCount)} />
+            <Stat label="Enrich next" value={String(list.enrichNextCount)} />
+            <Stat label="Monitor" value={String(list.monitorCount)} />
+          </div>
+
+          <div className="leadTargetActions">
+            <button onClick={onCopy} disabled={list.targets.length === 0}>
+              <FileCheck2 size={17} />
+              {feedbackFor("copy") ?? "Copy target list"}
+            </button>
+            <button onClick={onDownloadCsv} disabled={list.targets.length === 0}>
+              <ArrowDownToLine size={17} />
+              {feedbackFor("download-csv") ?? "Download CSV"}
+            </button>
+            <button onClick={onDownloadJson} disabled={list.targets.length === 0}>
+              <DatabaseZap size={17} />
+              {feedbackFor("download-json") ?? "Download JSON"}
+            </button>
+          </div>
+        </article>
+
+        <aside className="leadTargetFocus">
+          {topTarget ? (
+            <>
+              <span>First target</span>
+              <h3>{topTarget.protocolName}</h3>
+              <strong>{topTarget.cashAngle}</strong>
+              <p>{topTarget.nextAction}</p>
+              <button onClick={() => onOpenLead(topTarget.id)}>
+                <Send size={17} />
+                Open in CRM
+              </button>
+            </>
+          ) : (
+            <div className="emptyState">No lead targets are available yet.</div>
+          )}
+        </aside>
+
+        <div className="leadTargetGrid">
+          {list.targets.length > 0 ? (
+            list.targets.map((target) => (
+              <article
+                className={`leadTargetCard ${leadTierClass(target.tier)}`}
+                key={target.id}
+              >
+                <div className="leadTargetCardHead">
+                  <span>#{target.rank}</span>
+                  <strong>{target.tier}</strong>
+                </div>
+
+                <h3>{target.protocolName}</h3>
+                <p>{target.valueSignal}</p>
+
+                <div className="leadTargetMeta">
+                  <Stat label="Urgency" value={`${target.urgencyScore}/100`} />
+                  <Stat label="Status" value={target.status} />
+                  <Stat label="Offer" value={target.recommendedOfferName} />
+                  <Stat label="Price" value={target.priceLabel} />
+                </div>
+
+                <div className="leadTargetReason">
+                  <CircleDollarSign size={18} />
+                  <strong>{target.cashAngle}</strong>
+                </div>
+
+                <div className="leadTargetRoute">
+                  <span>Contact route</span>
+                  <strong>{target.contactRoute}</strong>
+                  <small>{target.contactUrl || "Contact URL not confirmed yet"}</small>
+                </div>
+
+                <div className="leadTargetNext">
+                  <span>Next action</span>
+                  <p>{target.nextAction}</p>
+                </div>
+
+                <button onClick={() => onOpenLead(target.id)}>
+                  <Route size={17} />
+                  Open CRM
+                </button>
+              </article>
+            ))
+          ) : (
+            <div className="emptyState">No lead targets are available yet.</div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function OutreachPipelineSection({
   feedback,
   contactChannels,
@@ -4088,6 +4301,10 @@ function launchStatusClass(value: SalesKit["status"]) {
 
 function checklistStatusClass(value: SalesKit["checklist"][number]["status"]) {
   return value.toLowerCase().replace(/\s+/g, "-");
+}
+
+function leadTierClass(value: string) {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
 
 function intakeStatusClass(value: IntakeRecord["status"]) {

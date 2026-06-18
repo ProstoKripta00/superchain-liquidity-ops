@@ -177,6 +177,7 @@ The MVP should produce grant-review artifacts:
 - export pack containing Markdown, CSV, structured JSON, and a manifest-style JSON handoff package
 - automation runbook with report, export-pack, watchlist, source-audit, and scope-refresh jobs
 - service layer with client-ready package briefs, deliverables, acceptance criteria, and service JSON
+- lead target list with A/B/C priority tiers, urgency score, cash angle, next action, Markdown copy, CSV export and JSON export
 - outreach pipeline with protocol leads, contact enrichment, persistent local CRM fields, generated DM/email/follow-up pitches, CSV export and JSON export
 - chain-level TVL and fee summaries
 - watchlist of underperforming markets
@@ -459,6 +460,49 @@ Each offer includes:
 - structured service JSON
 
 The layer is intentionally scoped to services that can be delivered from the available product outputs. If an offer depends on a selected export pack or a clean source audit, it is marked `Needs review` or `Blocked` instead of being presented as ready.
+
+## Lead Target List
+
+The Lead Target List turns the broader Outreach Pipeline into a shorter action list for manual sales work.
+
+It does not invent buyers or verified contacts. It ranks the existing scanner-derived leads and tells the operator whether to pitch now, enrich the contact first, or keep monitoring.
+
+Current tiers:
+
+- `A - pitch now`: lead is ready to contact, scanner score is strong enough, and contact enrichment is not marked as needing verification
+- `B - enrich next`: lead is new, contact research has not started, contact research is in progress, or the contact route needs verification
+- `C - monitor`: lead is already contacted, lower urgency, or better handled through follow-up/monitoring
+
+The urgency score combines:
+
+- scanner score
+- tier weight
+- CRM status weight
+- contact enrichment state
+
+Each target includes:
+
+- rank
+- tier
+- urgency score
+- protocol name
+- current lead status
+- recommended service package
+- suggested price range
+- source-backed value signal
+- cash angle
+- contact route
+- contact URL when confirmed
+- next action
+- source URLs
+
+Exports:
+
+- Markdown target list for quick planning or outreach notes
+- CSV target list for spreadsheets
+- JSON target list for later automation or backend handoff
+
+The target list is a decision aid, not an automated outreach sender. The next step still happens manually inside Outreach Pipeline, where the user can enrich contacts, choose a pitch, save CRM notes, and track follow-up dates.
 
 ## Outreach Pipeline
 

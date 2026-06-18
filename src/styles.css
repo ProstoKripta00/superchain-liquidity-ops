@@ -4060,6 +4060,301 @@ select {
   overflow-wrap: anywhere;
 }
 
+.leadTargetSection {
+  margin-bottom: 20px;
+  padding: 22px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border: 1px solid #e6e6e6;
+  border-radius: 22px;
+  box-shadow: 0 16px 40px rgba(15, 15, 15, 0.08);
+}
+
+.leadTargetSection .sectionHeader span {
+  color: #ffffff;
+  background: #0f0f0f;
+}
+
+.leadTargetLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 390px;
+  gap: 14px;
+  align-items: start;
+}
+
+.leadTargetLead,
+.leadTargetFocus {
+  min-width: 0;
+  border-radius: 16px;
+}
+
+.leadTargetLead {
+  display: grid;
+  gap: 16px;
+  padding: 20px;
+  color: #ffffff;
+  background: #0f0f0f;
+}
+
+.leadTargetTitle {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.leadTargetTitle > svg {
+  color: #ff0421;
+}
+
+.leadTargetTitle span,
+.leadTargetFocus span,
+.leadTargetRoute span,
+.leadTargetNext span {
+  display: block;
+  color: #ff5a6d;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.leadTargetTitle h3 {
+  margin: 5px 0 0;
+  color: #ffffff;
+  font-size: 34px;
+  line-height: 1.05;
+}
+
+.leadTargetTitle small {
+  display: block;
+  margin-top: 8px;
+  color: #bdbdbd;
+}
+
+.leadTargetStats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.leadTargetStats .stat {
+  background: #1d1d1d;
+}
+
+.leadTargetStats .stat span {
+  color: #929292;
+}
+
+.leadTargetStats .stat strong {
+  color: #ffffff;
+}
+
+.leadTargetActions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.leadTargetActions button,
+.leadTargetFocus button,
+.leadTargetCard > button {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 12px;
+  font-weight: 950;
+}
+
+.leadTargetActions button {
+  color: #ffffff;
+  background: #ff0421;
+}
+
+.leadTargetActions button:nth-child(2) {
+  color: #0f0f0f;
+  background: #ffffff;
+}
+
+.leadTargetActions button:nth-child(3) {
+  background: #323232;
+}
+
+.leadTargetActions button:disabled,
+.leadTargetCard > button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.leadTargetFocus {
+  display: grid;
+  gap: 12px;
+  padding: 18px;
+  color: #0f0f0f;
+  background: #f4f4f4;
+  border: 1px solid #e6e6e6;
+}
+
+.leadTargetFocus h3 {
+  margin: 0;
+  font-size: 30px;
+  line-height: 1.05;
+}
+
+.leadTargetFocus strong {
+  display: block;
+  padding: 12px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.leadTargetFocus p {
+  margin: 0;
+  color: #4d4d4d;
+  line-height: 1.45;
+}
+
+.leadTargetFocus button,
+.leadTargetCard > button {
+  color: #ffffff;
+  background: #ff0421;
+}
+
+.leadTargetGrid {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.leadTargetCard {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  padding: 16px;
+  background: #f7f7f7;
+  border: 1px solid #e6e6e6;
+  border-top: 6px solid #ffbe00;
+  border-radius: 16px;
+}
+
+.leadTargetCard.a-pitch-now {
+  border-top-color: #ff0421;
+}
+
+.leadTargetCard.c-monitor {
+  border-top-color: #777777;
+}
+
+.leadTargetCardHead {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.leadTargetCardHead span,
+.leadTargetCardHead strong {
+  display: inline-flex;
+  min-height: 28px;
+  align-items: center;
+  padding: 0 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 950;
+}
+
+.leadTargetCardHead span {
+  color: #ffffff;
+  background: #0f0f0f;
+}
+
+.leadTargetCardHead strong {
+  color: #0f0f0f;
+  background: #ffffff;
+  border: 1px solid #d8d8d8;
+}
+
+.leadTargetCard.a-pitch-now .leadTargetCardHead strong {
+  color: #ffffff;
+  background: #ff0421;
+  border-color: #ff0421;
+}
+
+.leadTargetCard h3 {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.05;
+}
+
+.leadTargetCard p {
+  margin: 0;
+  color: #4d4d4d;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.leadTargetMeta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.leadTargetMeta .stat {
+  background: #ffffff;
+}
+
+.leadTargetMeta .stat strong {
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.leadTargetReason {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  padding: 12px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border-radius: 12px;
+}
+
+.leadTargetReason svg {
+  color: #ff5a6d;
+}
+
+.leadTargetReason strong {
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.leadTargetRoute,
+.leadTargetNext {
+  display: grid;
+  gap: 7px;
+  padding: 12px;
+  background: #ffffff;
+  border-radius: 12px;
+}
+
+.leadTargetRoute strong {
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.leadTargetRoute small {
+  color: #666666;
+  font-size: 12px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
 .outreachSection {
   margin-bottom: 20px;
   padding: 22px;
@@ -5174,6 +5469,8 @@ select {
   .exportPackLayout,
   .automationLayout,
   .serviceLayerLayout,
+  .leadTargetLayout,
+  .leadTargetGrid,
   .outreachLayout,
   .impactStrip,
   .packHero {
@@ -5281,6 +5578,9 @@ select {
   .serviceActions,
   .serviceOfferCard,
   .serviceDetailGrid,
+  .leadTargetStats,
+  .leadTargetActions,
+  .leadTargetMeta,
   .outreachStats,
   .outreachActions,
   .leadRow,
