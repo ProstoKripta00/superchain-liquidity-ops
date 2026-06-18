@@ -42,7 +42,7 @@ button {
   top: 0;
   z-index: 10;
   display: grid;
-  grid-template-columns: auto minmax(260px, 1fr) auto;
+  grid-template-columns: auto minmax(240px, 0.75fr) minmax(0, 1fr) auto;
   gap: 18px;
   align-items: center;
   min-height: 82px;
@@ -104,6 +104,28 @@ button {
 
 .topNav a:hover {
   border-color: #ff0421;
+}
+
+.operatorToggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 0 13px;
+  color: #ffffff;
+  background: #191919;
+  border: 1px solid #3a3a3a;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 950;
+  white-space: nowrap;
+}
+
+.operatorToggle.active {
+  color: #0f0f0f;
+  background: #ffffff;
+  border-color: #ffffff;
 }
 
 .main {
@@ -765,7 +787,7 @@ select {
 
 .miniReportActions {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
 }
 
@@ -784,6 +806,186 @@ select {
 
 .miniReportActions button:first-child {
   background: #ff0421;
+}
+
+.methodologySection {
+  margin-bottom: 20px;
+  padding: 22px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border: 1px solid #e6e6e6;
+  border-radius: 22px;
+  box-shadow: 0 16px 40px rgba(15, 15, 15, 0.08);
+}
+
+.methodologySection .sectionHeader span {
+  color: #ffffff;
+  background: #0f0f0f;
+}
+
+.methodologyLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+  gap: 14px;
+  align-items: stretch;
+}
+
+.methodologyLead,
+.methodologyFormulaPanel,
+.methodologyTable,
+.methodologyBoundary {
+  min-width: 0;
+  padding: 18px;
+  border-radius: 16px;
+}
+
+.methodologyLead {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+  color: #ffffff;
+  background: #0f0f0f;
+}
+
+.methodologyLead span,
+.methodologyFormulaPanel > span,
+.methodologyBoundary span {
+  color: #ff5a6d;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.methodologyLead h3 {
+  margin: 0;
+  font-size: 34px;
+  line-height: 1.05;
+}
+
+.methodologyLead p {
+  margin-bottom: 0;
+  color: #d8d8d8;
+  line-height: 1.55;
+}
+
+.methodologyPillGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.methodologyPillGrid strong {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  padding: 0 12px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border-radius: 999px;
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.methodologyFormulaPanel {
+  display: grid;
+  gap: 10px;
+  color: #0f0f0f;
+  background: #f7f7f7;
+  border: 1px solid #e6e6e6;
+}
+
+.formulaItem {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  background: #ffffff;
+  border: 1px solid #e6e6e6;
+  border-radius: 12px;
+}
+
+.formulaItem strong,
+.formulaItem code,
+.formulaItem p {
+  margin: 0;
+}
+
+.formulaItem code {
+  display: block;
+  overflow-wrap: anywhere;
+  padding: 8px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.formulaItem p {
+  color: #5f5f5f;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.methodologyTable {
+  display: grid;
+  gap: 8px;
+  background: #fff2f4;
+  border: 1px solid #ffd2d8;
+}
+
+.methodologyTableHead,
+.methodologyRow {
+  display: grid;
+  grid-template-columns: minmax(140px, 1fr) 72px minmax(0, 1.4fr);
+  gap: 10px;
+  align-items: center;
+}
+
+.methodologyTableHead {
+  color: #ff0421;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.methodologyRow {
+  min-height: 48px;
+  padding: 10px;
+  background: #ffffff;
+  border-radius: 12px;
+}
+
+.methodologyRow strong,
+.methodologyRow span,
+.methodologyRow p {
+  margin: 0;
+}
+
+.methodologyRow span {
+  font-weight: 950;
+}
+
+.methodologyRow p {
+  color: #5f5f5f;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.methodologyBoundary {
+  color: #ffffff;
+  background: #0f0f0f;
+}
+
+.methodologyBoundary strong {
+  display: block;
+  margin-top: 7px;
+  font-size: 22px;
+  line-height: 1.1;
+}
+
+.methodologyBoundary p {
+  margin: 10px 0 0;
+  color: #d8d8d8;
+  line-height: 1.5;
 }
 
 .reportsSection {
@@ -998,7 +1200,7 @@ select {
 
 .reportActions {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
 }
 
@@ -1048,6 +1250,281 @@ select {
   font-size: 12px;
   line-height: 1.2;
   text-align: center;
+}
+
+.caseStudiesSection {
+  margin-bottom: 20px;
+  padding: 22px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border: 1px solid #e6e6e6;
+  border-radius: 22px;
+  box-shadow: 0 16px 40px rgba(15, 15, 15, 0.08);
+}
+
+.caseStudiesSection .sectionHeader span {
+  color: #ffffff;
+  background: #0f0f0f;
+}
+
+.caseStudiesLayout {
+  display: grid;
+  grid-template-columns: 420px minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.caseStudyQueue,
+.caseStudyReader {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  padding: 18px;
+  border-radius: 16px;
+}
+
+.caseStudyQueue {
+  color: #ffffff;
+  background: #0f0f0f;
+}
+
+.caseStudyReader {
+  color: #0f0f0f;
+  background: #f7f7f7;
+}
+
+.caseStudyQueueHeader span,
+.caseStudyQueueHeader strong,
+.caseStudyQueueHeader p,
+.caseStudyHeader span,
+.caseStudyHeader h3,
+.caseStudyHeader small {
+  display: block;
+}
+
+.caseStudyQueueHeader span,
+.caseStudyHeader span,
+.caseStudyQuestion span,
+.caseStudyFindings span {
+  color: #ff0421;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.caseStudyQueueHeader strong {
+  margin-top: 7px;
+  font-size: 28px;
+  line-height: 1.05;
+}
+
+.caseStudyQueueHeader p {
+  margin: 10px 0 0;
+  color: #d8d8d8;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.caseStudyList {
+  display: grid;
+  gap: 10px;
+}
+
+.caseStudyItem {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  min-height: 84px;
+  padding: 12px;
+  color: #ffffff;
+  background: #1a1a1a;
+  border: 1px solid #2c2c2c;
+  border-left: 5px solid transparent;
+  border-radius: 12px;
+  text-align: left;
+}
+
+.caseStudyItem.selected,
+.caseStudyItem:hover {
+  border-left-color: #ff0421;
+  background: #242424;
+}
+
+.caseStudyItem svg {
+  color: #ff5a6d;
+}
+
+.caseStudyItem span,
+.caseStudyItem strong,
+.caseStudyItem small {
+  display: block;
+  min-width: 0;
+}
+
+.caseStudyItem strong {
+  font-size: 15px;
+  line-height: 1.2;
+}
+
+.caseStudyItem small {
+  margin-top: 5px;
+  color: #b9b9b9;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.caseStudyItem em {
+  display: inline-flex;
+  min-width: 64px;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border-radius: 999px;
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 950;
+}
+
+.caseStudyHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.caseStudyHeader h3 {
+  margin: 6px 0 4px;
+  font-size: 30px;
+  line-height: 1.08;
+}
+
+.caseStudyHeader small {
+  color: #6a6a6a;
+  font-size: 13px;
+  font-weight: 850;
+  line-height: 1.35;
+}
+
+.caseStudyBadge {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 12px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border-radius: 999px;
+  font-size: 13px;
+}
+
+.caseStudyQuestion,
+.caseStudyFindings > div {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  background: #ffffff;
+  border: 1px solid #e6e6e6;
+  border-radius: 14px;
+}
+
+.caseStudyQuestion strong {
+  font-size: 18px;
+  line-height: 1.25;
+}
+
+.caseStudySummary {
+  margin-bottom: 0;
+  color: #424242;
+  line-height: 1.55;
+}
+
+.caseStudyMetrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.caseStudyMetrics div {
+  min-width: 0;
+  padding: 12px;
+  background: #ffffff;
+  border: 1px solid #e6e6e6;
+  border-radius: 12px;
+}
+
+.caseStudyMetrics span,
+.caseStudyMetrics strong {
+  display: block;
+}
+
+.caseStudyMetrics span {
+  color: #6a6a6a;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.caseStudyMetrics strong {
+  margin-top: 5px;
+  font-size: 16px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.caseStudyFindings {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.caseStudyFindings strong {
+  color: #333333;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.caseStudyPreview {
+  max-height: 380px;
+  margin: 0;
+  overflow: auto;
+  padding: 16px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.caseStudyActions {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.caseStudyActions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 10px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border: 0;
+  border-radius: 12px;
+  font-weight: 950;
+  line-height: 1.2;
+}
+
+.caseStudyActions button:first-child {
+  background: #ff0421;
 }
 
 .sampleReportsSection {
@@ -1303,7 +1780,7 @@ select {
 
 .sampleReportActions {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
 }
 
@@ -5668,6 +6145,34 @@ select {
   gap: 12px;
 }
 
+.operatorWorkspace {
+  display: grid;
+  gap: 20px;
+  margin-bottom: 20px;
+  padding: 22px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border-radius: 22px;
+  box-shadow: 0 16px 40px rgba(15, 15, 15, 0.08);
+}
+
+.operatorWorkspace > .sectionHeader {
+  margin-bottom: 0;
+}
+
+.operatorWorkspace > .sectionHeader .sectionKicker {
+  color: #ff5a6d;
+}
+
+.operatorWorkspace > .sectionHeader span {
+  color: #0f0f0f;
+  background: #ffffff;
+}
+
+.operatorWorkspace > section {
+  margin-bottom: 0;
+}
+
 .sourceItem {
   position: relative;
   display: grid;
@@ -5749,7 +6254,9 @@ select {
   .hero,
   .workbench,
   .scannerGrid,
+  .methodologyLayout,
   .reportsLayout,
+  .caseStudiesLayout,
   .sampleReportsLayout,
   .staticSamplesLayout,
   .staticSampleGrid,
@@ -5837,9 +6344,16 @@ select {
 
   .sourceGrid,
   .dataPanelStats,
+  .methodologyPillGrid,
+  .methodologyTableHead,
+  .methodologyRow,
   .reportReaderStats,
   .reportActions,
   .reportWorkflow,
+  .caseStudyMetrics,
+  .caseStudyFindings,
+  .caseStudyActions,
+  .caseStudyItem,
   .sampleReportStats,
   .sampleReportActions,
   .sampleReportItem,
@@ -5904,6 +6418,7 @@ select {
     grid-column: auto;
   }
 
+  .caseStudyHeader,
   .sampleReportHeader {
     display: grid;
   }
@@ -5930,6 +6445,7 @@ select {
     grid-column: auto;
   }
 
+  .caseStudyBadge,
   .sampleReportBadge {
     width: fit-content;
   }

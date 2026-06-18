@@ -16,10 +16,12 @@ import {
   Mail,
   MessageSquare,
   Network,
+  Printer,
   Radar,
   RefreshCcw,
   Route,
   Send,
+  Settings2,
   ShieldCheck,
   SlidersHorizontal,
   Target,
@@ -27,6 +29,12 @@ import {
 } from "lucide-react";
 import { loadLiquiditySnapshot } from "./api";
 import { buildAutomationRun, type AutomationRun } from "./automation";
+import {
+  buildPublicCaseStudies,
+  buildPublicCaseStudiesJson,
+  type PublicCaseStudy,
+  type PublicCaseStudyId,
+} from "./caseStudies";
 import {
   loadOutreachCrmRecords,
   saveOutreachCrmRecords,
@@ -152,7 +160,8 @@ type ReportLibraryItem = {
   report: ProtocolMiniReport;
 };
 
-type SampleReportFeedbackAction = "copy" | "download" | "json";
+type SampleReportFeedbackAction = "copy" | "download" | "json" | "pdf";
+type CaseStudyFeedbackAction = "copy" | "download" | "json" | "pdf";
 type LaunchFeedbackAction =
   | "copy-proposal"
   | "download-proposal"
@@ -202,6 +211,8 @@ function App() {
   const [selectedReportId, setSelectedReportId] = useState<string | null>(null);
   const [selectedSampleReportId, setSelectedSampleReportId] =
     useState<SampleReportId | null>(null);
+  const [selectedCaseStudyId, setSelectedCaseStudyId] =
+    useState<PublicCaseStudyId | null>(null);
   const [selectedLeadId, setSelectedLeadId] = useState<string | null>(null);
   const [selectedServiceOfferId, setSelectedServiceOfferId] = useState<
     ServiceOffer["id"] | null
@@ -227,6 +238,11 @@ function App() {
     action: SampleReportFeedbackAction;
     label: string;
     reportId?: SampleReportId;
+  } | null>(null);
+  const [caseStudyFeedback, setCaseStudyFeedback] = useState<{
+    action: CaseStudyFeedbackAction;
+    label: string;
+    caseStudyId?: PublicCaseStudyId;
   } | null>(null);
   const [launchFeedback, setLaunchFeedback] = useState<{
     action: LaunchFeedbackAction;
@@ -270,6 +286,7 @@ function App() {
     label: string;
   } | null>(null);
   const [automationRunVersion, setAutomationRunVersion] = useState(0);
+  const [operatorMode, setOperatorMode] = useState(false);
   const [snapshot, setSnapshot] = useState<LiquiditySnapshot | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -369,6 +386,14 @@ function App() {
   const selectedSampleReport =
     sampleReports.find((report) => report.id === selectedSampleReportId) ??
     sampleReports[0] ??
+    null;
+  const caseStudies = useMemo(
+    () => buildPublicCaseStudies({ markets, protocolScans }),
+    [markets, protocolScans],
+  );
+  const selectedCaseStudy =
+    caseStudies.find((caseStudy) => caseStudy.id === selectedCaseStudyId) ??
+    caseStudies[0] ??
     null;
 
   const totals = useMemo(
@@ -684,6 +709,17 @@ function App() {
     }, 1600);
   };
 
+  const printMiniReport = (report: ProtocolMiniReport) => {
+    const label = openPrintableMarkdown(report.title, report.markdown);
+    setReportFeedback({ protocolId: report.protocolId, label });
+
+    window.setTimeout(() => {
+      setReportFeedback((current) =>
+        current?.protocolId === report.protocolId ? null : current,
+      );
+    }, 1600);
+  };
+
   const setTemporarySampleReportFeedback = (
     action: SampleReportFeedbackAction,
     label: string,
@@ -719,6 +755,55 @@ function App() {
       "application/json;charset=utf-8",
     );
     setTemporarySampleReportFeedback("json", "Downloaded");
+  };
+
+  const printSampleReport = (report: SampleReport) => {
+    const label = openPrintableMarkdown(report.title, report.markdown);
+    setTemporarySampleReportFeedback("pdf", label, report.id);
+  };
+
+  const setTemporaryCaseStudyFeedback = (
+    action: CaseStudyFeedbackAction,
+    label: string,
+    caseStudyId?: PublicCaseStudyId,
+  ) => {
+    setCaseStudyFeedback({ action, label, caseStudyId });
+
+    window.setTimeout(() => {
+      setCaseStudyFeedback((current) =>
+        current?.action === action && current.caseStudyId === caseStudyId
+          ? null
+          : current,
+      );
+    }, 1600);
+  };
+
+  const copyCaseStudy = async (caseStudy: PublicCaseStudy) => {
+    try {
+      await writeClipboardText(caseStudy.markdown);
+      setTemporaryCaseStudyFeedback("copy", "Copied", caseStudy.id);
+    } catch {
+      setTemporaryCaseStudyFeedback("copy", "Case study ready", caseStudy.id);
+    }
+  };
+
+  const downloadCaseStudy = (caseStudy: PublicCaseStudy) => {
+    downloadTextFile(caseStudy.fileName, caseStudy.markdown, "text/markdown;charset=utf-8");
+    setTemporaryCaseStudyFeedback("download", "Downloaded", caseStudy.id);
+  };
+
+  const downloadCaseStudiesJson = (items: PublicCaseStudy[]) => {
+    downloadTextFile(
+      "superchain-public-case-studies.json",
+      buildPublicCaseStudiesJson(items),
+      "application/json;charset=utf-8",
+    );
+    setTemporaryCaseStudyFeedback("json", "Downloaded");
+  };
+
+  const printCaseStudy = (caseStudy: PublicCaseStudy) => {
+    const label = openPrintableMarkdown(caseStudy.title, caseStudy.markdown);
+    setTemporaryCaseStudyFeedback("pdf", label, caseStudy.id);
   };
 
   const setTemporaryLaunchFeedback = (
@@ -1330,42 +1415,52 @@ function App() {
           OP
         </div>
         <div className="brandBlock">
-          <strong>Superchain Impact Console</strong>
-          <span>Live liquidity intelligence for Superchain DEX outcomes</span>
+          <strong>Superchain Liquidity Ops</strong>
+          <span>Impact Console for DEX liquidity and incentive programs</span>
         </div>
         <nav className="topNav" aria-label="Product areas">
-          <a href="#protocol-scanner">Protocol scanner</a>
+          <a href="#protocol-scanner">Scanner</a>
           <a href="#reports">Reports</a>
+          <a href="#methodology">Methodology</a>
+          <a href="#case-studies">Case studies</a>
           <a href="#sample-reports">Sample reports</a>
-          <a href="#static-samples">Static files</a>
           <a href="#trust-proof">Trust proof</a>
-          <a href="#pricing">Pricing</a>
-          <a href="#payment-terms">Payment terms</a>
-          <a href="#launch-desk">Launch desk</a>
           <a href="#request-report">Request report</a>
-          <a href="#intake-form">Intake form</a>
           <a href="#export-pack">Export pack</a>
-          <a href="#automation">Automation</a>
           <a href="#scheduled-snapshots">Scheduled snapshots</a>
-          <a href="#service-layer">Service layer</a>
-          <a href="#lead-targets">Lead targets</a>
-          <a href="#outreach">Outreach</a>
           <a href="#markets">Live markets</a>
-          <a href="#networks">Chain metrics</a>
           <a href="#reviewer-pack">Reviewer pack</a>
           <a href="#sources">Sources</a>
+          {operatorMode ? (
+            <>
+              <a href="#pricing">Pricing</a>
+              <a href="#payment-terms">Payment terms</a>
+              <a href="#launch-desk">Launch desk</a>
+              <a href="#service-layer">Service layer</a>
+              <a href="#lead-targets">Lead targets</a>
+              <a href="#outreach">Outreach</a>
+            </>
+          ) : null}
         </nav>
+        <button
+          className={`operatorToggle ${operatorMode ? "active" : ""}`}
+          onClick={() => setOperatorMode((current) => !current)}
+          type="button"
+        >
+          <Settings2 size={16} />
+          {operatorMode ? "Operator on" : "Operator off"}
+        </button>
       </header>
 
       <main className="main">
         <section className="hero">
           <div className="heroCopy">
-            <p className="eyebrow">Optimism / Superchain grant proof-of-work</p>
-            <h1>Your liquidity. Your fees. Measurable outcomes.</h1>
+            <p className="eyebrow">Optimism / Superchain public-good proof-of-work</p>
+            <h1>Measure whether liquidity incentives create real DEX outcomes.</h1>
             <p>
-              Open-source analytics for protocols, LPs and grant reviewers to track
-              live Superchain DEX volume, fee generation, chain TVL and incentive
-              watchlists from public data sources.
+              Open-source impact reporting for protocols and reviewers that need
+              decision-ready evidence: live Superchain DEX volume, fee generation,
+              source freshness, weak markets, and exportable incentive reports.
             </p>
           </div>
 
@@ -1436,7 +1531,7 @@ function App() {
           <div className="sectionHeader">
             <div>
               <p className="sectionKicker">Protocol Scanner</p>
-              <h2>Find protocols worth testing, reporting and pitching</h2>
+              <h2>Find protocols worth evidence review</h2>
             </div>
             <span>{isLoading ? "Scanning" : `${protocolScans.length} protocol targets`}</span>
           </div>
@@ -1519,12 +1614,13 @@ function App() {
                       }
                       onCopy={() => void copyMiniReport(miniReport)}
                       onDownload={() => downloadMiniReport(miniReport)}
+                      onPrint={() => printMiniReport(miniReport)}
                       report={miniReport}
                     />
                   ) : null}
 
                   <div className="scannerAction">
-                    <span>Opportunity</span>
+                    <span>Evidence opportunity</span>
                     <strong>{selectedProtocol.status}</strong>
                     <p>{selectedProtocol.opportunity}</p>
                     <p>{selectedProtocol.healthScore.recommendation}</p>
@@ -1537,11 +1633,13 @@ function App() {
                   </div>
                 </>
               ) : (
-                <div className="emptyState">Select a protocol scan to inspect the monetization angle.</div>
+                <div className="emptyState">Select a protocol scan to inspect the evidence angle.</div>
               )}
             </aside>
           </div>
         </section>
+
+        <MethodologySection />
 
         <ReportsSection
           feedbackFor={(report) =>
@@ -1553,8 +1651,21 @@ function App() {
           items={reportItems}
           onCopy={(report) => void copyMiniReport(report)}
           onDownload={downloadMiniReport}
+          onPrint={printMiniReport}
           onSelectReport={setSelectedReportId}
           selectedItem={selectedReportItem}
+        />
+
+        <CaseStudiesSection
+          feedback={caseStudyFeedback}
+          isLoading={isLoading}
+          items={caseStudies}
+          onCopy={(caseStudy) => void copyCaseStudy(caseStudy)}
+          onDownload={downloadCaseStudy}
+          onDownloadJson={downloadCaseStudiesJson}
+          onPrint={printCaseStudy}
+          onSelectCaseStudy={setSelectedCaseStudyId}
+          selectedCaseStudy={selectedCaseStudy}
         />
 
         <SampleReportsSection
@@ -1564,6 +1675,7 @@ function App() {
           onCopy={(report) => void copySampleReport(report)}
           onDownload={downloadSampleReport}
           onDownloadJson={downloadSampleReportsJson}
+          onPrint={printSampleReport}
           onSelectReport={setSelectedSampleReportId}
           selectedReport={selectedSampleReport}
         />
@@ -1574,33 +1686,6 @@ function App() {
         />
 
         <TrustProofSection pack={trustProofPack} />
-
-        <OfferPricingSection
-          feedback={serviceFeedback}
-          layer={serviceLayer}
-          onCopyBrief={(offer) => void copyServiceBrief(offer)}
-          onCopyPricing={() => void copyPricingSheet(serviceLayer)}
-          onDownloadPricing={() => downloadPricingSheet(serviceLayer)}
-          onSelectOffer={setSelectedServiceOfferId}
-          selectedOffer={selectedServiceOffer}
-        />
-
-        <PaymentTermsSection
-          feedback={paymentTermsFeedback}
-          onCopy={() => void copyPaymentTerms(paymentTermsPack)}
-          onDownload={() => downloadPaymentTerms(paymentTermsPack)}
-          pack={paymentTermsPack}
-        />
-
-        <LaunchDeskSection
-          feedback={launchFeedback}
-          kit={salesKit}
-          onCopyEmail={() => void copyOnboardingEmail(salesKit)}
-          onCopyProposal={() => void copyLaunchProposal(salesKit)}
-          onDownloadChecklist={() => downloadDeliveryChecklist(salesKit)}
-          onDownloadJson={() => downloadSalesKitJson(salesKit)}
-          onDownloadProposal={() => downloadLaunchProposal(salesKit)}
-        />
 
         <RequestReportSection
           feedback={requestFeedback}
@@ -1669,48 +1754,87 @@ function App() {
           pack={scheduledSnapshotsPack}
         />
 
-        <ServiceLayerSection
-          feedback={serviceFeedback}
-          layer={serviceLayer}
-          onCopyBrief={(offer) => void copyServiceBrief(offer)}
-          onDownloadBrief={downloadServiceBrief}
-          onDownloadJson={downloadServiceJson}
-          onSelectOffer={setSelectedServiceOfferId}
-          selectedOffer={selectedServiceOffer}
-        />
+        {operatorMode ? (
+          <section className="operatorWorkspace" id="operator-workspace">
+            <div className="sectionHeader">
+              <div>
+                <p className="sectionKicker">Operator mode</p>
+                <h2>Internal sales and delivery workspace</h2>
+              </div>
+              <span>Hidden from public view by default</span>
+            </div>
 
-        <LeadTargetListSection
-          feedback={leadTargetFeedback}
-          list={leadTargetList}
-          onCopy={() => void copyLeadTargetList(leadTargetList)}
-          onDownloadCsv={() => downloadLeadTargetCsv(leadTargetList)}
-          onDownloadJson={() => downloadLeadTargetJson(leadTargetList)}
-          onOpenLead={openLeadTarget}
-        />
+            <OfferPricingSection
+              feedback={serviceFeedback}
+              layer={serviceLayer}
+              onCopyBrief={(offer) => void copyServiceBrief(offer)}
+              onCopyPricing={() => void copyPricingSheet(serviceLayer)}
+              onDownloadPricing={() => downloadPricingSheet(serviceLayer)}
+              onSelectOffer={setSelectedServiceOfferId}
+              selectedOffer={selectedServiceOffer}
+            />
 
-        <OutreachPipelineSection
-          feedback={outreachFeedback}
-          contactChannels={CONTACT_CHANNELS}
-          contactEnrichmentStatuses={CONTACT_ENRICHMENT_STATUSES}
-          leadStatuses={leadStatuses}
-          onCopyPitch={(lead, pitchId) => void copyLeadPitch(lead, pitchId)}
-          onDownloadCsv={downloadOutreachCsv}
-          onDownloadJson={downloadOutreachJson}
-          onSelectLead={setSelectedLeadId}
-          onSelectPitch={updateLeadPitch}
-          onUpdateContactChannel={updateLeadContactChannel}
-          onUpdateContactName={updateLeadContactName}
-          onUpdateContactUrl={updateLeadContactUrl}
-          onUpdateEnrichmentConfidence={updateLeadEnrichmentConfidence}
-          onUpdateEnrichmentStatus={updateLeadEnrichmentStatus}
-          onUpdateLastContacted={updateLeadLastContacted}
-          onUpdateLeadStatus={updateLeadStatus}
-          onUpdateNextFollowUp={updateLeadNextFollowUp}
-          onUpdateNotes={updateLeadNotes}
-          pipeline={outreachPipeline}
-          selectedLead={selectedLead}
-          selectedPitchId={selectedLead?.selectedPitchId ?? "dm"}
-        />
+            <PaymentTermsSection
+              feedback={paymentTermsFeedback}
+              onCopy={() => void copyPaymentTerms(paymentTermsPack)}
+              onDownload={() => downloadPaymentTerms(paymentTermsPack)}
+              pack={paymentTermsPack}
+            />
+
+            <LaunchDeskSection
+              feedback={launchFeedback}
+              kit={salesKit}
+              onCopyEmail={() => void copyOnboardingEmail(salesKit)}
+              onCopyProposal={() => void copyLaunchProposal(salesKit)}
+              onDownloadChecklist={() => downloadDeliveryChecklist(salesKit)}
+              onDownloadJson={() => downloadSalesKitJson(salesKit)}
+              onDownloadProposal={() => downloadLaunchProposal(salesKit)}
+            />
+
+            <ServiceLayerSection
+              feedback={serviceFeedback}
+              layer={serviceLayer}
+              onCopyBrief={(offer) => void copyServiceBrief(offer)}
+              onDownloadBrief={downloadServiceBrief}
+              onDownloadJson={downloadServiceJson}
+              onSelectOffer={setSelectedServiceOfferId}
+              selectedOffer={selectedServiceOffer}
+            />
+
+            <LeadTargetListSection
+              feedback={leadTargetFeedback}
+              list={leadTargetList}
+              onCopy={() => void copyLeadTargetList(leadTargetList)}
+              onDownloadCsv={() => downloadLeadTargetCsv(leadTargetList)}
+              onDownloadJson={() => downloadLeadTargetJson(leadTargetList)}
+              onOpenLead={openLeadTarget}
+            />
+
+            <OutreachPipelineSection
+              feedback={outreachFeedback}
+              contactChannels={CONTACT_CHANNELS}
+              contactEnrichmentStatuses={CONTACT_ENRICHMENT_STATUSES}
+              leadStatuses={leadStatuses}
+              onCopyPitch={(lead, pitchId) => void copyLeadPitch(lead, pitchId)}
+              onDownloadCsv={downloadOutreachCsv}
+              onDownloadJson={downloadOutreachJson}
+              onSelectLead={setSelectedLeadId}
+              onSelectPitch={updateLeadPitch}
+              onUpdateContactChannel={updateLeadContactChannel}
+              onUpdateContactName={updateLeadContactName}
+              onUpdateContactUrl={updateLeadContactUrl}
+              onUpdateEnrichmentConfidence={updateLeadEnrichmentConfidence}
+              onUpdateEnrichmentStatus={updateLeadEnrichmentStatus}
+              onUpdateLastContacted={updateLeadLastContacted}
+              onUpdateLeadStatus={updateLeadStatus}
+              onUpdateNextFollowUp={updateLeadNextFollowUp}
+              onUpdateNotes={updateLeadNotes}
+              pipeline={outreachPipeline}
+              selectedLead={selectedLead}
+              selectedPitchId={selectedLead?.selectedPitchId ?? "dm"}
+            />
+          </section>
+        ) : null}
 
         <section className="workbench" id="markets">
           <section className="poolMatrix">
@@ -2318,7 +2442,7 @@ function RequestReportSection({
       <div className="sectionHeader">
         <div>
           <p className="sectionKicker">Contact / Request Report</p>
-          <h2>Make it easy for a client to request a paid report</h2>
+          <h2>Make it easy to request an evidence report</h2>
         </div>
         <span>{pack.title}</span>
       </div>
@@ -2532,7 +2656,7 @@ function IntakeFormSection({
       <div className="sectionHeader">
         <div>
           <p className="sectionKicker">Intake Form</p>
-          <h2>Capture a client scope before doing paid report work</h2>
+          <h2>Capture scope before doing manual evidence work</h2>
         </div>
         <span>{pack.status}</span>
       </div>
@@ -2853,7 +2977,7 @@ function ExportPackSection({
       <div className="sectionHeader">
         <div>
           <p className="sectionKicker">Export Pack</p>
-          <h2>One handoff package for protocol outreach and reviewer work</h2>
+          <h2>One handoff package for protocol evidence and reviewer work</h2>
         </div>
         <span>{pack ? `${pack.artifacts.length} artifacts` : "Waiting for report"}</span>
       </div>
@@ -3822,12 +3946,113 @@ function OutreachPipelineSection({
   );
 }
 
+function MethodologySection() {
+  const formulaRows = [
+    {
+      label: "Health score",
+      formula: "sum(component_score x weight) / 100",
+      note: "Weighted score across activity, fees, trend, coverage, market quality, and confidence.",
+    },
+    {
+      label: "Fee / volume",
+      formula: "30d_fees / 30d_dex_volume",
+      note: "Shows whether traded volume is producing measurable fee output.",
+    },
+    {
+      label: "Trend",
+      formula: "weighted_average(7d_change, 30d_volume)",
+      note: "Large markets influence the trend more than small markets.",
+    },
+    {
+      label: "Confidence",
+      formula: "30 + fee_coverage x 40 + trend_coverage x 30",
+      note: "Missing public fields lower confidence instead of being manually replaced.",
+    },
+  ];
+  const componentRows = [
+    ["DEX activity", "30%", "30d matched Superchain DEX volume"],
+    ["Fee capture", "20%", "30d fees plus fee/volume"],
+    ["Short-term trend", "15%", "Weighted 7d market movement"],
+    ["Superchain coverage", "15%", "Matched networks and market count"],
+    ["Market quality", "10%", "Strong vs At Risk market mix"],
+    ["Data confidence", "10%", "Fee and trend field availability"],
+  ];
+
+  return (
+    <section className="methodologySection" id="methodology">
+      <div className="sectionHeader">
+        <div>
+          <p className="sectionKicker">Methodology</p>
+          <h2>Decision-ready evidence, not another raw-data dashboard</h2>
+        </div>
+        <span>Explainable scoring</span>
+      </div>
+
+      <div className="methodologyLayout">
+        <article className="methodologyLead">
+          <span>Product position</span>
+          <h3>Package public data into incentive impact evidence</h3>
+          <p>
+            The tool does not try to compete with DeFiLlama, Dune, Artemis, or
+            Token Terminal. It uses public data to answer a narrower question:
+            did liquidity incentives produce real volume, fees, healthier markets,
+            and a reviewer-ready next action?
+          </p>
+          <div className="methodologyPillGrid">
+            <strong>Before / after evidence</strong>
+            <strong>Weak-pair detection</strong>
+            <strong>Fee generation checks</strong>
+            <strong>Grant update exports</strong>
+          </div>
+        </article>
+
+        <aside className="methodologyFormulaPanel">
+          <span>Core formulas</span>
+          {formulaRows.map((row) => (
+            <div className="formulaItem" key={row.label}>
+              <strong>{row.label}</strong>
+              <code>{row.formula}</code>
+              <p>{row.note}</p>
+            </div>
+          ))}
+        </aside>
+
+        <div className="methodologyTable">
+          <div className="methodologyTableHead">
+            <span>Component</span>
+            <span>Weight</span>
+            <span>Signal</span>
+          </div>
+          {componentRows.map(([component, weight, signal]) => (
+            <div className="methodologyRow" key={component}>
+              <strong>{component}</strong>
+              <span>{weight}</span>
+              <p>{signal}</p>
+            </div>
+          ))}
+        </div>
+
+        <aside className="methodologyBoundary">
+          <span>Boundary</span>
+          <strong>Unavailable metrics stay unavailable.</strong>
+          <p>
+            The scanner is not a security audit, investment rating, or guarantee
+            that a protocol will pay. It is an evidence triage layer for grant,
+            incentive, and protocol-growth reporting.
+          </p>
+        </aside>
+      </div>
+    </section>
+  );
+}
+
 function ReportsSection({
   feedbackFor,
   isLoading,
   items,
   onCopy,
   onDownload,
+  onPrint,
   onSelectReport,
   selectedItem,
 }: {
@@ -3836,6 +4061,7 @@ function ReportsSection({
   items: ReportLibraryItem[];
   onCopy: (report: ProtocolMiniReport) => void;
   onDownload: (report: ProtocolMiniReport) => void;
+  onPrint: (report: ProtocolMiniReport) => void;
   onSelectReport: (protocolId: string) => void;
   selectedItem: ReportLibraryItem | null;
 }) {
@@ -3849,7 +4075,7 @@ function ReportsSection({
       <div className="sectionHeader">
         <div>
           <p className="sectionKicker">Reports</p>
-          <h2>Protocol report library for outreach and reviewer evidence</h2>
+          <h2>Protocol report library for case studies and reviewer evidence</h2>
         </div>
         <span>{items.length > 0 ? `${items.length} live generated` : "Waiting for data"}</span>
       </div>
@@ -3955,13 +4181,20 @@ function ReportsSection({
                     <ArrowDownToLine size={17} />
                     {selectedFeedback === "Downloaded" ? selectedFeedback : "Download .md"}
                   </button>
+                  <button onClick={() => onPrint(selectedItem.report)}>
+                    <Printer size={17} />
+                    {selectedFeedback === "PDF view opened" ||
+                    selectedFeedback === "Print HTML downloaded"
+                      ? selectedFeedback
+                      : "Print / Save PDF"}
+                  </button>
                 </div>
 
                 <div className="reportWorkflow">
                   <span>Delivery path</span>
-                  <strong>1. Copy report</strong>
-                  <strong>2. Attach CSV export</strong>
-                  <strong>3. Send protocol-specific outreach</strong>
+                  <strong>1. Refresh live data</strong>
+                  <strong>2. Attach CSV evidence</strong>
+                  <strong>3. Export Markdown or PDF</strong>
                 </div>
               </>
             ) : (
@@ -3982,6 +4215,168 @@ function ReportsSection({
   );
 }
 
+function CaseStudiesSection({
+  feedback,
+  isLoading,
+  items,
+  onCopy,
+  onDownload,
+  onDownloadJson,
+  onPrint,
+  onSelectCaseStudy,
+  selectedCaseStudy,
+}: {
+  feedback: {
+    action: CaseStudyFeedbackAction;
+    label: string;
+    caseStudyId?: PublicCaseStudyId;
+  } | null;
+  isLoading: boolean;
+  items: PublicCaseStudy[];
+  onCopy: (caseStudy: PublicCaseStudy) => void;
+  onDownload: (caseStudy: PublicCaseStudy) => void;
+  onDownloadJson: (caseStudies: PublicCaseStudy[]) => void;
+  onPrint: (caseStudy: PublicCaseStudy) => void;
+  onSelectCaseStudy: (caseStudyId: PublicCaseStudyId) => void;
+  selectedCaseStudy: PublicCaseStudy | null;
+}) {
+  const selectedFeedback =
+    selectedCaseStudy && feedback?.caseStudyId === selectedCaseStudy.id ? feedback : null;
+  const preview = selectedCaseStudy
+    ? selectedCaseStudy.markdown.split("\n").slice(0, 34).join("\n")
+    : "";
+
+  return (
+    <section className="caseStudiesSection" id="case-studies">
+      <div className="sectionHeader">
+        <div>
+          <p className="sectionKicker">Public Case Studies</p>
+          <h2>Concrete Superchain incentive reviews without fake client proof</h2>
+        </div>
+        <span>{items.length > 0 ? `${items.length} public studies` : "Waiting for data"}</span>
+      </div>
+
+      <div className="caseStudiesLayout">
+        <aside className="caseStudyQueue">
+          <div className="caseStudyQueueHeader">
+            <span>Evidence examples</span>
+            <strong>Use these instead of vague sample claims</strong>
+            <p>
+              Each study answers a reviewer-style question with live scanner data
+              when available, then separates findings from limitations.
+            </p>
+          </div>
+
+          <div className="caseStudyList">
+            {items.length > 0 ? (
+              items.map((caseStudy) => (
+                <button
+                  className={`caseStudyItem ${
+                    caseStudy.id === selectedCaseStudy?.id ? "selected" : ""
+                  }`}
+                  key={caseStudy.id}
+                  onClick={() => onSelectCaseStudy(caseStudy.id)}
+                >
+                  <FileText size={18} />
+                  <span>
+                    <strong>{caseStudy.protocolName}</strong>
+                    <small>{caseStudy.networkFocus}</small>
+                  </span>
+                  <em>{caseStudy.status === "Live generated" ? "Live" : "Template"}</em>
+                </button>
+              ))
+            ) : (
+              <div className="emptyState">
+                {isLoading
+                  ? "Preparing public case studies from live scanner data..."
+                  : "No case studies are available yet."}
+              </div>
+            )}
+          </div>
+        </aside>
+
+        <article className="caseStudyReader">
+          {selectedCaseStudy ? (
+            <>
+              <div className="caseStudyHeader">
+                <div>
+                  <span>{selectedCaseStudy.status}</span>
+                  <h3>{selectedCaseStudy.title}</h3>
+                  <small>{new Date(selectedCaseStudy.generatedAt).toLocaleString()}</small>
+                </div>
+                <div className="caseStudyBadge">
+                  <Target size={18} />
+                  <strong>{selectedCaseStudy.networkFocus}</strong>
+                </div>
+              </div>
+
+              <div className="caseStudyQuestion">
+                <span>Decision question</span>
+                <strong>{selectedCaseStudy.decisionQuestion}</strong>
+              </div>
+
+              <p className="caseStudySummary">{selectedCaseStudy.summary}</p>
+
+              <div className="caseStudyMetrics">
+                {selectedCaseStudy.metrics.map((metric) => (
+                  <div key={`${selectedCaseStudy.id}-${metric.label}`}>
+                    <span>{metric.label}</span>
+                    <strong>{metric.value}</strong>
+                  </div>
+                ))}
+              </div>
+
+              <div className="caseStudyFindings">
+                <div>
+                  <span>Findings</span>
+                  {selectedCaseStudy.findings.slice(0, 4).map((finding) => (
+                    <strong key={finding}>{finding}</strong>
+                  ))}
+                </div>
+                <div>
+                  <span>Limitations</span>
+                  {selectedCaseStudy.limitations.slice(0, 3).map((limitation) => (
+                    <strong key={limitation}>{limitation}</strong>
+                  ))}
+                </div>
+              </div>
+
+              <pre className="caseStudyPreview">{preview}</pre>
+
+              <div className="caseStudyActions">
+                <button onClick={() => onCopy(selectedCaseStudy)}>
+                  <FileCheck2 size={17} />
+                  {selectedFeedback?.action === "copy"
+                    ? selectedFeedback.label
+                    : "Copy case study"}
+                </button>
+                <button onClick={() => onDownload(selectedCaseStudy)}>
+                  <ArrowDownToLine size={17} />
+                  {selectedFeedback?.action === "download"
+                    ? selectedFeedback.label
+                    : "Download .md"}
+                </button>
+                <button onClick={() => onPrint(selectedCaseStudy)}>
+                  <Printer size={17} />
+                  {selectedFeedback?.action === "pdf"
+                    ? selectedFeedback.label
+                    : "Print / Save PDF"}
+                </button>
+                <button onClick={() => onDownloadJson(items)}>
+                  <ArrowDownToLine size={17} />
+                  {feedback?.action === "json" ? feedback.label : "Download case JSON"}
+                </button>
+              </div>
+            </>
+          ) : (
+            <div className="emptyState">Select a public case study to preview it.</div>
+          )}
+        </article>
+      </div>
+    </section>
+  );
+}
+
 function SampleReportsSection({
   feedback,
   isLoading,
@@ -3989,6 +4384,7 @@ function SampleReportsSection({
   onCopy,
   onDownload,
   onDownloadJson,
+  onPrint,
   onSelectReport,
   selectedReport,
 }: {
@@ -4002,6 +4398,7 @@ function SampleReportsSection({
   onCopy: (report: SampleReport) => void;
   onDownload: (report: SampleReport) => void;
   onDownloadJson: (reports: SampleReport[]) => void;
+  onPrint: (report: SampleReport) => void;
   onSelectReport: (reportId: SampleReportId) => void;
   selectedReport: SampleReport | null;
 }) {
@@ -4028,7 +4425,7 @@ function SampleReportsSection({
             <strong>Use these before asking protocols to pay</strong>
             <p>
               These samples turn scanner output into public artifacts for protocol
-              outreach, monitoring retainers, and grant evidence pitches.
+              grant updates, monitoring workflows, and protocol evidence reviews.
             </p>
           </div>
 
@@ -4110,6 +4507,12 @@ function SampleReportsSection({
                     ? selectedFeedback.label
                     : "Download .md"}
                 </button>
+                <button onClick={() => onPrint(selectedReport)}>
+                  <Printer size={17} />
+                  {selectedFeedback?.action === "pdf"
+                    ? selectedFeedback.label
+                    : "Print / Save PDF"}
+                </button>
                 <button onClick={() => onDownloadJson(items)}>
                   <ArrowDownToLine size={17} />
                   {feedback?.action === "json" ? feedback.label : "Download sample JSON"}
@@ -4149,7 +4552,7 @@ function StaticSampleFilesSection({
             <h3>Permanent sample links that work without live data</h3>
             <p>
               These files are served directly from GitHub Pages. Use them in
-              outbound messages, grant drafts, and client calls when you need a
+              grant drafts, public reviews, and client calls when you need a
               stable proof-of-work link instead of a generated browser download.
             </p>
           </div>
@@ -4370,11 +4773,13 @@ function MiniReportPanel({
   feedback,
   onCopy,
   onDownload,
+  onPrint,
   report,
 }: {
   feedback: string | null;
   onCopy: () => void;
   onDownload: () => void;
+  onPrint: () => void;
   report: ProtocolMiniReport;
 }) {
   const preview = report.markdown.split("\n").slice(0, 20).join("\n");
@@ -4400,6 +4805,12 @@ function MiniReportPanel({
         <button onClick={onDownload}>
           <ArrowDownToLine size={17} />
           {feedback === "Downloaded" ? feedback : "Download .md"}
+        </button>
+        <button onClick={onPrint}>
+          <Printer size={17} />
+          {feedback === "PDF view opened" || feedback === "Print HTML downloaded"
+            ? feedback
+            : "Print / Save PDF"}
         </button>
       </div>
     </section>
@@ -4593,7 +5004,7 @@ function buildProtocolSummary(scan: ProtocolScan) {
       .join("; ")}`,
     `Strengths: ${scan.healthScore.strengths.join("; ")}`,
     `Risks: ${scan.healthScore.risks.join("; ")}`,
-    `Opportunity: ${scan.opportunity}`,
+    `Evidence opportunity: ${scan.opportunity}`,
     `Recommendation: ${scan.healthScore.recommendation}`,
     `Next action: ${scan.nextAction}`,
   ].join("\n");
@@ -4637,6 +5048,112 @@ function downloadTextFile(fileName: string, text: string, type: string) {
   link.download = fileName;
   link.click();
   URL.revokeObjectURL(url);
+}
+
+function openPrintableMarkdown(title: string, markdown: string) {
+  const html = buildPrintableHtml(title, markdown);
+  const printWindow = window.open("", "_blank", "width=960,height=720");
+
+  if (!printWindow) {
+    downloadTextFile(`${slugifyFileName(title)}-print.html`, html, "text/html;charset=utf-8");
+    return "Print HTML downloaded";
+  }
+
+  printWindow.opener = null;
+  printWindow.document.write(html);
+  printWindow.document.close();
+  printWindow.focus();
+  window.setTimeout(() => {
+    printWindow.print();
+  }, 350);
+
+  return "PDF view opened";
+}
+
+function buildPrintableHtml(title: string, markdown: string) {
+  return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>${escapeHtml(title)}</title>
+  <style>
+    :root {
+      color: #111111;
+      background: #ffffff;
+      font-family: Inter, Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 42px;
+    }
+
+    header {
+      border-bottom: 4px solid #ff0420;
+      margin-bottom: 28px;
+      padding-bottom: 18px;
+    }
+
+    header span {
+      color: #ff0420;
+      display: block;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .08em;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: 34px;
+      line-height: 1.05;
+      margin: 0;
+    }
+
+    pre {
+      font-family: "IBM Plex Mono", Consolas, monospace;
+      font-size: 12px;
+      line-height: 1.55;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    @page {
+      margin: 16mm;
+    }
+
+    @media print {
+      body {
+        padding: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <span>Superchain Liquidity Ops / printable evidence report</span>
+    <h1>${escapeHtml(title)}</h1>
+  </header>
+  <pre>${escapeHtml(markdown)}</pre>
+</body>
+</html>`;
+}
+
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function slugifyFileName(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
 }
 
 export default App;

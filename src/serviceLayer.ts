@@ -95,16 +95,16 @@ export function buildServiceLayer({
       id: "protocol-diagnostic",
       name: "Protocol Diagnostic Sprint",
       audience: "DEX, bridge, wallet, or protocol growth team",
-      priceLabel: "$750-$1,500 fixed",
-      timeline: "3-5 days",
+      priceLabel: "$300-$750 first report",
+      timeline: "2-4 days",
       status: selectedExportPack ? "Ready to sell" : selectedProtocol ? "Needs review" : "Blocked",
       priority: 1,
       fitScore: selectedProtocol?.score ?? 0,
       protocolName,
       problem:
-        "Protocol teams need a fast read on Superchain liquidity, volume quality, fee capture and weak markets before they spend growth budget.",
+        "Protocol teams need a fast, source-backed read on Superchain volume quality, fee capture and weak markets before they spend growth budget or ask for incentives.",
       salesAngle: selectedProtocol
-        ? `${protocolName} has ${formatUsd(selectedProtocol.volume30dUsd)} in matched 30d DEX volume and scanner score ${selectedProtocol.score}/100.`
+        ? `${protocolName} has ${formatUsd(selectedProtocol.volume30dUsd)} in matched 30d DEX volume and scanner score ${selectedProtocol.score}/100. Start with a narrow evidence report before proposing a larger package.`
         : "Wait for a live protocol scan before pitching a diagnostic sprint.",
       operatingCadence: "One-off diagnostic with one revision pass.",
       deliverables: [
@@ -124,8 +124,8 @@ export function buildServiceLayer({
       id: "monitoring-retainer",
       name: "Liquidity Monitoring Retainer",
       audience: "Protocol growth, ecosystem, or grants team",
-      priceLabel: "$1,000-$2,500 / month",
-      timeline: "Weekly cadence",
+      priceLabel: "$750-$1,500 / month after pilot",
+      timeline: "Weekly after first case",
       status: filteredMarkets.length > 0
         ? automationRun.blockedCount > 0
           ? "Needs review"
@@ -135,7 +135,7 @@ export function buildServiceLayer({
       fitScore: Math.min(100, 55 + automationRun.readyCount * 6 + watchCount * 2),
       protocolName: "Superchain scope",
       problem:
-        "Teams do not want to manually check DEX dashboards every week to know whether liquidity incentives are producing usable outcomes.",
+        "Teams that already care about incentive performance need weekly evidence without manually checking several DEX dashboards and source feeds.",
       salesAngle: `${filteredMarkets.length} markets are in scope, ${watchCount} need watchlist review, and current 30d DEX volume is ${formatUsd(totals.volume30d)}.`,
       operatingCadence: "Weekly runbook, watchlist review, and source-health check.",
       deliverables: [
@@ -159,7 +159,7 @@ export function buildServiceLayer({
       id: "grant-evidence-pack",
       name: "Grant Evidence Pack",
       audience: "Grant recipient, DAO reviewer, or ecosystem operations team",
-      priceLabel: "$2,000-$4,000 project",
+      priceLabel: "$1,500-$3,000 after validated case",
       timeline: "7-10 days",
       status: selectedExportPack
         ? automationRun.status === "Blocked"
@@ -204,7 +204,7 @@ export function buildServiceLayer({
     "Use scanner output to choose a protocol or scope.",
     "Generate reports and export pack from the same live data snapshot.",
     "Run automation to produce a repeatable operating runbook.",
-    "Sell the narrowest ready offer first, then expand into monthly monitoring.",
+    "Sell the narrowest diagnostic first, publish one honest case study, then expand into monitoring.",
   ];
   const servicePayload = {
     generatedAt,

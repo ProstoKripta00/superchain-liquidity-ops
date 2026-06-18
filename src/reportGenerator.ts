@@ -83,7 +83,7 @@ export function buildProtocolMiniReport(
         )} | ${market.health} | ${market.sourceUrl} |`,
     ),
     "",
-    "## Outreach Angle",
+    "## Evidence Angle",
     "",
     scan.opportunity,
     "",
@@ -126,13 +126,13 @@ function buildNextActions(scan: ProtocolScan) {
   const actions = [scan.nextAction];
 
   if (scan.status === "Ready for report") {
-    actions.push("Prepare a public one-page report and send it to the protocol growth, BD, or grants contact.");
-    actions.push("Offer a deeper paid report covering pool-level drivers, weak markets, and grant update language.");
+    actions.push("Prepare a public one-page case study with CSV evidence and source limitations.");
+    actions.push("Use the report as a grant update or protocol-growth evidence pack before proposing deeper work.");
   } else if (scan.status === "Monitor") {
     actions.push("Track the same protocol weekly until trend, fee attribution, or confidence improves.");
-    actions.push("Use a small diagnostic snapshot instead of selling a full report immediately.");
+    actions.push("Use a small diagnostic snapshot instead of proposing a full evidence pack immediately.");
   } else {
-    actions.push("Keep the protocol in automated monitoring and avoid manual sales effort for now.");
+    actions.push("Keep the protocol in automated monitoring and avoid manual research effort for now.");
   }
 
   return asBullets(actions);

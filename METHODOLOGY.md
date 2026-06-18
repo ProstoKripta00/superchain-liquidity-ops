@@ -110,17 +110,17 @@ Market has low volume, declining activity, weak fee output, or signs that incent
 
 ## Protocol Scanner
 
-The protocol scanner groups live DEX market rows by tracked protocol slug. It is designed to answer a commercial question before manual research starts:
+The protocol scanner groups live DEX market rows by tracked protocol slug. It is designed to answer an evidence question before manual research starts:
 
 ```text
-Is this protocol active enough on the Superchain to justify a paid report or outreach?
+Is this protocol active enough on the Superchain to justify an impact evidence report?
 ```
 
 Current tracked profiles include Uniswap, Aerodrome, Velodrome, Curve, PancakeSwap, SushiSwap, Balancer, and KIM Exchange.
 
 ## Protocol Health Score
 
-The protocol scanner includes a protocol health score. It is not a security audit, investment rating, or promise that a protocol will pay. It is an operational signal for deciding whether a protocol is worth deeper testing, a mini-report, or outreach.
+The protocol scanner includes a protocol health score. It is not a security audit, investment rating, or promise that a protocol will pay. It is an operational signal for deciding whether a protocol is worth deeper testing, a mini-report, or a public case study.
 
 The score is expressed as:
 
@@ -143,6 +143,38 @@ Components:
 | Market quality | 10% | Strong vs At Risk market mix |
 | Data confidence | 10% | availability of fee and trend fields |
 
+Score formula:
+
+```text
+health_score = sum(component_score * component_weight) / 100
+```
+
+Fee / volume:
+
+```text
+fee_to_volume_30d = 30d_fees / 30d_dex_volume
+```
+
+Weighted trend:
+
+```text
+weighted_7d_trend = weighted_average(7d_change, 30d_volume)
+```
+
+Data confidence:
+
+```text
+data_confidence = 30 + fee_coverage * 40 + trend_coverage * 30
+```
+
+Fee capture score combines fee scale and fee efficiency:
+
+```text
+fee_capture_score = fee_scale_score * 0.70 + fee_to_volume_score * 0.30
+```
+
+Missing public values lower confidence or component scores. They are not replaced with manual assumptions.
+
 Grades:
 
 - `A`: 80+
@@ -152,9 +184,9 @@ Grades:
 
 Scanner statuses:
 
-- `Ready for report`: enough visible activity and data confidence to prepare a public mini-report and outreach.
+- `Ready for report`: enough visible activity and data confidence to prepare a public mini-report or case study.
 - `Monitor`: visible activity, but weak trends, incomplete fee data, or mixed market quality.
-- `Low signal`: not enough public activity to justify manual sales effort yet.
+- `Low signal`: not enough public activity to justify manual research effort yet.
 
 The score is intentionally conservative when public data is incomplete. Missing values are not replaced by manual assumptions.
 
@@ -163,27 +195,34 @@ The score is intentionally conservative when public data is incomplete. Missing 
 The MVP should produce grant-review artifacts:
 
 - CSV export by market
-- protocol scanner and health score summary for outreach and report preparation
+- protocol scanner and health score summary for evidence report preparation
 - Markdown mini-report for a selected protocol
 - reports workspace for selecting, previewing, copying, and downloading generated reports
+- print / save PDF workflow for generated reports and public case studies
+- public case studies for Uniswap, Aerodrome, and Velodrome that answer a concrete reviewer-style decision question
 - public sample reports for client-facing proof-of-work across diagnostic, monitoring, and grant-evidence services
 - static sample files for stable Markdown, CSV, JSON, and manifest links that do not depend on live data
 - trust / proof section that links to the public repository, live app, methodology, sample manifest, reviewer pack, source audit, and delivery boundaries
-- offer / pricing page with fixed-scope packages, price ranges, timelines, deliverables, and buyer brief actions
-- payment / terms block with payment structure, manual payment methods, delivery gates, client-ready terms copy, and Markdown export
-- launch desk with proposal, onboarding email, delivery checklist, buyer FAQ, terms, and sales-kit export
 - contact / request report intake with editable client scope, copy-ready request text, GitHub issue link, Markdown export, and JSON export
 - intake form with client scope fields, chain and metric selection, local saved intake records, public issue consent, Markdown export, JSON export, and saved-record export
 - export pack containing Markdown, CSV, structured JSON, and a manifest-style JSON handoff package
 - automation runbook with report, export-pack, watchlist, source-audit, and scope-refresh jobs
 - scheduled snapshots plan with daily/weekly schedules, artifact manifest, GitHub Actions cron template, Markdown export, YAML export, and JSON export
-- service layer with client-ready package briefs, deliverables, acceptance criteria, and service JSON
-- lead target list with A/B/C priority tiers, urgency score, cash angle, next action, Markdown copy, CSV export and JSON export
-- outreach pipeline with protocol leads, contact enrichment, persistent local CRM fields, generated DM/email/follow-up pitches, CSV export and JSON export
 - chain-level TVL and fee summaries
 - watchlist of underperforming markets
 - 7d/30d trend reports
 - notes explaining why a market is marked Strong, Watch, or At Risk
+
+Operator-only outputs are hidden from the public site by default:
+
+- offer / pricing page with fixed-scope packages and buyer brief actions
+- payment / terms block
+- launch desk
+- service layer with client package briefs
+- lead target list
+- outreach pipeline with contact enrichment and local CRM fields
+
+This separation matters for grant review: the public product is ecosystem evidence infrastructure, while operator mode is the manual commercialization workspace.
 
 ## Mini Report Generator
 
@@ -194,12 +233,12 @@ The mini-report generator converts the selected protocol scan into a Markdown ar
 - health score breakdown
 - strengths and risks
 - matched Superchain market table
-- outreach angle
+- evidence angle
 - recommendation
 - next actions
 - methodology notes
 
-The generated report is intended for outreach, public examples, grant updates, and protocol growth conversations. It uses the same live scanner output and matched market rows shown in the dashboard.
+The generated report is intended for public examples, grant updates, protocol growth conversations, and optional operator outreach. It uses the same live scanner output and matched market rows shown in the dashboard.
 
 ## Reports Workspace
 
@@ -212,6 +251,31 @@ Current selection rule:
 - generate each report from the same live protocol scan and matched markets used by the selected mini-report workflow
 
 Each report can be selected, previewed as Markdown, copied, or downloaded as an `.md` file. These reports are examples for outreach and reviewer inspection. They are not manually curated endorsements, and they regenerate when the live snapshot changes.
+
+## Public Case Studies
+
+Public Case Studies are concrete protocol reviews. They are not fake client work and do not imply endorsement by the named protocols.
+
+Current case-study targets:
+
+- Uniswap Superchain impact review
+- Aerodrome Base impact review
+- Velodrome OP Mainnet impact review
+
+Each case study includes:
+
+- decision question
+- network focus
+- live/template status
+- scanner metrics
+- findings
+- limitations
+- top matched markets when available
+- Markdown export
+- print / save PDF workflow
+- JSON bundle export
+
+The purpose is to show that the product can turn public data into a reviewer-ready narrative. This is stronger than a generic dashboard screenshot because it explains what the data means, what remains unavailable, and what next action is justified.
 
 ## Public Sample Reports
 

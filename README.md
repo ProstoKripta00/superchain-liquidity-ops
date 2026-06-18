@@ -1,88 +1,83 @@
 # Superchain Liquidity Ops
 
-Open-source liquidity intelligence for Optimism / Superchain DEX outcomes.
+Open-source impact reporting for Optimism / Superchain liquidity and incentive programs.
 
-Superchain Liquidity Ops helps protocols, LPs, and grant reviewers inspect whether Superchain liquidity programs are producing measurable DEX activity, fee generation, and market health.
+Superchain Liquidity Ops helps protocols and reviewers measure whether liquidity incentives produce real DEX volume, fee generation, healthier markets, and reproducible evidence.
 
 ## Live Demo
 
-- Public dashboard: https://prostokripta00.github.io/superchain-liquidity-ops/
-- Submission-ready application: `OP_GRANT_SUBMISSION_READY.md`
+- Public site: https://prostokripta00.github.io/superchain-liquidity-ops/
 - Reviewer pack: `GRANT_REVIEWER_PACK.md`
 - Methodology: `METHODOLOGY.md`
+- Submission draft: `OP_GRANT_SUBMISSION_READY.md`
 - Application copy: `OPTIMISM_APPLICATION.md`
 
-## Why This Exists
+## Product Focus
 
-Optimism / Superchain grant reviews need repeatable evidence, not disconnected screenshots and manual spreadsheet work. DEX TVL, DEX fees, and trading volume are measurable outcomes, but reviewers usually need to check several public dashboards, protocol pages, and data feeds before they can compare performance.
+This project is not trying to compete with DeFiLlama, Dune, Artemis, Token Terminal, Nansen, Flipside, or GeckoTerminal as a raw-data dashboard.
 
-This project turns that review workflow into a public dashboard and exportable evidence layer.
+The narrower use case is:
+
+```text
+Grant / incentive impact evidence packs for Superchain protocols and reviewers.
+```
+
+The app packages public data into decision-ready evidence:
+
+- what changed after a liquidity or incentive campaign
+- which markets are weak or deteriorating
+- where volume does not produce meaningful fee output
+- what a protocol can show a DAO, foundation, or grant reviewer
+- what next action is supported by the available public data
 
 ## Current Proof-Of-Work
 
-The current app is live-data first. It does not display local metric fixtures.
+The current app is live-data first. It does not display a local metric fixture dataset.
 
-What works today:
+Live now:
 
-- live DEX market rows for `OP Mainnet`, `Base`, `Unichain`, `Mode`, and `Zora`
-- shared data engine for numeric normalization, ratios, weighted trends, market health, outcome labels, and scope totals
-- protocol scanner for monetizable report targets such as Uniswap, Aerodrome, Velodrome, Curve, PancakeSwap, SushiSwap, Balancer, and KIM Exchange
-- protocol health score with grade, confidence, component breakdown, strengths, risks, and recommendation
-- mini report generator for reviewer-ready Markdown reports per selected protocol
-- reports workspace with scanner-selected protocol reports, Markdown preview, copy, and download actions
-- public sample reports for client-facing proof-of-work examples across diagnostic, monitoring, and grant-evidence services
-- static sample files with stable Markdown, CSV, JSON, and manifest URLs for outreach and reviewer previews
-- trust / proof section with public repository, live demo, methodology, sample artifact, source audit and delivery-boundary links
-- offer / pricing page with fixed-scope service packages, price ranges, timelines, and buyer brief actions
-- payment / terms block with payment structure, manual payment methods, delivery gates, boundaries, copy and Markdown export
-- launch desk with proposal, onboarding email, delivery checklist, buyer FAQ, terms, and full sales-kit JSON export
-- contact / request report section with editable intake fields, copy-ready client request, GitHub issue link, Markdown export and JSON export
-- intake form with client scope fields, chain/metric focus, public issue consent, local saved intake queue, Markdown export, JSON export, and saved-record export
-- export pack builder with report Markdown, protocol CSV, scope CSV, summary JSON, and full JSON handoff pack
-- automation workspace that turns live scanner, reports, export pack and source audit state into a repeatable runbook
-- scheduled snapshots plan with daily/weekly snapshot schedules, artifact manifest, GitHub Actions cron template, Markdown export, YAML export, and JSON export
-- service layer that packages analytics output into sellable diagnostic, monitoring, and grant evidence offers
-- lead target list with A/B/C priority tiers, urgency score, cash angle, next action, copy-ready Markdown and CSV/JSON export
-- outreach pipeline with scanner-derived leads, contact enrichment, persistent local CRM fields, DM/email/follow-up pitch generation, CSV export and JSON export
-- chain-level TVL, DEX volume, and fee totals
-- protocol-level fee attribution when the public feed exposes it
-- source audit for every public endpoint
+- browser-accessible DefiLlama ingestion for `OP Mainnet`, `Base`, `Unichain`, `Mode`, and `Zora`
 - network and outcome filters
-- market health labels: `Strong`, `Watch`, `At risk`
-- reviewer CSV export with source URLs and timestamps
-- hosted public demo on GitHub Pages
+- DEX market rows for 24h, 7d, and 30d volume
+- chain-level TVL, DEX volume, and fee totals
+- protocol scanner for Uniswap, Aerodrome, Velodrome, Curve, PancakeSwap, SushiSwap, Balancer, and KIM Exchange
+- protocol health score with grade, confidence, component weights, strengths, risks, and recommendation
+- methodology section with visible formulas and score weights
+- mini report generator with Markdown download and print / save PDF workflow
+- reports workspace with generated protocol reports
+- public case studies for Uniswap, Aerodrome, and Velodrome using live scanner data when available
+- public sample reports and static sample files
+- trust / proof section with public repo, live demo, methodology, source audit, and delivery boundaries
+- contact / request report form and client intake form
+- export pack builder with Markdown, CSV, summary JSON, and handoff JSON
+- automation runbook and scheduled snapshot plan
+- live market table, chain coverage, source audit, and reviewer pack
+
+Internal operator tools are hidden behind `Operator mode` in the UI:
+
+- pricing and service package builder
+- payment / terms block
+- launch desk
+- service layer
+- lead target list
+- outreach pipeline with local CRM fields
+
+These tools exist for manual commercialization, but they are not the public grant argument.
 
 ## Reviewer Flow
 
-1. Open the public dashboard.
-2. Confirm the live status panel shows data sources loaded.
-3. Open `Protocol scanner` and identify targets marked `Ready for report`.
-4. Open `Reports` and inspect the scanner-selected report queue.
-5. Select a protocol report and review the Markdown preview.
-6. Copy the Markdown report or download the `.md` file.
-7. Open `Sample Reports` and review the public proof-of-work examples.
-8. Copy a sample report, download the `.md`, or download the sample JSON bundle.
-9. Open `Static Files` and inspect the stable sample files or the `samples/index.json` manifest.
-10. Open `Trust Proof` and verify the repository, live demo, methodology, sample manifest, reviewer pack, source audit and delivery boundaries.
-11. Open `Pricing` and choose the package that matches the client need.
-12. Copy the pricing sheet or buyer brief for outreach.
-13. Open `Payment Terms` and confirm the payment structure, methods, delivery gates and boundaries.
-14. Copy or download the terms Markdown before asking a client to commit.
-15. Open `Launch Desk` and export the final proposal, onboarding email, delivery checklist, or sales-kit JSON.
-16. Open `Request Report`, edit the protocol/contact/scope fields, copy the request, download the request pack, or open a prefilled GitHub issue.
-17. Open `Intake Form`, capture the client scope, select chains and metrics, save the intake locally, or export the intake pack.
-18. Open `Export Pack` and download the full JSON handoff pack or individual artifacts.
-19. Open `Automation`, run the workflow and download the generated runbook.
-20. Open `Scheduled Snapshots`, review the daily/weekly schedule, copy the plan, or download the Markdown/YAML/JSON outputs.
-21. Open `Service Layer`, select a client package, copy the brief, or download the service JSON.
-22. Open `Lead Targets`, review the A/B/C priority list, copy the Markdown shortlist, or export CSV/JSON.
-23. Open the highest priority target in `Outreach` and enrich the contact route.
-24. Open `Outreach`, select a protocol lead, update CRM notes/follow-up dates, review pitches, and export leads.
-25. Filter to `OP Mainnet` or `Base`.
-26. Review DEX market rows for 24h volume, 30d volume, 30d fees, and health labels.
-27. Open `Source audit` and verify the public endpoints.
-28. Export the CSV report.
-29. Compare the exported evidence against the target outcomes: DEX activity, fee generation, and market health.
+1. Open the public site.
+2. Confirm the live status panel shows source state and refresh time.
+3. Open `Scanner` and review protocol health scores.
+4. Open `Methodology` and check score weights, formulas, and limitations.
+5. Open `Reports` and inspect a generated protocol report.
+6. Export Markdown or use `Print / Save PDF`.
+7. Open `Case studies` and review a concrete public protocol analysis.
+8. Open `Sample reports` and static sample files for artifact examples.
+9. Open `Trust proof` and verify links, boundaries, and source transparency.
+10. Open `Export pack` and download report artifacts.
+11. Open `Scheduled snapshots` to inspect the automation plan.
+12. Open `Sources` and confirm every live number links back to a public endpoint.
 
 ## Data Sources
 
@@ -96,49 +91,73 @@ https://api.llama.fi/overview/fees/{chain}
 
 Unavailable values are shown as unavailable. The app does not silently substitute manual numbers.
 
-## Metrics
+## Scoring Model
 
-| Area | Current Metric | Status |
-| --- | --- | --- |
-| DEX activity | 24h, 7d, 30d DEX volume | Live |
-| Fees | Chain fees and protocol fees where available | Live |
-| Chain coverage | TVL and DEX totals by Superchain network | Live |
-| Market health | Strong / Watch / At risk labels | Live |
-| Data engine | Shared normalization, aggregation, ratios, weighted trends | Live |
-| Protocol scanner | Protocol-level report readiness score and next action | Live |
-| Protocol health score | Activity, fee capture, trend, coverage, quality, confidence | Live |
-| Mini report generator | Markdown report with summary, metrics, score, markets, risks, next actions | Live |
-| Reports workspace | Scanner-selected protocol reports with queue, preview, copy, and download actions | Live |
-| Public sample reports | Client-ready proof-of-work samples with Markdown and JSON export | Live |
-| Static sample files | Stable public Markdown, CSV, JSON, and manifest files served from GitHub Pages | Live |
-| Trust / proof section | Public proof stack, verifiable links, source audit, and explicit delivery boundaries | Live |
-| Offer / pricing page | Fixed-scope service packages with price ranges, timelines, deliverables, and buyer brief copy | Live |
-| Payment / terms block | Manual payment methods, payment structure, delivery gates, boundaries, and terms Markdown export | Live |
-| Launch desk | Sales proposal, onboarding email, delivery checklist, buyer FAQ, terms, and sales-kit export | Live |
-| Contact / request report | Editable client intake, copy-ready request text, GitHub issue link, Markdown export, and JSON export | Live |
-| Intake form | Client scope capture, chain/metric choices, saved local intake queue, public issue consent, Markdown and JSON exports | Live |
-| Export pack | JSON handoff pack plus Markdown, CSV, and structured summary artifacts | Live |
-| Automation | Browser-side job queue and Markdown runbook for report, export, watchlist, and source-audit workflows | Live |
-| Scheduled snapshots | Daily/weekly snapshot schedule, artifact manifest, GitHub Actions cron template, Markdown/YAML/JSON export | Live |
-| Service layer | Client package builder with suggested scopes, deliverables, acceptance criteria, brief export, and service JSON | Live |
-| Lead target list | A/B/C prioritized protocol shortlist with urgency score, cash angle, next action, Markdown copy, CSV export and JSON export | Live |
-| Outreach pipeline | Lead status board, protocol pitch generator, CSV export, and JSON pipeline export | Live |
-| Contact enrichment | Suggested research links, contact channel, contact URL, owner, status, and confidence fields | Live |
-| Persistent CRM | Local browser storage for lead status, contact enrichment, selected pitch, notes, last contacted, and next follow-up | Live |
-| Reviewer evidence | CSV export with source URLs and timestamps | Live |
-| Priority pairs | Official OP pair mapping and pool-level ingestion | Planned |
+Protocol health score:
+
+```text
+health_score = sum(component_score * component_weight) / 100
+```
+
+Components:
+
+| Component | Weight | Signal |
+| --- | ---: | --- |
+| DEX activity | 30% | 30d matched DEX volume |
+| Fee capture | 20% | 30d fees and 30d fee-to-volume |
+| Short-term trend | 15% | weighted 7d change |
+| Superchain coverage | 15% | matched networks and market count |
+| Market quality | 10% | Strong vs At Risk market mix |
+| Data confidence | 10% | availability of fee and trend fields |
+
+Core derived metrics:
+
+```text
+fee_to_volume_30d = 30d_fees / 30d_dex_volume
+weighted_7d_trend = weighted_average(7d_change, 30d_volume)
+data_confidence = 30 + fee_coverage * 40 + trend_coverage * 30
+```
+
+Grades:
+
+- `A`: 80+
+- `B`: 65-79
+- `C`: 45-64
+- `D`: below 45
 
 ## Grant Fit
 
-The project is designed around Optimism / Superchain grant outcomes:
+The grant-facing framing is:
 
-- DEX liquidity visibility
-- DEX fees as measurable output
-- trading volume as a demand signal
-- tools that track or improve priority-market performance
-- open-source reviewer infrastructure
+```text
+Funding to build an automated open-source Superchain liquidity impact monitoring system with reproducible snapshots, methodology, PDF evidence packs, and public case studies.
+```
 
-Funding details, milestones, risks, and budget are documented in `GRANT_REVIEWER_PACK.md`.
+Strong grant signals already present:
+
+- open-source repository
+- public live demo
+- public data sources
+- source audit
+- export packs
+- report generator
+- methodology
+- case studies
+- no fake clients or testimonials
+- explicit limitations and non-financial-advice boundary
+
+## Commercial Path
+
+The practical monetization path is manual or semi-automated evidence reports, not a full SaaS subscription from day one.
+
+Realistic first offers:
+
+- first diagnostic report: `$300-$750`
+- after one strong public case: `$750-$1,500`
+- monitoring retainer: after a client has a recurring reporting need
+- grant evidence pack: `$1,500-$3,000` when it helps a team receive, defend, or report funding
+
+Operator tools in the app support this workflow, but the public product remains focused on ecosystem evidence.
 
 ## Architecture
 
@@ -153,13 +172,13 @@ Live data adapters
         +-- DefiLlama fees endpoint
         |
         v
-Data engine: normalization, ratios, weighted trends, market scoring
+Data engine: normalization, nullable metrics, ratios, weighted trends, market health
         |
         v
-Protocol scanner, protocol health score, reports workspace, public sample reports, static sample files, trust / proof section, offer / pricing page, payment / terms block, launch desk, request report intake, intake form, export pack, automation runbook, scheduled snapshots, service layer, lead target list, outreach pipeline, contact enrichment, persistent CRM, mini reports, scope totals, chain coverage, source audit, CSV export
+Protocol scanner, methodology, reports, case studies, export packs, snapshots, source audit
         |
         v
-Dashboard state and reviewer workflow
+Public impact console and optional operator workspace
 ```
 
 Current stack:
@@ -172,46 +191,36 @@ Current stack:
 
 ## Roadmap
 
-1. Add official Optimism priority-pair configuration.
-2. Add pool-level adapters through backend or scheduled static ingestion for sources that do not support reliable browser fetches.
-3. Add 7d/30d before-after reviewer reports.
-4. Add scheduled automation and a small public API surface.
-5. Add backend or shared CRM storage for multi-device outreach history.
-6. Add service CRM handoff fields and outreach status tracking.
-7. Add alerting for markets with declining liquidity, weak fee output, or source degradation.
-8. Publish example final grant reports.
+1. Add a real scheduled snapshot job that commits static JSON/CSV artifacts.
+2. Add official Optimism priority-pair configuration.
+3. Add pool-level adapters through backend or scheduled static ingestion where browser APIs are insufficient.
+4. Add before/after campaign windows for incentive reporting.
+5. Improve PDF export beyond browser print.
+6. Publish two public case studies from live data.
+7. Add alerting for declining activity, weak fee output, or source degradation.
+8. Add optional shared backend storage for operator CRM/intake records.
 
 ## Repository Map
 
 ```text
 src/api.ts                   Live data loading, market scoring, scanner orchestration
-src/dataEngine.ts            Shared metric normalization, aggregation and scoring rules
+src/dataEngine.ts            Metric normalization, ratios, aggregation, scoring rules
 src/protocols.ts             Tracked protocol profiles and slug matchers
 src/scanner.ts               Protocol readiness scoring and next-action logic
-src/reportGenerator.ts       Markdown mini-report generation for selected protocols
-src/sampleReports.ts         Public proof-of-work sample reports for client-facing delivery examples
-src/staticSamples.ts         Stable public sample file metadata and GitHub Pages URLs
-src/trustProof.ts            Verifiable proof stack, trust metrics and delivery-boundary copy
-src/paymentTerms.ts          Payment structure, delivery gates, manual payment terms and Markdown export
-src/exportPack.ts            Export pack manifest, CSV generation and JSON handoff package
-src/automation.ts            Browser-side automation job queue and Markdown runbook generator
-src/scheduledSnapshots.ts    Daily/weekly snapshot plan, artifact manifest, GitHub Actions YAML and JSON export
-src/serviceLayer.ts          Sellable service offer, pricing page data, client brief and service JSON generation
-src/leadTargets.ts           A/B/C lead shortlist, urgency scoring, cash angle, next action and target exports
-src/salesKit.ts              Launch desk proposal, onboarding email, checklist, FAQ, terms and sales-kit export
-src/requestReport.ts         Contact / request report intake, Markdown request, GitHub issue link and JSON export
-src/intakeForm.ts            Client intake form defaults, Markdown/JSON generation, local saved intake records and public issue URL
-src/outreachPipeline.ts      Scanner-derived leads, contact enrichment, status defaults, pitch generation and lead exports
-src/crmStorage.ts            LocalStorage persistence for outreach lead CRM and contact enrichment records
-src/sources.ts               Supported chains and public endpoint URLs
-src/App.tsx                  Dashboard, protocol scanner, reports UI, automation UI, service UI, outreach UI, filters, reviewer pack UI, export flow
-src/styles.css               OP-inspired product UI
-public/samples/              Static Markdown, CSV, JSON and manifest sample files
-GRANT_REVIEWER_PACK.md       Reviewer summary, evidence, milestones, budget
-OP_GRANT_SUBMISSION_READY.md Copy-paste grant form answers and checklist
-METHODOLOGY.md               Metrics, source limitations, health scoring
-OPTIMISM_APPLICATION.md      Application-ready grant copy
-OPTIMISM_GRANT_PROPOSAL.md   Full proposal draft
+src/reportGenerator.ts       Markdown mini-report generation
+src/caseStudies.ts           Public protocol case studies
+src/sampleReports.ts         Public sample report generation
+src/staticSamples.ts         Stable sample file metadata and GitHub Pages URLs
+src/trustProof.ts            Verifiable proof stack and delivery boundaries
+src/exportPack.ts            Export pack manifest, CSV generation, JSON handoff package
+src/automation.ts            Browser-side automation runbook generator
+src/scheduledSnapshots.ts    Snapshot schedule plan, YAML template, JSON export
+src/serviceLayer.ts          Operator service offers and package briefs
+src/leadTargets.ts           Operator lead shortlist
+src/outreachPipeline.ts      Operator outreach pipeline and local CRM fields
+src/App.tsx                  Main UI
+src/styles.css               Product UI
+public/samples/              Static Markdown, CSV, JSON, and manifest sample files
 ```
 
 ## Local Development
@@ -237,4 +246,4 @@ npm run build
 
 Beta / live proof-of-work.
 
-The current version is suitable for demonstrating the reviewer workflow, data-source transparency, and exportable evidence. The next grant-funded phase is priority-pair mapping and pool-level reporting.
+The current version is suitable for demonstrating the reviewer workflow, transparent public data handling, report exports, and the case-study model. The next serious upgrade is real scheduled snapshots.
