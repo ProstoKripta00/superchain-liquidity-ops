@@ -2069,6 +2069,259 @@ select {
   background: #ff0421;
 }
 
+.paymentTermsSection {
+  margin-bottom: 20px;
+  padding: 22px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border: 1px solid #e6e6e6;
+  border-radius: 22px;
+  box-shadow: 0 16px 40px rgba(15, 15, 15, 0.08);
+}
+
+.paymentTermsSection .sectionHeader span {
+  color: #ffffff;
+  background: #0f0f0f;
+}
+
+.paymentTermsLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: 14px;
+  align-items: start;
+}
+
+.paymentTermsLead,
+.paymentMethodsPanel,
+.paymentPolicyPanel {
+  min-width: 0;
+  border-radius: 16px;
+}
+
+.paymentTermsLead {
+  display: grid;
+  gap: 16px;
+  padding: 20px;
+  color: #ffffff;
+  background: #0f0f0f;
+}
+
+.paymentTermsTitle {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.paymentTermsTitle > svg {
+  color: #ff0421;
+}
+
+.paymentTermsTitle span,
+.paymentMethodsPanel span,
+.paymentPolicyPanel span {
+  display: block;
+  color: #ff5a6d;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.paymentTermsTitle h3,
+.paymentPolicyPanel h3 {
+  margin: 6px 0 0;
+  color: #ffffff;
+  line-height: 1.05;
+}
+
+.paymentTermsTitle h3 {
+  font-size: 38px;
+}
+
+.paymentTermsLead p {
+  margin: 0;
+  color: #d8d8d8;
+  line-height: 1.55;
+}
+
+.paymentTermsValues {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.paymentTermsValues div {
+  min-width: 0;
+  padding: 12px;
+  background: #1d1d1d;
+  border-radius: 12px;
+}
+
+.paymentTermsValues span {
+  display: block;
+  color: #929292;
+  font-size: 12px;
+}
+
+.paymentTermsValues strong {
+  display: block;
+  margin-top: 6px;
+  color: #ffffff;
+  font-size: 17px;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.paymentTermsActions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.paymentTermsActions button {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 12px;
+  font-weight: 950;
+}
+
+.paymentTermsActions button:first-child {
+  color: #ffffff;
+  background: #ff0421;
+}
+
+.paymentTermsActions button:last-child {
+  color: #0f0f0f;
+  background: #ffffff;
+}
+
+.paymentMethodsPanel {
+  display: grid;
+  gap: 10px;
+  padding: 18px;
+  color: #0f0f0f;
+  background: #f4f4f4;
+  border: 1px solid #e6e6e6;
+}
+
+.paymentMethodItem {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  padding: 12px;
+  background: #ffffff;
+  border-left: 5px solid #ff0421;
+  border-radius: 12px;
+}
+
+.paymentMethodItem svg {
+  color: #ff0421;
+}
+
+.paymentMethodItem strong {
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.paymentMethodsPanel small {
+  color: #5a5a5a;
+  font-size: 12px;
+}
+
+.paymentGateGrid {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.paymentGateCard {
+  min-width: 0;
+  padding: 16px;
+  background: #f7f7f7;
+  border: 1px solid #e6e6e6;
+  border-top: 5px solid #ff0421;
+  border-radius: 16px;
+}
+
+.paymentGateCard span {
+  display: inline-flex;
+  min-height: 28px;
+  align-items: center;
+  padding: 0 9px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 950;
+}
+
+.paymentGateCard h3 {
+  margin: 20px 0 0;
+  font-size: 19px;
+  line-height: 1.1;
+}
+
+.paymentGateCard p {
+  margin: 8px 0 0;
+  color: #4d4d4d;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.paymentPolicyPanel {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 330px minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+  padding: 18px;
+  color: #ffffff;
+  background: #0f0f0f;
+}
+
+.paymentPolicyPanel h3 {
+  font-size: 30px;
+}
+
+.paymentPolicyList {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.paymentPolicyItem {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  min-width: 0;
+  padding: 12px;
+  background: #1d1d1d;
+  border-radius: 12px;
+}
+
+.paymentPolicyItem svg {
+  color: #ff0421;
+}
+
+.paymentPolicyItem strong {
+  display: block;
+  color: #ffffff;
+  line-height: 1.25;
+}
+
+.paymentPolicyItem p {
+  margin: 5px 0 0;
+  color: #bdbdbd;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
 .launchDeskSection {
   margin-bottom: 20px;
   padding: 22px;
@@ -4911,6 +5164,9 @@ select {
   .trustBoundaryPanel,
   .pricingLead,
   .pricingGrid,
+  .paymentTermsLayout,
+  .paymentGateGrid,
+  .paymentPolicyPanel,
   .launchDeskLayout,
   .launchProofGrid,
   .requestLayout,
@@ -5001,6 +5257,10 @@ select {
   .pricingMiniStats,
   .pricingActions,
   .pricingCardActions,
+  .paymentTermsValues,
+  .paymentTermsActions,
+  .paymentPolicyPanel,
+  .paymentPolicyList,
   .launchTitle,
   .launchStats,
   .launchActions,
@@ -5076,6 +5336,11 @@ select {
   }
 
   .trustProofTitle h3 {
+    font-size: 28px;
+  }
+
+  .paymentTermsTitle h3,
+  .paymentPolicyPanel h3 {
     font-size: 28px;
   }
 }

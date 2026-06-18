@@ -81,6 +81,10 @@ import {
   type RequestReportType,
 } from "./requestReport";
 import {
+  buildPaymentTermsPack,
+  type PaymentTermsPack,
+} from "./paymentTerms";
+import {
   buildSampleReports,
   buildSampleReportsJson,
   type SampleReport,
@@ -155,6 +159,7 @@ type ServiceFeedbackAction =
   | "copy-pricing"
   | "download-pricing"
   | "json";
+type PaymentTermsFeedbackAction = "copy" | "download";
 type OutreachFeedbackAction = "pitch" | "csv" | "json";
 type RequestFeedbackAction =
   | "copy-request"
@@ -228,6 +233,10 @@ function App() {
   } | null>(null);
   const [serviceFeedback, setServiceFeedback] = useState<{
     action: ServiceFeedbackAction;
+    label: string;
+  } | null>(null);
+  const [paymentTermsFeedback, setPaymentTermsFeedback] = useState<{
+    action: PaymentTermsFeedbackAction;
     label: string;
   } | null>(null);
   const [outreachFeedback, setOutreachFeedback] = useState<{
@@ -461,6 +470,14 @@ function App() {
       selectedServiceOffer,
       serviceLayer,
     ],
+  );
+  const paymentTermsPack = useMemo(
+    () =>
+      buildPaymentTermsPack({
+        salesKit,
+        selectedOffer: selectedServiceOffer,
+      }),
+    [salesKit, selectedServiceOffer],
   );
   const defaultRequestForm = useMemo(
     () =>
@@ -1032,6 +1049,37 @@ function App() {
     setTemporaryServiceFeedback("json", "Downloaded");
   };
 
+  const setTemporaryPaymentTermsFeedback = (
+    action: PaymentTermsFeedbackAction,
+    label: string,
+  ) => {
+    setPaymentTermsFeedback({ action, label });
+
+    window.setTimeout(() => {
+      setPaymentTermsFeedback((current) =>
+        current?.action === action ? null : current,
+      );
+    }, 1600);
+  };
+
+  const copyPaymentTerms = async (pack: PaymentTermsPack) => {
+    try {
+      await writeClipboardText(pack.termsMarkdown);
+      setTemporaryPaymentTermsFeedback("copy", "Copied");
+    } catch {
+      setTemporaryPaymentTermsFeedback("copy", "Terms ready");
+    }
+  };
+
+  const downloadPaymentTerms = (pack: PaymentTermsPack) => {
+    downloadTextFile(
+      "superchain-payment-terms.md",
+      pack.termsMarkdown,
+      "text/markdown;charset=utf-8",
+    );
+    setTemporaryPaymentTermsFeedback("download", "Downloaded");
+  };
+
   const setTemporaryOutreachFeedback = (
     action: OutreachFeedbackAction,
     label: string,
@@ -1146,6 +1194,7 @@ function App() {
           <a href="#static-samples">Static files</a>
           <a href="#trust-proof">Trust proof</a>
           <a href="#pricing">Pricing</a>
+          <a href="#payment-terms">Payment terms</a>
           <a href="#launch-desk">Launch desk</a>
           <a href="#request-report">Request report</a>
           <a href="#intake-form">Intake form</a>
@@ -1386,6 +1435,13 @@ function App() {
           onDownloadPricing={() => downloadPricingSheet(serviceLayer)}
           onSelectOffer={setSelectedServiceOfferId}
           selectedOffer={selectedServiceOffer}
+        />
+
+        <PaymentTermsSection
+          feedback={paymentTermsFeedback}
+          onCopy={() => void copyPaymentTerms(paymentTermsPack)}
+          onDownload={() => downloadPaymentTerms(paymentTermsPack)}
+          pack={paymentTermsPack}
         />
 
         <LaunchDeskSection
@@ -1819,6 +1875,110 @@ function OfferPricingSection({
             </article>
           );
         })}
+      </div>
+    </section>
+  );
+}
+
+function PaymentTermsSection({
+  feedback,
+  onCopy,
+  onDownload,
+  pack,
+}: {
+  feedback: {
+    action: PaymentTermsFeedbackAction;
+    label: string;
+  } | null;
+  onCopy: () => void;
+  onDownload: () => void;
+  pack: PaymentTermsPack;
+}) {
+  const feedbackFor = (action: PaymentTermsFeedbackAction) =>
+    feedback?.action === action ? feedback.label : null;
+
+  return (
+    <section className="paymentTermsSection" id="payment-terms">
+      <div className="sectionHeader">
+        <div>
+          <p className="sectionKicker">Payment / Terms</p>
+          <h2>Make the first paid report easy to agree</h2>
+        </div>
+        <span>Manual payment</span>
+      </div>
+
+      <div className="paymentTermsLayout">
+        <article className="paymentTermsLead">
+          <div className="paymentTermsTitle">
+            <CircleDollarSign size={24} />
+            <div>
+              <span>Commercial terms</span>
+              <h3>Scope, payment and handoff rules before delivery starts</h3>
+            </div>
+          </div>
+          <p>{pack.summary}</p>
+
+          <div className="paymentTermsValues">
+            {pack.values.map((item) => (
+              <div key={item.label}>
+                <span>{item.label}</span>
+                <strong>{item.value}</strong>
+              </div>
+            ))}
+          </div>
+
+          <div className="paymentTermsActions">
+            <button onClick={onCopy}>
+              <FileCheck2 size={17} />
+              {feedbackFor("copy") ?? "Copy terms"}
+            </button>
+            <button onClick={onDownload}>
+              <ArrowDownToLine size={17} />
+              {feedbackFor("download") ?? "Download terms .md"}
+            </button>
+          </div>
+        </article>
+
+        <aside className="paymentMethodsPanel">
+          <span>Payment methods</span>
+          {pack.methods.map((method) => (
+            <div className="paymentMethodItem" key={method}>
+              <ShieldCheck size={18} />
+              <strong>{method}</strong>
+            </div>
+          ))}
+          <small>
+            Generated: {new Date(pack.generatedAt).toLocaleString()}
+          </small>
+        </aside>
+
+        <div className="paymentGateGrid">
+          {pack.gates.map((gate, index) => (
+            <article className="paymentGateCard" key={gate.id}>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <h3>{gate.title}</h3>
+              <p>{gate.detail}</p>
+            </article>
+          ))}
+        </div>
+
+        <aside className="paymentPolicyPanel">
+          <div>
+            <span>Terms boundary</span>
+            <h3>What is included, and what must be re-scoped</h3>
+          </div>
+          <div className="paymentPolicyList">
+            {pack.policies.map((policy) => (
+              <div className="paymentPolicyItem" key={policy.title}>
+                <FileCheck2 size={18} />
+                <div>
+                  <strong>{policy.title}</strong>
+                  <p>{policy.detail}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </aside>
       </div>
     </section>
   );

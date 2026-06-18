@@ -34,6 +34,7 @@ What works today:
 - static sample files with stable Markdown, CSV, JSON, and manifest URLs for outreach and reviewer previews
 - trust / proof section with public repository, live demo, methodology, sample artifact, source audit and delivery-boundary links
 - offer / pricing page with fixed-scope service packages, price ranges, timelines, and buyer brief actions
+- payment / terms block with payment structure, manual payment methods, delivery gates, boundaries, copy and Markdown export
 - launch desk with proposal, onboarding email, delivery checklist, buyer FAQ, terms, and full sales-kit JSON export
 - contact / request report section with editable intake fields, copy-ready client request, GitHub issue link, Markdown export and JSON export
 - intake form with client scope fields, chain/metric focus, public issue consent, local saved intake queue, Markdown export, JSON export, and saved-record export
@@ -63,18 +64,20 @@ What works today:
 10. Open `Trust Proof` and verify the repository, live demo, methodology, sample manifest, reviewer pack, source audit and delivery boundaries.
 11. Open `Pricing` and choose the package that matches the client need.
 12. Copy the pricing sheet or buyer brief for outreach.
-13. Open `Launch Desk` and export the final proposal, onboarding email, delivery checklist, or sales-kit JSON.
-14. Open `Request Report`, edit the protocol/contact/scope fields, copy the request, download the request pack, or open a prefilled GitHub issue.
-15. Open `Intake Form`, capture the client scope, select chains and metrics, save the intake locally, or export the intake pack.
-16. Open `Export Pack` and download the full JSON handoff pack or individual artifacts.
-17. Open `Automation`, run the workflow and download the generated runbook.
-18. Open `Service Layer`, select a client package, copy the brief, or download the service JSON.
-19. Open `Outreach`, select a protocol lead, enrich the contact route, update CRM notes/follow-up dates, review pitches, and export leads.
-20. Filter to `OP Mainnet` or `Base`.
-21. Review DEX market rows for 24h volume, 30d volume, 30d fees, and health labels.
-22. Open `Source audit` and verify the public endpoints.
-23. Export the CSV report.
-24. Compare the exported evidence against the target outcomes: DEX activity, fee generation, and market health.
+13. Open `Payment Terms` and confirm the payment structure, methods, delivery gates and boundaries.
+14. Copy or download the terms Markdown before asking a client to commit.
+15. Open `Launch Desk` and export the final proposal, onboarding email, delivery checklist, or sales-kit JSON.
+16. Open `Request Report`, edit the protocol/contact/scope fields, copy the request, download the request pack, or open a prefilled GitHub issue.
+17. Open `Intake Form`, capture the client scope, select chains and metrics, save the intake locally, or export the intake pack.
+18. Open `Export Pack` and download the full JSON handoff pack or individual artifacts.
+19. Open `Automation`, run the workflow and download the generated runbook.
+20. Open `Service Layer`, select a client package, copy the brief, or download the service JSON.
+21. Open `Outreach`, select a protocol lead, enrich the contact route, update CRM notes/follow-up dates, review pitches, and export leads.
+22. Filter to `OP Mainnet` or `Base`.
+23. Review DEX market rows for 24h volume, 30d volume, 30d fees, and health labels.
+24. Open `Source audit` and verify the public endpoints.
+25. Export the CSV report.
+26. Compare the exported evidence against the target outcomes: DEX activity, fee generation, and market health.
 
 ## Data Sources
 
@@ -105,6 +108,7 @@ Unavailable values are shown as unavailable. The app does not silently substitut
 | Static sample files | Stable public Markdown, CSV, JSON, and manifest files served from GitHub Pages | Live |
 | Trust / proof section | Public proof stack, verifiable links, source audit, and explicit delivery boundaries | Live |
 | Offer / pricing page | Fixed-scope service packages with price ranges, timelines, deliverables, and buyer brief copy | Live |
+| Payment / terms block | Manual payment methods, payment structure, delivery gates, boundaries, and terms Markdown export | Live |
 | Launch desk | Sales proposal, onboarding email, delivery checklist, buyer FAQ, terms, and sales-kit export | Live |
 | Contact / request report | Editable client intake, copy-ready request text, GitHub issue link, Markdown export, and JSON export | Live |
 | Intake form | Client scope capture, chain/metric choices, saved local intake queue, public issue consent, Markdown and JSON exports | Live |
@@ -145,7 +149,7 @@ Live data adapters
 Data engine: normalization, ratios, weighted trends, market scoring
         |
         v
-Protocol scanner, protocol health score, reports workspace, public sample reports, static sample files, trust / proof section, offer / pricing page, launch desk, request report intake, intake form, export pack, automation runbook, service layer, outreach pipeline, contact enrichment, persistent CRM, mini reports, scope totals, chain coverage, source audit, CSV export
+Protocol scanner, protocol health score, reports workspace, public sample reports, static sample files, trust / proof section, offer / pricing page, payment / terms block, launch desk, request report intake, intake form, export pack, automation runbook, service layer, outreach pipeline, contact enrichment, persistent CRM, mini reports, scope totals, chain coverage, source audit, CSV export
         |
         v
 Dashboard state and reviewer workflow
@@ -181,6 +185,7 @@ src/reportGenerator.ts       Markdown mini-report generation for selected protoc
 src/sampleReports.ts         Public proof-of-work sample reports for client-facing delivery examples
 src/staticSamples.ts         Stable public sample file metadata and GitHub Pages URLs
 src/trustProof.ts            Verifiable proof stack, trust metrics and delivery-boundary copy
+src/paymentTerms.ts          Payment structure, delivery gates, manual payment terms and Markdown export
 src/exportPack.ts            Export pack manifest, CSV generation and JSON handoff package
 src/automation.ts            Browser-side automation job queue and Markdown runbook generator
 src/serviceLayer.ts          Sellable service offer, pricing page data, client brief and service JSON generation

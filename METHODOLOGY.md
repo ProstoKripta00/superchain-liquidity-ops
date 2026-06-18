@@ -170,6 +170,7 @@ The MVP should produce grant-review artifacts:
 - static sample files for stable Markdown, CSV, JSON, and manifest links that do not depend on live data
 - trust / proof section that links to the public repository, live app, methodology, sample manifest, reviewer pack, source audit, and delivery boundaries
 - offer / pricing page with fixed-scope packages, price ranges, timelines, deliverables, and buyer brief actions
+- payment / terms block with payment structure, manual payment methods, delivery gates, client-ready terms copy, and Markdown export
 - launch desk with proposal, onboarding email, delivery checklist, buyer FAQ, terms, and sales-kit export
 - contact / request report intake with editable client scope, copy-ready request text, GitHub issue link, Markdown export, and JSON export
 - intake form with client scope fields, chain and metric selection, local saved intake records, public issue consent, Markdown export, JSON export, and saved-record export
@@ -298,6 +299,30 @@ Each package includes:
 - pricing sheet export
 
 The pricing page is not a payment processor and does not create a binding contract. It is a manual sales page designed to make the service understandable before outreach starts. The pricing ranges are intentionally fixed-scope so the seller can avoid custom unpaid analysis before a client confirms interest.
+
+## Payment / Terms Block
+
+The Payment / Terms block converts the selected service package into client-ready payment and delivery terms.
+
+It is intentionally manual. It does not collect payment, connect wallets, create invoices, or store private payment details in the public app. Its job is to make the first paid engagement easier to agree before the seller moves the conversation to email, Telegram, invoice tooling, or another private channel.
+
+Current payment logic:
+
+- one-off packages use `50% upfront to start, 50% before final handoff`
+- monthly monitoring uses `monthly upfront before each monitoring cycle`
+- final report, CSV and JSON artifacts are released only after the relevant payment gate is confirmed
+- USDC is listed as an optional agreed transfer route, not as in-app custody
+- bank transfer, invoice route or another method can be agreed outside the dashboard
+
+Current delivery gates:
+
+- scope confirmed
+- payment route confirmed
+- work starts after initial payment
+- draft review with source notes and unavailable values
+- final handoff after the payment gate is satisfied
+
+The block also lists boundaries for fixed scope, one included revision, missing public data, non-audit/non-advice status, refund or re-scope before work starts, and manual agreement handling. These boundaries are designed to keep early sales conversations specific without pretending the static dashboard is a payment processor or legal contract system.
 
 ## Launch Desk
 
