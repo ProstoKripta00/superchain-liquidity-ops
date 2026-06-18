@@ -1,0 +1,31 @@
+{
+  "generatedAt": "static-sample",
+  "product": "Superchain Liquidity Ops",
+  "type": "source-audit-sample",
+  "sources": [
+    {
+      "name": "DefiLlama chains",
+      "url": "https://api.llama.fi/v2/chains",
+      "status": "ok",
+      "usedFor": ["chain_tvl"]
+    },
+    {
+      "name": "DefiLlama DEX overview",
+      "url": "https://api.llama.fi/overview/dexs/{chain}",
+      "status": "ok",
+      "usedFor": ["dex_volume", "market_rows"]
+    },
+    {
+      "name": "DefiLlama fees overview",
+      "url": "https://api.llama.fi/overview/fees/{chain}",
+      "status": "partial",
+      "usedFor": ["fees"],
+      "note": "Protocol-level fee attribution depends on public feed availability."
+    }
+  ],
+  "boundaries": [
+    "Unavailable values are disclosed instead of filled manually.",
+    "This file is a static sample and not a live source audit.",
+    "Final delivery should refresh live endpoint status before handoff."
+  ]
+}

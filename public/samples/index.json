@@ -1,0 +1,57 @@
+{
+  "generatedAt": "static-sample",
+  "product": "Superchain Liquidity Ops",
+  "type": "static-sample-file-manifest",
+  "description": "Stable public sample files for client outreach, grant-review demos, and service delivery previews.",
+  "files": [
+    {
+      "id": "protocol-diagnostic",
+      "title": "Protocol Diagnostic Sprint Sample",
+      "format": "markdown",
+      "path": "samples/protocol-diagnostic-sample.md",
+      "useCase": "Send before pitching a fixed-scope diagnostic."
+    },
+    {
+      "id": "liquidity-monitoring",
+      "title": "Liquidity Monitoring Retainer Sample",
+      "format": "markdown",
+      "path": "samples/liquidity-monitoring-sample.md",
+      "useCase": "Show weekly monitoring structure."
+    },
+    {
+      "id": "grant-evidence-pack",
+      "title": "Grant Evidence Pack Sample",
+      "format": "markdown",
+      "path": "samples/grant-evidence-pack-sample.md",
+      "useCase": "Show reviewer-ready evidence structure."
+    },
+    {
+      "id": "client-intake",
+      "title": "Client Intake Form Sample",
+      "format": "markdown",
+      "path": "samples/client-intake-sample.md",
+      "useCase": "Show what a scoped client request looks like."
+    },
+    {
+      "id": "request-report",
+      "title": "Request Report Sample",
+      "format": "markdown",
+      "path": "samples/request-report-sample.md",
+      "useCase": "Show how a report request is framed."
+    },
+    {
+      "id": "market-impact-csv",
+      "title": "Market Impact CSV Sample",
+      "format": "csv",
+      "path": "samples/market-impact-sample.csv",
+      "useCase": "Show the expected tabular evidence format."
+    },
+    {
+      "id": "source-audit-json",
+      "title": "Source Audit JSON Sample",
+      "format": "json",
+      "path": "samples/source-audit-sample.json",
+      "useCase": "Show source transparency and delivery boundaries."
+    }
+  ]
+}

@@ -95,6 +95,11 @@ import {
   type ServiceLayer,
   type ServiceOffer,
 } from "./serviceLayer";
+import {
+  STATIC_SAMPLE_FILES,
+  STATIC_SAMPLE_MANIFEST_URL,
+  type StaticSampleFile,
+} from "./staticSamples";
 import { SUPERCHAIN_NETWORKS } from "./sources";
 import type {
   DexMarket,
@@ -1108,6 +1113,7 @@ function App() {
           <a href="#protocol-scanner">Protocol scanner</a>
           <a href="#reports">Reports</a>
           <a href="#sample-reports">Sample reports</a>
+          <a href="#static-samples">Static files</a>
           <a href="#pricing">Pricing</a>
           <a href="#launch-desk">Launch desk</a>
           <a href="#request-report">Request report</a>
@@ -1332,6 +1338,11 @@ function App() {
           onDownloadJson={downloadSampleReportsJson}
           onSelectReport={setSelectedSampleReportId}
           selectedReport={selectedSampleReport}
+        />
+
+        <StaticSampleFilesSection
+          files={STATIC_SAMPLE_FILES}
+          manifestUrl={STATIC_SAMPLE_MANIFEST_URL}
         />
 
         <OfferPricingSection
@@ -3496,6 +3507,96 @@ function SampleReportsSection({
             <div className="emptyState">Select a public sample report to preview it.</div>
           )}
         </article>
+      </div>
+    </section>
+  );
+}
+
+function StaticSampleFilesSection({
+  files,
+  manifestUrl,
+}: {
+  files: StaticSampleFile[];
+  manifestUrl: string;
+}) {
+  return (
+    <section className="staticSamplesSection" id="static-samples">
+      <div className="sectionHeader">
+        <div>
+          <p className="sectionKicker">Static Sample Files</p>
+          <h2>Stable public artifacts for outreach and reviewer previews</h2>
+        </div>
+        <span>{files.length} files</span>
+      </div>
+
+      <div className="staticSamplesLayout">
+        <article className="staticSamplesLead">
+          <div className="staticSamplesTitle">
+            <span>Public file pack</span>
+            <h3>Permanent sample links that work without live data</h3>
+            <p>
+              These files are served directly from GitHub Pages. Use them in
+              outbound messages, grant drafts, and client calls when you need a
+              stable proof-of-work link instead of a generated browser download.
+            </p>
+          </div>
+
+          <div className="staticSamplesStats">
+            <Stat label="Markdown" value={String(files.filter((file) => file.format === "Markdown").length)} />
+            <Stat label="CSV" value={String(files.filter((file) => file.format === "CSV").length)} />
+            <Stat label="JSON" value={String(files.filter((file) => file.format === "JSON").length)} />
+            <Stat label="Manifest" value="index.json" />
+          </div>
+
+          <div className="staticManifestCard">
+            <DatabaseZap size={18} />
+            <div>
+              <span>Manifest</span>
+              <strong>samples/index.json</strong>
+              <small>Machine-readable list of every static sample file.</small>
+            </div>
+            <a href={manifestUrl} target="_blank" rel="noreferrer">
+              Open manifest
+              <ExternalLink size={15} />
+            </a>
+          </div>
+        </article>
+
+        <div className="staticSampleGrid">
+          {files.map((file) => (
+            <article className="staticSampleCard" key={file.id}>
+              <div className="staticSampleIcon">
+                {file.format === "JSON" ? (
+                  <DatabaseZap size={18} />
+                ) : file.format === "CSV" ? (
+                  <BarChart3 size={18} />
+                ) : (
+                  <FileText size={18} />
+                )}
+              </div>
+              <div>
+                <span>{file.category}</span>
+                <h3>{file.title}</h3>
+                <p>{file.description}</p>
+                <small>{file.useCase}</small>
+              </div>
+              <div className="staticSampleMeta">
+                <strong>{file.format}</strong>
+                <code>{file.fileName}</code>
+              </div>
+              <div className="staticSampleActions">
+                <a href={file.href} target="_blank" rel="noreferrer">
+                  <ExternalLink size={15} />
+                  Open
+                </a>
+                <a href={file.href} download>
+                  <ArrowDownToLine size={15} />
+                  Download
+                </a>
+              </div>
+            </article>
+          ))}
+        </div>
       </div>
     </section>
   );

@@ -167,6 +167,7 @@ The MVP should produce grant-review artifacts:
 - Markdown mini-report for a selected protocol
 - reports workspace for selecting, previewing, copying, and downloading generated reports
 - public sample reports for client-facing proof-of-work across diagnostic, monitoring, and grant-evidence services
+- static sample files for stable Markdown, CSV, JSON, and manifest links that do not depend on live data
 - offer / pricing page with fixed-scope packages, price ranges, timelines, deliverables, and buyer brief actions
 - launch desk with proposal, onboarding email, delivery checklist, buyer FAQ, terms, and sales-kit export
 - contact / request report intake with editable client scope, copy-ready request text, GitHub issue link, Markdown export, and JSON export
@@ -229,6 +230,25 @@ Each sample includes:
 - JSON bundle export for the full public sample library
 
 These samples are designed for public portfolio, outbound sales, and grant/product-review conversations. They are not security audits, investment recommendations, or manually curated endorsements.
+
+## Static Sample Files
+
+Static Sample Files are stable public artifacts served directly from `public/samples/` on GitHub Pages. They complement the generated sample reports.
+
+The generated sample reports are live and can change when public data changes. Static sample files are intentionally fixed so they can be linked in outreach, grant drafts, README documentation, and client calls without requiring the live dashboard to finish loading.
+
+Current files:
+
+- protocol diagnostic Markdown sample
+- liquidity monitoring Markdown sample
+- grant evidence pack Markdown sample
+- client intake Markdown sample
+- request report Markdown sample
+- market impact CSV sample
+- source audit JSON sample
+- `index.json` manifest
+
+The static files are not live measurements. They are examples of structure, delivery boundaries, and expected artifact formats. Final paid delivery should still refresh live data, regenerate current reports, and disclose unavailable values.
 
 ## Offer / Pricing Page
 

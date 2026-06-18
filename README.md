@@ -31,6 +31,7 @@ What works today:
 - mini report generator for reviewer-ready Markdown reports per selected protocol
 - reports workspace with scanner-selected protocol reports, Markdown preview, copy, and download actions
 - public sample reports for client-facing proof-of-work examples across diagnostic, monitoring, and grant-evidence services
+- static sample files with stable Markdown, CSV, JSON, and manifest URLs for outreach and reviewer previews
 - offer / pricing page with fixed-scope service packages, price ranges, timelines, and buyer brief actions
 - launch desk with proposal, onboarding email, delivery checklist, buyer FAQ, terms, and full sales-kit JSON export
 - contact / request report section with editable intake fields, copy-ready client request, GitHub issue link, Markdown export and JSON export
@@ -57,20 +58,21 @@ What works today:
 6. Copy the Markdown report or download the `.md` file.
 7. Open `Sample Reports` and review the public proof-of-work examples.
 8. Copy a sample report, download the `.md`, or download the sample JSON bundle.
-9. Open `Pricing` and choose the package that matches the client need.
-10. Copy the pricing sheet or buyer brief for outreach.
-11. Open `Launch Desk` and export the final proposal, onboarding email, delivery checklist, or sales-kit JSON.
-12. Open `Request Report`, edit the protocol/contact/scope fields, copy the request, download the request pack, or open a prefilled GitHub issue.
-13. Open `Intake Form`, capture the client scope, select chains and metrics, save the intake locally, or export the intake pack.
-14. Open `Export Pack` and download the full JSON handoff pack or individual artifacts.
-15. Open `Automation`, run the workflow and download the generated runbook.
-16. Open `Service Layer`, select a client package, copy the brief, or download the service JSON.
-17. Open `Outreach`, select a protocol lead, enrich the contact route, update CRM notes/follow-up dates, review pitches, and export leads.
-18. Filter to `OP Mainnet` or `Base`.
-19. Review DEX market rows for 24h volume, 30d volume, 30d fees, and health labels.
-20. Open `Source audit` and verify the public endpoints.
-21. Export the CSV report.
-22. Compare the exported evidence against the target outcomes: DEX activity, fee generation, and market health.
+9. Open `Static Files` and inspect the stable sample files or the `samples/index.json` manifest.
+10. Open `Pricing` and choose the package that matches the client need.
+11. Copy the pricing sheet or buyer brief for outreach.
+12. Open `Launch Desk` and export the final proposal, onboarding email, delivery checklist, or sales-kit JSON.
+13. Open `Request Report`, edit the protocol/contact/scope fields, copy the request, download the request pack, or open a prefilled GitHub issue.
+14. Open `Intake Form`, capture the client scope, select chains and metrics, save the intake locally, or export the intake pack.
+15. Open `Export Pack` and download the full JSON handoff pack or individual artifacts.
+16. Open `Automation`, run the workflow and download the generated runbook.
+17. Open `Service Layer`, select a client package, copy the brief, or download the service JSON.
+18. Open `Outreach`, select a protocol lead, enrich the contact route, update CRM notes/follow-up dates, review pitches, and export leads.
+19. Filter to `OP Mainnet` or `Base`.
+20. Review DEX market rows for 24h volume, 30d volume, 30d fees, and health labels.
+21. Open `Source audit` and verify the public endpoints.
+22. Export the CSV report.
+23. Compare the exported evidence against the target outcomes: DEX activity, fee generation, and market health.
 
 ## Data Sources
 
@@ -98,6 +100,7 @@ Unavailable values are shown as unavailable. The app does not silently substitut
 | Mini report generator | Markdown report with summary, metrics, score, markets, risks, next actions | Live |
 | Reports workspace | Scanner-selected protocol reports with queue, preview, copy, and download actions | Live |
 | Public sample reports | Client-ready proof-of-work samples with Markdown and JSON export | Live |
+| Static sample files | Stable public Markdown, CSV, JSON, and manifest files served from GitHub Pages | Live |
 | Offer / pricing page | Fixed-scope service packages with price ranges, timelines, deliverables, and buyer brief copy | Live |
 | Launch desk | Sales proposal, onboarding email, delivery checklist, buyer FAQ, terms, and sales-kit export | Live |
 | Contact / request report | Editable client intake, copy-ready request text, GitHub issue link, Markdown export, and JSON export | Live |
@@ -139,7 +142,7 @@ Live data adapters
 Data engine: normalization, ratios, weighted trends, market scoring
         |
         v
-Protocol scanner, protocol health score, reports workspace, public sample reports, offer / pricing page, launch desk, request report intake, intake form, export pack, automation runbook, service layer, outreach pipeline, contact enrichment, persistent CRM, mini reports, scope totals, chain coverage, source audit, CSV export
+Protocol scanner, protocol health score, reports workspace, public sample reports, static sample files, offer / pricing page, launch desk, request report intake, intake form, export pack, automation runbook, service layer, outreach pipeline, contact enrichment, persistent CRM, mini reports, scope totals, chain coverage, source audit, CSV export
         |
         v
 Dashboard state and reviewer workflow
@@ -173,6 +176,7 @@ src/protocols.ts             Tracked protocol profiles and slug matchers
 src/scanner.ts               Protocol readiness scoring and next-action logic
 src/reportGenerator.ts       Markdown mini-report generation for selected protocols
 src/sampleReports.ts         Public proof-of-work sample reports for client-facing delivery examples
+src/staticSamples.ts         Stable public sample file metadata and GitHub Pages URLs
 src/exportPack.ts            Export pack manifest, CSV generation and JSON handoff package
 src/automation.ts            Browser-side automation job queue and Markdown runbook generator
 src/serviceLayer.ts          Sellable service offer, pricing page data, client brief and service JSON generation
@@ -184,6 +188,7 @@ src/crmStorage.ts            LocalStorage persistence for outreach lead CRM and 
 src/sources.ts               Supported chains and public endpoint URLs
 src/App.tsx                  Dashboard, protocol scanner, reports UI, automation UI, service UI, outreach UI, filters, reviewer pack UI, export flow
 src/styles.css               OP-inspired product UI
+public/samples/              Static Markdown, CSV, JSON and manifest sample files
 GRANT_REVIEWER_PACK.md       Reviewer summary, evidence, milestones, budget
 OP_GRANT_SUBMISSION_READY.md Copy-paste grant form answers and checklist
 METHODOLOGY.md               Metrics, source limitations, health scoring

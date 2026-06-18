@@ -1326,6 +1326,231 @@ select {
   background: #ff0421;
 }
 
+.staticSamplesSection {
+  margin-bottom: 20px;
+  padding: 22px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border: 1px solid #e6e6e6;
+  border-radius: 22px;
+  box-shadow: 0 16px 40px rgba(15, 15, 15, 0.08);
+}
+
+.staticSamplesSection .sectionHeader span {
+  color: #ffffff;
+  background: #0f0f0f;
+}
+
+.staticSamplesLayout {
+  display: grid;
+  grid-template-columns: 430px minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.staticSamplesLead {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  padding: 18px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border-radius: 16px;
+}
+
+.staticSamplesTitle span,
+.staticManifestCard span,
+.staticSampleCard span {
+  display: block;
+  color: #ff5a6d;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.staticSamplesTitle h3 {
+  margin: 8px 0 0;
+  color: #ffffff;
+  font-size: 34px;
+  line-height: 1.02;
+}
+
+.staticSamplesTitle p {
+  margin: 10px 0 0;
+  color: #d8d8d8;
+  line-height: 1.5;
+}
+
+.staticSamplesStats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.staticSamplesStats .stat {
+  background: #1d1d1d;
+}
+
+.staticSamplesStats .stat span {
+  color: #929292;
+}
+
+.staticSamplesStats .stat strong {
+  color: #ffffff;
+}
+
+.staticManifestCard {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  padding: 14px;
+  color: #0f0f0f;
+  background: #ffffff;
+  border-radius: 14px;
+}
+
+.staticManifestCard > svg {
+  color: #ff0421;
+}
+
+.staticManifestCard strong,
+.staticManifestCard small {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.staticManifestCard strong {
+  margin-top: 4px;
+  font-size: 18px;
+}
+
+.staticManifestCard small {
+  margin-top: 5px;
+  color: #5a5a5a;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.staticManifestCard a {
+  grid-column: 1 / -1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  color: #ffffff;
+  background: #ff0421;
+  border-radius: 12px;
+  font-weight: 950;
+  text-decoration: none;
+}
+
+.staticSampleGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.staticSampleCard {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  min-width: 0;
+  padding: 16px;
+  background: #f7f7f7;
+  border: 1px solid #e6e6e6;
+  border-left: 5px solid #ff0421;
+  border-radius: 16px;
+}
+
+.staticSampleIcon {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  color: #ffffff;
+  background: #0f0f0f;
+  border-radius: 999px;
+}
+
+.staticSampleCard h3 {
+  margin: 6px 0 0;
+  font-size: 20px;
+  line-height: 1.1;
+}
+
+.staticSampleCard p {
+  margin: 8px 0 0;
+  color: #4d4d4d;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.staticSampleCard small {
+  display: block;
+  margin-top: 8px;
+  color: #0f0f0f;
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1.35;
+}
+
+.staticSampleMeta {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.staticSampleMeta strong,
+.staticSampleMeta code {
+  display: inline-flex;
+  min-height: 28px;
+  align-items: center;
+  padding: 0 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 950;
+  overflow-wrap: anywhere;
+}
+
+.staticSampleMeta strong {
+  color: #ffffff;
+  background: #0f0f0f;
+}
+
+.staticSampleMeta code {
+  color: #0f0f0f;
+  background: #ffffff;
+  white-space: normal;
+}
+
+.staticSampleActions {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.staticSampleActions a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  color: #ffffff;
+  background: #0f0f0f;
+  border-radius: 12px;
+  font-weight: 950;
+  text-decoration: none;
+}
+
+.staticSampleActions a:first-child {
+  background: #ff0421;
+}
+
 .pricingSection {
   margin-bottom: 20px;
   padding: 22px;
@@ -4421,6 +4646,8 @@ select {
   .scannerGrid,
   .reportsLayout,
   .sampleReportsLayout,
+  .staticSamplesLayout,
+  .staticSampleGrid,
   .pricingLead,
   .pricingGrid,
   .launchDeskLayout,
@@ -4502,6 +4729,9 @@ select {
   .sampleReportStats,
   .sampleReportActions,
   .sampleReportItem,
+  .staticSamplesStats,
+  .staticSampleCard,
+  .staticSampleActions,
   .pricingStats,
   .pricingMiniStats,
   .pricingActions,
