@@ -37,6 +37,7 @@ import {
   createWorkspaceGeneratedReportPackage,
   createWorkspaceReport,
   createWorkspaceRequest,
+  isWorkspacePaymentCleared,
   loadWorkspaceState,
   resetWorkspaceState,
   saveWorkspaceState,
@@ -1274,6 +1275,8 @@ function OperatorTab({
   requests: WorkspaceReportRequest[];
   selectedRequest: WorkspaceReportRequest | null;
 }) {
+  const paymentCleared = selectedRequest ? isWorkspacePaymentCleared(selectedRequest) : false;
+
   return (
     <div className="portalStack">
       <PortalTitle
@@ -1367,12 +1370,13 @@ function OperatorTab({
                       })
                     }
                   >
-                    <option>PDF</option>
-                    <option>CSV</option>
-                    <option>JSON</option>
-                    <option>Markdown</option>
-                  </select>
-                </label>
+                  <option>PDF</option>
+                  <option>CSV</option>
+                  <option>JSON</option>
+                  <option>Markdown</option>
+                  <option>HTML</option>
+                </select>
+              </label>
                 <label className="wideField">
                   Upload file
                   <input
@@ -1387,13 +1391,28 @@ function OperatorTab({
                 </label>
               </div>
 
+              <div className={`portalPaymentGate ${paymentCleared ? "cleared" : "blocked"}`}>
+                <LockKeyhole size={17} />
+                <div>
+                  <strong>
+                    {paymentCleared
+                      ? "Payment cleared: client-visible delivery is enabled."
+                      : "Payment gate: output will stay operator-only until Paid or Comped."}
+                  </strong>
+                  <span>
+                    {selectedRequest.paymentStatus} / {selectedRequest.paymentMethod}
+                    {selectedRequest.invoiceUrl ? ` / ${selectedRequest.invoiceUrl}` : ""}
+                  </span>
+                </div>
+              </div>
+
               <button className="portalPrimaryAction" onClick={onDeliver} type="button">
                 <CheckCircle2 size={17} />
-                Mark delivered
+                {paymentCleared ? "Mark delivered" : "Save operator draft"}
               </button>
               <button className="portalSecondaryAction" onClick={onGeneratePackage} type="button">
                 <FileText size={17} />
-                Generate report package
+                {paymentCleared ? "Generate final package" : "Generate draft package"}
               </button>
             </>
           ) : (
@@ -1815,6 +1834,8 @@ function SettingsTab({
             <span>2. Create/invite users in Supabase Auth.</span>
             <span>3. Insert matching `profiles` rows with client/operator/admin roles.</span>
             <span>4. Add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` to hosting env.</span>
+            <span>5. Add `SUPABASE_SERVICE_ROLE_KEY` only to server workers / GitHub Actions.</span>
+            <span>6. Run `npm run snapshot` daily through GitHub Actions or VPS cron.</span>
           </div>
           <pre className="portalSchemaPreview">{schema}</pre>
         </article>

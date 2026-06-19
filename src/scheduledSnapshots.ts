@@ -148,9 +148,11 @@ export function buildScheduledSnapshotsPack({
     { label: "Scope", value: `${network} / ${target}` },
     { label: "Storage path", value: storagePath },
     { label: "Manifest", value: snapshotManifestName },
+    { label: "Public latest", value: "/superchain-liquidity-ops/snapshots/latest/manifest.json" },
+    { label: "Market CSV", value: "/superchain-liquidity-ops/snapshots/latest/market-impact.csv" },
     { label: "Next snapshot", value: nextDaily },
     { label: "Retention", value: "30 daily / 12 weekly" },
-    { label: "Schedule mode", value: "GitHub Actions cron or external scheduler" },
+    { label: "Schedule mode", value: "GitHub Actions cron, VPS cron, or external scheduler" },
   ];
   const summary = `${readyCount}/${schedules.length} snapshot schedules ready. Static GitHub Pages can display and export the plan; recurring execution needs GitHub Actions or another scheduler.`;
   const githubActionYaml = buildGithubActionYaml();
@@ -234,7 +236,9 @@ function buildGithubActionYaml() {
     "  workflow_dispatch:",
     "  schedule:",
     "    - cron: '0 7 * * *'",
-    "    - cron: '0 9 * * 1'",
+    "",
+    "permissions:",
+    "  contents: write",
     "",
     "jobs:",
     "  snapshot:",
@@ -245,12 +249,17 @@ function buildGithubActionYaml() {
     "        with:",
     "          node-version: 22",
     "      - run: npm ci",
-    "      - run: npm run build",
     "      - run: npm run snapshot",
-    "      - uses: actions/upload-artifact@v4",
-    "        with:",
-    "          name: superchain-snapshots",
-    "          path: snapshots/",
+    "      - run: |",
+    "          git config user.name \"github-actions[bot]\"",
+    "          git config user.email \"41898282+github-actions[bot]@users.noreply.github.com\"",
+    "          git add public/snapshots snapshots",
+    "          if git diff --cached --quiet; then",
+    "            echo \"No snapshot changes to commit\"",
+    "          else",
+    "            git commit -m \"Update scheduled Superchain snapshots\"",
+    "            git push",
+    "          fi",
   ].join("\n");
 }
 

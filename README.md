@@ -8,6 +8,7 @@ Superchain Liquidity Ops turns public OP and Superchain DEX data into practical 
 
 - Public site: https://prostokripta00.github.io/superchain-liquidity-ops/
 - Methodology: `METHODOLOGY.md`
+- Production runbook: `PRODUCTION_RUNBOOK.md`
 - Repository: https://github.com/ProstoKripta00/superchain-liquidity-ops
 
 Independent tool. Not affiliated with or endorsed by Optimism Foundation.
@@ -68,9 +69,10 @@ Current workspace capabilities:
 - request pipeline statuses: `New`, `Scoping`, `In progress`, `Review`, `Delivered`
 - delivered report/file library with client-visible vs operator-only access labels
 - operator queue for moving requests and registering report delivery files
-- one-click generated report package: Markdown memo, CSV evidence template, JSON manifest
+- one-click generated report package: Markdown memo, PDF-ready HTML, CSV evidence template, JSON manifest
 - payment status per request: `Unpaid`, `Invoice sent`, `Paid`, `Comped`
 - invoice URL and payment method tracking
+- payment gate: unpaid work can be drafted, but final client-visible delivery requires `Paid` or `Comped`
 - client/account overview for protocol organizations
 - admin console for creating organization/profile shells and production QA checks
 - settings screen with Supabase backend readiness notes
@@ -80,7 +82,8 @@ Production backend target:
 
 - Supabase Auth for users
 - Supabase Postgres for organizations, profiles, requests, reports, files, messages, audit log
-- Supabase Storage private bucket for PDF/CSV/JSON report files
+- Supabase Postgres snapshot history for scheduled worker runs and protocol scores
+- Supabase Storage private bucket for PDF/HTML/CSV/JSON/Markdown report files
 - Row Level Security so clients only see their own organization
 
 Implemented backend connection:
@@ -88,10 +91,11 @@ Implemented backend connection:
 - `src/supabaseClient.ts` creates the browser Supabase client when env keys exist.
 - `src/supabaseWorkspace.ts` loads/saves workspace data through Supabase Postgres.
 - Operator delivery can upload a selected file to the private `report-files` Storage bucket.
-- Operator delivery can generate a Markdown/CSV/JSON report package and store it in private Storage.
+- Operator delivery can generate a Markdown/HTML/CSV/JSON report package and store it in private Storage.
 - Report file links are generated as signed URLs.
 - Admin console can create `organizations` and `profiles` rows for an existing Supabase Auth user UUID.
 - Without env keys, the public GitHub Pages app stays in local demo mode.
+- `npm run snapshot` generates daily public snapshot artifacts for GitHub Pages and optional Supabase metadata upload.
 
 Supabase setup:
 
@@ -105,6 +109,7 @@ Supabase setup:
 VITE_SUPABASE_URL=https://your-project-ref.supabase.co
 VITE_SUPABASE_ANON_KEY=your-public-anon-key
 VITE_SUPABASE_REPORT_BUCKET=report-files
+SUPABASE_SERVICE_ROLE_KEY=server-only-service-role-key
 ```
 
 Local example:
@@ -117,6 +122,29 @@ npm run dev
 GitHub Pages note: Vite bakes `VITE_*` values into the static bundle at build time, so repository or workflow secrets must be available during the deploy build.
 
 Client onboarding note: do not put a Supabase service-role key in the browser. Create or invite the Auth user in Supabase, copy the Auth user UUID, then use the Admin Console in `/app` to create the matching organization/profile rows.
+
+Server worker note: `SUPABASE_SERVICE_ROLE_KEY` is only for GitHub Actions, VPS cron, or other trusted server workers. It must never be exposed as a `VITE_*` variable.
+
+## Scheduled Snapshots
+
+The project now includes a real snapshot worker:
+
+```bash
+npm run snapshot
+```
+
+It writes:
+
+```text
+public/snapshots/latest/manifest.json
+public/snapshots/latest/market-impact.csv
+public/snapshots/latest/protocol-scores.json
+public/snapshots/latest/source-audit.json
+public/snapshots/latest/scope-summary.json
+snapshots/YYYY/MM/DD/<run-id>/*
+```
+
+The GitHub Actions workflow `.github/workflows/scheduled-snapshots.yml` runs daily, commits fresh artifacts, and lets the normal Pages workflow publish them. With `SUPABASE_SERVICE_ROLE_KEY`, the same worker also inserts metadata into `snapshot_runs` and `snapshot_protocol_scores`.
 
 ## Operator Tools
 
@@ -134,7 +162,7 @@ They include:
 - intake form
 - export pack builder
 - automation runbook
-- scheduled snapshots plan
+- scheduled snapshots plan and public latest artifact links
 - service layer
 - lead target list
 - outreach pipeline with browser-local CRM fields
@@ -154,6 +182,7 @@ Live now:
 - public case studies and sample reports
 - request report flow with package, budget, scope, contact, and deliverable checklist
 - source audit with public endpoint links and status
+- scheduled snapshot worker with latest public JSON/CSV artifacts
 
 Unavailable values are shown as unavailable. The app does not silently replace missing public data with manual numbers.
 
@@ -259,12 +288,15 @@ src/requestReport.ts         Request report package and buyer intake copy
 src/exportPack.ts            Operator export pack manifest, CSV generation, JSON handoff
 src/automation.ts            Operator automation runbook generator
 src/scheduledSnapshots.ts    Operator snapshot schedule plan, YAML template, JSON export
+scripts/generate-snapshot.mjs Node worker for public snapshot artifacts and optional Supabase upload
 src/serviceLayer.ts          Operator service offers and package briefs
 src/leadTargets.ts           Operator lead shortlist
 src/outreachPipeline.ts      Operator outreach pipeline and local CRM fields
 src/App.tsx                  Main UI
 src/styles.css               Product UI
 public/samples/              Static Markdown, CSV, JSON, and manifest sample files
+public/snapshots/latest/     Latest generated public snapshot artifacts
+snapshots/                   Archived dated snapshot runs
 ```
 
 ## Local Development
@@ -286,19 +318,24 @@ Build:
 npm run build
 ```
 
+Generate current snapshot artifacts:
+
+```bash
+npm run snapshot
+```
+
 ## Roadmap
 
-1. Add real scheduled snapshots that commit static JSON/CSV artifacts.
-2. Add official OP / Superchain priority-pair configuration.
-3. Add deeper pool-level adapters through backend or scheduled static ingestion.
-4. Add before/after campaign windows for incentive reporting.
-5. Improve PDF export beyond browser print.
-6. Publish more public case studies from live data.
-7. Add alerting for declining activity, weak fee output, or source degradation.
-8. Add optional shared backend storage for operator CRM/intake records.
+1. Add official OP / Superchain priority-pair configuration.
+2. Add deeper pool-level adapters through backend or scheduled static ingestion.
+3. Add before/after campaign windows for incentive reporting.
+4. Add true server-rendered PDF files if browser/PDF-ready HTML is not enough for buyers.
+5. Publish more public case studies from live data.
+6. Add alerting for declining activity, weak fee output, or source degradation.
+7. Add optional shared backend storage for operator CRM/intake records.
 
 ## Status
 
-Beta / live product proof.
+Beta / production-ready pilot.
 
-The current version is suitable for demonstrating the report workflow, transparent public data handling, case-study model, pricing, and request flow. The next serious upgrade is recurring snapshots and deeper pool-level data.
+The current version is suitable for demonstrating the report workflow, transparent public data handling, case-study model, pricing, request flow, client portal, payment-gated delivery, and scheduled public snapshots. The next serious upgrade is deeper pool-level data and paid outreach execution.

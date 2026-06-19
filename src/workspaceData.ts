@@ -59,7 +59,7 @@ export type WorkspaceReportRequest = {
 export type WorkspaceReportFile = {
   id: string;
   name: string;
-  type: "PDF" | "CSV" | "JSON" | "Markdown";
+  type: "PDF" | "CSV" | "JSON" | "Markdown" | "HTML";
   sizeLabel: string;
   access: "Client visible" | "Operator only";
   href: string;
@@ -191,6 +191,10 @@ export const WORKSPACE_PAYMENT_METHODS = [
   "Bank transfer",
   "Manual",
 ];
+
+export function isWorkspacePaymentCleared(request: WorkspaceReportRequest) {
+  return request.paymentStatus === "Paid" || request.paymentStatus === "Comped";
+}
 
 const nowIso = "2026-06-19T10:00:00.000Z";
 
@@ -491,19 +495,23 @@ export function createWorkspaceReport(
   input: NewWorkspaceReportInput,
   actorUserId: string,
 ): WorkspaceState {
+  const request = state.requests.find((item) => item.id === input.requestId);
+  const paymentCleared = request ? isWorkspacePaymentCleared(request) : false;
   const report: WorkspaceReport = {
     id: `report-${Date.now()}`,
     requestId: input.requestId,
     organizationId: input.organizationId,
     title: input.title.trim() || "Liquidity Impact Report",
-    status: "Ready for client",
+    status: paymentCleared ? "Ready for client" : "Draft",
     period: "Current snapshot",
-    deliveredAt: new Date().toISOString(),
+    deliveredAt: paymentCleared ? new Date().toISOString() : null,
     summary:
       input.summary.trim() ||
-      "Report package is ready for client review with source-backed metrics and delivery files.",
+      (paymentCleared
+        ? "Report package is ready for client review with source-backed metrics and delivery files."
+        : "Operator draft saved. Final client delivery is blocked until payment is Paid or Comped."),
     metrics: [
-      { label: "Delivery", value: "Ready" },
+      { label: "Delivery", value: paymentCleared ? "Ready" : "Payment gated" },
       { label: "Files", value: "1" },
       { label: "Source policy", value: "Public-source only" },
     ],
@@ -513,7 +521,7 @@ export function createWorkspaceReport(
         name: input.fileName.trim() || "liquidity-impact-report.pdf",
         type: input.fileType,
         sizeLabel: "Client upload",
-        access: "Client visible",
+        access: paymentCleared ? "Client visible" : "Operator only",
         href: "#",
       },
     ],
@@ -526,7 +534,7 @@ export function createWorkspaceReport(
       request.id === input.requestId
         ? {
             ...request,
-            status: "Delivered",
+            status: paymentCleared ? "Delivered" : "In progress",
             updatedAt: new Date().toISOString(),
           }
         : request,
@@ -535,8 +543,10 @@ export function createWorkspaceReport(
       buildActivity(
         input.organizationId,
         actorUserId,
-        "Report delivered",
-        `${report.title} was marked ready for client delivery.`,
+        paymentCleared ? "Report delivered" : "Report draft saved",
+        paymentCleared
+          ? `${report.title} was marked ready for client delivery.`
+          : `${report.title} was saved as operator-only until payment clears.`,
       ),
       ...state.activity,
     ],
@@ -635,17 +645,21 @@ export function createWorkspaceGeneratedReportPackage(
   }
 
   const generatedAt = new Date().toISOString();
-  const generatedFiles = buildLocalGeneratedPackageFiles(request, generatedAt);
+  const paymentCleared = isWorkspacePaymentCleared(request);
+  const fileAccess = paymentCleared ? "Client visible" : "Operator only";
+  const generatedFiles = buildLocalGeneratedPackageFiles(request, generatedAt, fileAccess);
   const report: WorkspaceReport = {
     id: `report-package-${Date.now()}`,
     requestId: request.id,
     organizationId: request.organizationId,
     title: `${request.protocol} Report Package`,
-    status: "Ready for client",
+    status: paymentCleared ? "Ready for client" : "Draft",
     period: "Generated workspace package",
-    deliveredAt: generatedAt,
+    deliveredAt: paymentCleared ? generatedAt : null,
     summary:
-      "Generated package includes a client memo, CSV evidence template and JSON manifest for the selected request scope.",
+      paymentCleared
+        ? "Generated package includes a client memo, CSV evidence template, JSON manifest and PDF-ready HTML for the selected request scope."
+        : "Operator draft package generated. Client-visible delivery is blocked until payment is Paid or Comped.",
     metrics: [
       { label: "Package", value: request.packageName },
       { label: "Payment", value: request.paymentStatus },
@@ -661,7 +675,7 @@ export function createWorkspaceGeneratedReportPackage(
       item.id === request.id
         ? {
             ...item,
-            status: "Review",
+            status: paymentCleared ? "Review" : "In progress",
             updatedAt: generatedAt,
           }
         : item,
@@ -670,8 +684,10 @@ export function createWorkspaceGeneratedReportPackage(
       buildActivity(
         request.organizationId,
         actorUserId,
-        "Report package generated",
-        `${request.protocol} package generated for review.`,
+        paymentCleared ? "Report package generated" : "Draft package generated",
+        paymentCleared
+          ? `${request.protocol} package generated for review.`
+          : `${request.protocol} draft package generated but held for payment clearance.`,
       ),
       ...state.activity,
     ],
@@ -715,6 +731,8 @@ Tables:
 - report_files: private Storage paths and client visibility
 - workspace_messages: client/internal thread notes
 - audit_log: request/report activity
+- snapshot_runs: scheduled worker runs and manifest metadata
+- snapshot_protocol_scores: protocol scores captured per worker run
 
 Storage:
 - private bucket: report-files
@@ -784,6 +802,7 @@ function slugify(value: string) {
 function buildLocalGeneratedPackageFiles(
   request: WorkspaceReportRequest,
   generatedAt: string,
+  access: WorkspaceReportFile["access"],
 ): WorkspaceReportFile[] {
   const slug = slugify(request.protocol);
   const markdown = `# ${request.protocol} Liquidity Report Package
@@ -806,6 +825,7 @@ ${request.notes || "No additional notes."}
 ## Delivery Boundary
 This generated package is a workspace handoff. Final numbers should be checked against live public sources before sending as a client-facing final report.
 `;
+  const html = buildPdfReadyHtml(request, markdown, generatedAt);
   const csv = [
     "field,value",
     `protocol,${csvEscape(request.protocol)}`,
@@ -834,9 +854,10 @@ This generated package is a workspace handoff. Final numbers should be checked a
   );
 
   return [
-    buildDataFile(`${slug}-report-package.md`, "Markdown", markdown, "text/markdown"),
-    buildDataFile(`${slug}-evidence.csv`, "CSV", csv, "text/csv"),
-    buildDataFile(`${slug}-manifest.json`, "JSON", manifest, "application/json"),
+    buildDataFile(`${slug}-report-package.md`, "Markdown", markdown, "text/markdown", access),
+    buildDataFile(`${slug}-pdf-ready-report.html`, "HTML", html, "text/html", access),
+    buildDataFile(`${slug}-evidence.csv`, "CSV", csv, "text/csv", access),
+    buildDataFile(`${slug}-manifest.json`, "JSON", manifest, "application/json", access),
   ];
 }
 
@@ -845,15 +866,62 @@ function buildDataFile(
   type: WorkspaceReportFile["type"],
   content: string,
   mimeType: string,
+  access: WorkspaceReportFile["access"],
 ): WorkspaceReportFile {
   return {
     id: `file-${type.toLowerCase()}-${Date.now()}-${name}`,
     name,
     type,
     sizeLabel: `${Math.max(1, Math.round(content.length / 1024))} KB`,
-    access: "Client visible",
+    access,
     href: `data:${mimeType};charset=utf-8,${encodeURIComponent(content)}`,
   };
+}
+
+function buildPdfReadyHtml(
+  request: WorkspaceReportRequest,
+  markdown: string,
+  generatedAt: string,
+) {
+  return `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>${escapeHtml(request.protocol)} Liquidity Report Package</title>
+    <style>
+      @page { margin: 18mm; }
+      body { color: #111; font: 14px/1.55 Inter, Arial, sans-serif; margin: 0; }
+      h1 { font-size: 30px; line-height: 1.05; margin: 0 0 12px; }
+      h2 { border-top: 1px solid #ddd; font-size: 16px; margin-top: 24px; padding-top: 14px; }
+      .meta { color: #555; display: grid; gap: 6px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 18px 0; }
+      .badge { background: #ff0420; border-radius: 999px; color: white; display: inline-block; font-weight: 800; padding: 5px 10px; }
+      pre { white-space: pre-wrap; word-break: break-word; }
+      footer { color: #777; font-size: 11px; margin-top: 32px; }
+    </style>
+  </head>
+  <body>
+    <span class="badge">Superchain Liquidity Ops</span>
+    <h1>${escapeHtml(request.protocol)} Liquidity Report Package</h1>
+    <div class="meta">
+      <div><strong>Generated</strong><br />${escapeHtml(generatedAt)}</div>
+      <div><strong>Payment</strong><br />${escapeHtml(request.paymentStatus)} / ${escapeHtml(request.paymentMethod)}</div>
+      <div><strong>Networks</strong><br />${escapeHtml(request.networkScope.join(", "))}</div>
+      <div><strong>Package</strong><br />${escapeHtml(request.packageName)}</div>
+    </div>
+    <pre>${escapeHtml(markdown)}</pre>
+    <footer>
+      Source-backed analytics handoff. Final numbers should be checked against live public sources before final client delivery.
+    </footer>
+  </body>
+</html>`;
+}
+
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
 
 function csvEscape(value: string) {

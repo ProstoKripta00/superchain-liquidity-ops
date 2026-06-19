@@ -1,6 +1,7 @@
 import { requireSupabase, supabaseReportBucket } from "./supabaseClient";
 import {
   seedWorkspaceState,
+  isWorkspacePaymentCleared,
   type NewWorkspaceClientInput,
   type NewWorkspaceReportInput,
   type NewWorkspaceRequestInput,
@@ -310,20 +311,32 @@ export async function createSupabaseWorkspaceReport(
 ) {
   const client = requireSupabase();
   const deliveredAt = new Date().toISOString();
+  const { data: request, error: requestLoadError } = await client
+    .from("report_requests")
+    .select("*")
+    .eq("id", input.requestId)
+    .single();
+
+  throwIfSupabaseError(requestLoadError);
+
+  const workspaceRequest = request ? requestFromRow(request) : null;
+  const paymentCleared = workspaceRequest ? isWorkspacePaymentCleared(workspaceRequest) : false;
   const { data: report, error } = await client
     .from("reports")
     .insert({
       request_id: input.requestId,
       organization_id: input.organizationId,
       title: input.title.trim() || "Liquidity Impact Report",
-      status: "Ready for client",
+      status: paymentCleared ? "Ready for client" : "Draft",
       period: "Current snapshot",
-      delivered_at: deliveredAt,
+      delivered_at: paymentCleared ? deliveredAt : null,
       summary:
         input.summary.trim() ||
-        "Report package is ready for client review with source-backed metrics and delivery files.",
+        (paymentCleared
+          ? "Report package is ready for client review with source-backed metrics and delivery files."
+          : "Operator draft saved. Final client delivery is blocked until payment is Paid or Comped."),
       metrics: [
-        { label: "Delivery", value: "Ready" },
+        { label: "Delivery", value: paymentCleared ? "Ready" : "Payment gated" },
         { label: "Files", value: "1" },
         { label: "Source policy", value: "Public-source only" },
       ],
@@ -360,7 +373,7 @@ export async function createSupabaseWorkspaceReport(
     name: file?.name || fallbackName,
     type: input.fileType,
     size_label: sizeLabel,
-    access: "Client visible",
+    access: paymentCleared ? "Client visible" : "Operator only",
     storage_path: storagePath,
   });
 
@@ -369,7 +382,7 @@ export async function createSupabaseWorkspaceReport(
   const { error: requestError } = await client
     .from("report_requests")
     .update({
-      status: "Delivered",
+      status: paymentCleared ? "Delivered" : "In progress",
       updated_at: deliveredAt,
     })
     .eq("id", input.requestId);
@@ -379,8 +392,10 @@ export async function createSupabaseWorkspaceReport(
   await insertActivity(
     input.organizationId,
     actorUserId,
-    "Report delivered",
-    `${report.title} was marked ready for client delivery.`,
+    paymentCleared ? "Report delivered" : "Report draft saved",
+    paymentCleared
+      ? `${report.title} was marked ready for client delivery.`
+      : `${report.title} was saved as operator-only until payment clears.`,
   );
 }
 
@@ -390,6 +405,8 @@ export async function createSupabaseGeneratedReportPackage(
 ) {
   const client = requireSupabase();
   const deliveredAt = new Date().toISOString();
+  const paymentCleared = isWorkspacePaymentCleared(request);
+  const fileAccess = paymentCleared ? "Client visible" : "Operator only";
   const files = buildGeneratedPackageFiles(request, deliveredAt);
   const { data: report, error } = await client
     .from("reports")
@@ -397,11 +414,13 @@ export async function createSupabaseGeneratedReportPackage(
       request_id: request.id,
       organization_id: request.organizationId,
       title: `${request.protocol} Report Package`,
-      status: "Ready for client",
+      status: paymentCleared ? "Ready for client" : "Draft",
       period: "Generated workspace package",
-      delivered_at: deliveredAt,
+      delivered_at: paymentCleared ? deliveredAt : null,
       summary:
-        "Generated package includes a client memo, CSV evidence template and JSON manifest for the selected request scope.",
+        paymentCleared
+          ? "Generated package includes a client memo, CSV evidence template, JSON manifest and PDF-ready HTML for the selected request scope."
+          : "Operator draft package generated. Client-visible delivery is blocked until payment is Paid or Comped.",
       metrics: [
         { label: "Package", value: request.packageName },
         { label: "Payment", value: request.paymentStatus },
@@ -437,7 +456,7 @@ export async function createSupabaseGeneratedReportPackage(
         name: file.name,
         type: file.type,
         size_label: `${Math.max(1, Math.round(file.content.length / 1024))} KB`,
-        access: "Client visible",
+        access: fileAccess,
         storage_path: storagePath,
       };
     }),
@@ -450,7 +469,7 @@ export async function createSupabaseGeneratedReportPackage(
   const { error: requestError } = await client
     .from("report_requests")
     .update({
-      status: "Review",
+      status: paymentCleared ? "Review" : "In progress",
       updated_at: deliveredAt,
     })
     .eq("id", request.id);
@@ -460,8 +479,10 @@ export async function createSupabaseGeneratedReportPackage(
   await insertActivity(
     request.organizationId,
     actorUserId,
-    "Report package generated",
-    `${report.title} generated for client review.`,
+    paymentCleared ? "Report package generated" : "Draft package generated",
+    paymentCleared
+      ? `${report.title} generated for client review.`
+      : `${report.title} generated as operator-only until payment clears.`,
   );
 }
 
@@ -681,6 +702,7 @@ ${request.notes || "No additional notes."}
 ## Delivery Boundary
 This generated package is a workspace handoff. Final numbers should be checked against live public sources before sending as a client-facing final report.
 `;
+  const html = buildPdfReadyHtml(request, markdown, generatedAt);
   const csv = [
     "field,value",
     `protocol,${csvEscape(request.protocol)}`,
@@ -705,6 +727,7 @@ This generated package is a workspace handoff. Final numbers should be checked a
       },
       files: [
         `${slug}-report-package.md`,
+        `${slug}-pdf-ready-report.html`,
         `${slug}-evidence.csv`,
         `${slug}-manifest.json`,
       ],
@@ -719,6 +742,12 @@ This generated package is a workspace handoff. Final numbers should be checked a
       mimeType: "text/markdown;charset=utf-8",
       name: `${slug}-report-package.md`,
       type: "Markdown" as WorkspaceReportFile["type"],
+    },
+    {
+      content: html,
+      mimeType: "text/html;charset=utf-8",
+      name: `${slug}-pdf-ready-report.html`,
+      type: "HTML" as WorkspaceReportFile["type"],
     },
     {
       content: csv,
@@ -737,6 +766,52 @@ This generated package is a workspace handoff. Final numbers should be checked a
 
 function csvEscape(value: string) {
   return `"${value.replace(/"/g, '""')}"`;
+}
+
+function buildPdfReadyHtml(
+  request: WorkspaceReportRequest,
+  markdown: string,
+  generatedAt: string,
+) {
+  return `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>${escapeHtml(request.protocol)} Liquidity Report Package</title>
+    <style>
+      @page { margin: 18mm; }
+      body { color: #111; font: 14px/1.55 Inter, Arial, sans-serif; margin: 0; }
+      h1 { font-size: 30px; line-height: 1.05; margin: 0 0 12px; }
+      h2 { border-top: 1px solid #ddd; font-size: 16px; margin-top: 24px; padding-top: 14px; }
+      .meta { color: #555; display: grid; gap: 6px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 18px 0; }
+      .badge { background: #ff0420; border-radius: 999px; color: white; display: inline-block; font-weight: 800; padding: 5px 10px; }
+      pre { white-space: pre-wrap; word-break: break-word; }
+      footer { color: #777; font-size: 11px; margin-top: 32px; }
+    </style>
+  </head>
+  <body>
+    <span class="badge">Superchain Liquidity Ops</span>
+    <h1>${escapeHtml(request.protocol)} Liquidity Report Package</h1>
+    <div class="meta">
+      <div><strong>Generated</strong><br />${escapeHtml(generatedAt)}</div>
+      <div><strong>Payment</strong><br />${escapeHtml(request.paymentStatus)} / ${escapeHtml(request.paymentMethod)}</div>
+      <div><strong>Networks</strong><br />${escapeHtml(request.networkScope.join(", "))}</div>
+      <div><strong>Package</strong><br />${escapeHtml(request.packageName)}</div>
+    </div>
+    <pre>${escapeHtml(markdown)}</pre>
+    <footer>
+      Source-backed analytics handoff. Final numbers should be checked against live public sources before final client delivery.
+    </footer>
+  </body>
+</html>`;
+}
+
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
 
 function throwIfSupabaseError(error: unknown) {

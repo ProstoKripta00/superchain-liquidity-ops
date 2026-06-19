@@ -91,6 +91,35 @@ create table if not exists public.audit_log (
   created_at timestamptz not null default now()
 );
 
+create table if not exists public.snapshot_runs (
+  id uuid primary key default gen_random_uuid(),
+  generated_at timestamptz not null,
+  status text not null default 'ok',
+  degraded boolean not null default false,
+  market_count integer not null default 0,
+  protocol_count integer not null default 0,
+  source_issue_count integer not null default 0,
+  storage_path text not null,
+  manifest jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.snapshot_protocol_scores (
+  id uuid primary key default gen_random_uuid(),
+  run_id uuid not null references public.snapshot_runs(id) on delete cascade,
+  protocol_id text not null,
+  protocol_name text not null,
+  status text not null,
+  score integer not null,
+  confidence integer not null,
+  network_scope text[] not null default '{}',
+  market_count integer not null default 0,
+  volume_30d_usd numeric,
+  fees_30d_usd numeric,
+  payload jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now()
+);
+
 alter table public.organizations enable row level security;
 alter table public.profiles enable row level security;
 alter table public.report_requests enable row level security;
@@ -98,6 +127,8 @@ alter table public.reports enable row level security;
 alter table public.report_files enable row level security;
 alter table public.workspace_messages enable row level security;
 alter table public.audit_log enable row level security;
+alter table public.snapshot_runs enable row level security;
+alter table public.snapshot_protocol_scores enable row level security;
 
 alter table public.organizations
   add column if not exists network_focus text[] not null default array['OP Mainnet'],
@@ -113,6 +144,15 @@ alter table public.reports
 
 alter table public.report_files
   add column if not exists size_label text not null default 'Uploaded file';
+
+create index if not exists snapshot_runs_generated_at_idx
+on public.snapshot_runs (generated_at desc);
+
+create index if not exists snapshot_protocol_scores_run_id_idx
+on public.snapshot_protocol_scores (run_id);
+
+create index if not exists snapshot_protocol_scores_protocol_id_idx
+on public.snapshot_protocol_scores (protocol_id);
 
 create or replace function public.current_profile_role()
 returns text
@@ -272,6 +312,18 @@ with check (
   organization_id = public.current_profile_org()
   or public.current_profile_role() in ('operator', 'admin')
 );
+
+drop policy if exists "snapshot read access" on public.snapshot_runs;
+create policy "snapshot read access"
+on public.snapshot_runs
+for select
+using (auth.role() = 'authenticated');
+
+drop policy if exists "snapshot score read access" on public.snapshot_protocol_scores;
+create policy "snapshot score read access"
+on public.snapshot_protocol_scores
+for select
+using (auth.role() = 'authenticated');
 
 insert into storage.buckets (id, name, public)
 values ('report-files', 'report-files', false)

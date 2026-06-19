@@ -7556,6 +7556,45 @@ select {
   font-weight: 850;
 }
 
+.portalPaymentGate {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin-top: 14px;
+  padding: 14px;
+  border: 1px solid #f0d8a4;
+  border-radius: 14px;
+  background: #fff7df;
+}
+
+.portalPaymentGate.cleared {
+  border-color: #b7eadc;
+  background: #eafff7;
+}
+
+.portalPaymentGate svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+
+.portalPaymentGate strong,
+.portalPaymentGate span {
+  display: block;
+}
+
+.portalPaymentGate strong {
+  color: #101010;
+  font-weight: 950;
+}
+
+.portalPaymentGate span {
+  margin-top: 4px;
+  color: #606060;
+  font-size: 13px;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
 .portalTinyLink {
   width: fit-content;
   color: #ff0421;
