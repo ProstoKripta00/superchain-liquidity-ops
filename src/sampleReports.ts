@@ -4,7 +4,7 @@ import type { DexMarket, ProtocolScan } from "./types";
 export type SampleReportId =
   | "uniswap-diagnostic"
   | "velodrome-monitoring"
-  | "aerodrome-grant-evidence";
+  | "aerodrome-incentive-evidence";
 
 export type SampleReportStatus = "Live generated" | "Template fallback";
 
@@ -69,7 +69,7 @@ const sampleDefinitions: SampleReportDefinition[] = [
       "Use this to sell weekly monitoring after showing that the scanner can produce repeatable evidence.",
   },
   {
-    id: "aerodrome-grant-evidence",
+    id: "aerodrome-incentive-evidence",
     protocolId: "aerodrome",
     protocolName: "Aerodrome",
     title: "Aerodrome DAO / Incentive Evidence Pack Sample",

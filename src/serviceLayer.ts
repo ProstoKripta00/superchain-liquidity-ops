@@ -11,7 +11,7 @@ import type {
 export type ServiceOfferId =
   | "protocol-diagnostic"
   | "monitoring-retainer"
-  | "grant-evidence-pack";
+  | "incentive-evidence-pack";
 
 export type ServiceOfferStatus = "Ready to sell" | "Needs review" | "Blocked";
 
@@ -156,7 +156,7 @@ export function buildServiceLayer({
       ],
     },
     {
-      id: "grant-evidence-pack",
+      id: "incentive-evidence-pack",
       name: "DAO / Incentive Evidence Pack",
       audience: "Protocol team, DAO contributor, or ecosystem operations team",
       priceLabel: "$1,500-$3,000 after validated case",

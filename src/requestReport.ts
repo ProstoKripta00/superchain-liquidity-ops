@@ -5,7 +5,7 @@ import type { ServiceLayer, ServiceOffer } from "./serviceLayer";
 export type RequestReportType =
   | "diagnostic"
   | "monitoring"
-  | "grant-evidence"
+  | "incentive-evidence"
   | "custom";
 
 export type RequestReportForm = {
@@ -38,7 +38,7 @@ export type RequestReportPack = {
 export const REQUEST_TYPES: Array<{ id: RequestReportType; label: string }> = [
   { id: "diagnostic", label: "7-day Liquidity Impact Report" },
   { id: "monitoring", label: "Monthly monitoring" },
-  { id: "grant-evidence", label: "DAO / incentive evidence pack" },
+  { id: "incentive-evidence", label: "DAO / incentive evidence pack" },
   { id: "custom", label: "Custom scope" },
 ];
 
@@ -258,8 +258,8 @@ function mapOfferToRequestType(offer: ServiceOffer | null): RequestReportType {
     return "monitoring";
   }
 
-  if (offer.id === "grant-evidence-pack") {
-    return "grant-evidence";
+  if (offer.id === "incentive-evidence-pack") {
+    return "incentive-evidence";
   }
 
   return "diagnostic";

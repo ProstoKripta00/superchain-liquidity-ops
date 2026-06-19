@@ -68,8 +68,12 @@ Current workspace capabilities:
 - request pipeline statuses: `New`, `Scoping`, `In progress`, `Review`, `Delivered`
 - delivered report/file library with client-visible vs operator-only access labels
 - operator queue for moving requests and registering report delivery files
+- one-click generated report package: Markdown memo, CSV evidence template, JSON manifest
+- payment status per request: `Unpaid`, `Invoice sent`, `Paid`, `Comped`
+- invoice URL and payment method tracking
 - client/account overview for protocol organizations
-- admin/settings screen with production backend readiness notes
+- admin console for creating organization/profile shells and production QA checks
+- settings screen with Supabase backend readiness notes
 - local demo storage for sales demos
 
 Production backend target:
@@ -84,7 +88,9 @@ Implemented backend connection:
 - `src/supabaseClient.ts` creates the browser Supabase client when env keys exist.
 - `src/supabaseWorkspace.ts` loads/saves workspace data through Supabase Postgres.
 - Operator delivery can upload a selected file to the private `report-files` Storage bucket.
+- Operator delivery can generate a Markdown/CSV/JSON report package and store it in private Storage.
 - Report file links are generated as signed URLs.
+- Admin console can create `organizations` and `profiles` rows for an existing Supabase Auth user UUID.
 - Without env keys, the public GitHub Pages app stays in local demo mode.
 
 Supabase setup:
@@ -109,6 +115,8 @@ npm run dev
 ```
 
 GitHub Pages note: Vite bakes `VITE_*` values into the static bundle at build time, so repository or workflow secrets must be available during the deploy build.
+
+Client onboarding note: do not put a Supabase service-role key in the browser. Create or invite the Auth user in Supabase, copy the Auth user UUID, then use the Admin Console in `/app` to create the matching organization/profile rows.
 
 ## Operator Tools
 

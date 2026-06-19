@@ -278,7 +278,7 @@ function chooseOfferId(scan: ProtocolScan): ServiceOfferId {
     return "monitoring-retainer";
   }
 
-  return "grant-evidence-pack";
+  return "incentive-evidence-pack";
 }
 
 function defaultLeadStatus(scan: ProtocolScan): LeadStatus {

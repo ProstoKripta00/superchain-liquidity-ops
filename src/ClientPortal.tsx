@@ -30,7 +30,11 @@ import {
   WORKSPACE_BUDGETS,
   WORKSPACE_NETWORKS,
   WORKSPACE_PACKAGES,
+  WORKSPACE_PAYMENT_METHODS,
+  WORKSPACE_PAYMENT_STATUSES,
   buildWorkspaceSummary,
+  createWorkspaceClientAccount,
+  createWorkspaceGeneratedReportPackage,
   createWorkspaceReport,
   createWorkspaceRequest,
   loadWorkspaceState,
@@ -38,11 +42,14 @@ import {
   saveWorkspaceState,
   seedWorkspaceState,
   supabaseWorkspaceSchema,
+  updateWorkspacePaymentStatus,
   updateWorkspaceRequestStatus,
+  type NewWorkspaceClientInput,
   type NewWorkspaceReportInput,
   type NewWorkspaceRequestInput,
   type ReportPackage,
   type ReportRequestStatus,
+  type WorkspacePaymentUpdateInput,
   type WorkspaceOrganization,
   type WorkspaceReportRequest,
   type WorkspaceRole,
@@ -51,12 +58,15 @@ import {
 } from "./workspaceData";
 import { hasSupabaseConfig, supabase } from "./supabaseClient";
 import {
+  createSupabaseClientAccount,
+  createSupabaseGeneratedReportPackage,
   createSupabaseWorkspaceReport,
   createSupabaseWorkspaceRequest,
   loadSupabaseWorkspaceState,
   signInWorkspaceUser,
   signOutWorkspaceUser,
   signUpWorkspaceUser,
+  updateSupabasePaymentStatus,
   updateSupabaseWorkspaceRequestStatus,
   type WorkspaceBackendMode,
 } from "./supabaseWorkspace";
@@ -67,6 +77,7 @@ type PortalTab =
   | "reports"
   | "clients"
   | "operator"
+  | "admin"
   | "settings";
 
 const requestStatuses: ReportRequestStatus[] = [
@@ -105,6 +116,29 @@ const defaultReportForm = (
   fileType: "PDF",
 });
 
+const defaultClientForm = (): NewWorkspaceClientInput => ({
+  authUserId: "",
+  organizationName: "",
+  protocol: "",
+  website: "",
+  clientName: "",
+  clientEmail: "",
+  role: "client",
+  title: "Growth lead",
+  plan: "Pilot",
+  status: "Prospect",
+  networkFocus: ["OP Mainnet"],
+});
+
+const defaultPaymentForm = (
+  request: WorkspaceReportRequest | null,
+): WorkspacePaymentUpdateInput => ({
+  requestId: request?.id ?? "",
+  paymentStatus: request?.paymentStatus ?? "Unpaid",
+  paymentMethod: request?.paymentMethod ?? "USDC",
+  invoiceUrl: request?.invoiceUrl ?? "",
+});
+
 export function ClientPortal() {
   const [state, setState] = useState<WorkspaceState>(() => loadWorkspaceState());
   const [activeUserId, setActiveUserId] = useState(() => state.users[0]?.id ?? "user-client");
@@ -124,6 +158,7 @@ export function ClientPortal() {
   const activeOrg = state.organizations.find((org) => org.id === activeUser.organizationId);
   const isClient = activeUser.role === "client";
   const canOperate = activeUser.role === "operator" || activeUser.role === "admin";
+  const canAdmin = activeUser.role === "admin";
   const scopedOrgId = isClient ? activeUser.organizationId : undefined;
   const summary = useMemo(
     () => buildWorkspaceSummary(state, scopedOrgId),
@@ -151,6 +186,8 @@ export function ClientPortal() {
     null;
   const [reportForm, setReportForm] = useState(() => defaultReportForm(selectedRequest));
   const [reportFile, setReportFile] = useState<File | null>(null);
+  const [clientForm, setClientForm] = useState(() => defaultClientForm());
+  const [paymentForm, setPaymentForm] = useState(() => defaultPaymentForm(state.requests[0] ?? null));
 
   useEffect(() => {
     if (!hasSupabaseConfig) {
@@ -243,6 +280,21 @@ export function ClientPortal() {
     setReportFile(null);
   }, [selectedRequest?.id]);
 
+  useEffect(() => {
+    if (!canOperate && ["clients", "operator", "admin"].includes(activeTab)) {
+      setActiveTab("overview");
+    }
+
+    if (!canAdmin && activeTab === "admin") {
+      setActiveTab("overview");
+    }
+  }, [activeTab, canAdmin, canOperate]);
+
+  useEffect(() => {
+    const request = state.requests.find((item) => item.id === paymentForm.requestId) ?? state.requests[0] ?? null;
+    setPaymentForm(defaultPaymentForm(request));
+  }, [state.requests]);
+
   const createRequest = async () => {
     if (hasSupabaseConfig && session) {
       setBackendStatus("saving");
@@ -309,6 +361,79 @@ export function ClientPortal() {
 
     setState((current) => createWorkspaceReport(current, reportForm, activeUser.id));
     setActiveTab("reports");
+  };
+
+  const generateReportPackage = async () => {
+    if (!selectedRequest) {
+      return;
+    }
+
+    if (hasSupabaseConfig && session) {
+      setBackendStatus("saving");
+      setBackendError("");
+
+      try {
+        await createSupabaseGeneratedReportPackage(selectedRequest, activeUser.id);
+        setActiveTab("reports");
+        await refreshWorkspace();
+      } catch (error) {
+        setBackendStatus("error");
+        setBackendError(error instanceof Error ? error.message : String(error));
+      }
+
+      return;
+    }
+
+    setState((current) =>
+      createWorkspaceGeneratedReportPackage(current, selectedRequest.id, activeUser.id),
+    );
+    setActiveTab("reports");
+  };
+
+  const createClientAccount = async () => {
+    if (hasSupabaseConfig && session) {
+      setBackendStatus("saving");
+      setBackendError("");
+
+      try {
+        await createSupabaseClientAccount(clientForm, activeUser.id);
+        setClientForm(defaultClientForm());
+        setActiveTab("clients");
+        await refreshWorkspace();
+      } catch (error) {
+        setBackendStatus("error");
+        setBackendError(error instanceof Error ? error.message : String(error));
+      }
+
+      return;
+    }
+
+    setState((current) => createWorkspaceClientAccount(current, clientForm, activeUser.id));
+    setClientForm(defaultClientForm());
+    setActiveTab("clients");
+  };
+
+  const updatePayment = async () => {
+    if (!paymentForm.requestId) {
+      return;
+    }
+
+    if (hasSupabaseConfig && session) {
+      setBackendStatus("saving");
+      setBackendError("");
+
+      try {
+        await updateSupabasePaymentStatus(paymentForm, activeUser.id);
+        await refreshWorkspace();
+      } catch (error) {
+        setBackendStatus("error");
+        setBackendError(error instanceof Error ? error.message : String(error));
+      }
+
+      return;
+    }
+
+    setState((current) => updateWorkspacePaymentStatus(current, paymentForm, activeUser.id));
   };
 
   const resetDemo = () => {
@@ -387,7 +512,12 @@ export function ClientPortal() {
             Public site
           </a>
           <PortalOrgCard org={activeOrg} role={activeUser.role} />
-          <PortalNav activeTab={activeTab} canOperate={canOperate} onSelect={setActiveTab} />
+          <PortalNav
+            activeTab={activeTab}
+            canAdmin={canAdmin}
+            canOperate={canOperate}
+            onSelect={setActiveTab}
+          />
           <div className="portalModeCard">
             <LockKeyhole size={18} />
             <strong>{backendMode === "supabase" ? "Supabase live" : "Demo workspace"}</strong>
@@ -449,12 +579,28 @@ export function ClientPortal() {
               reportFile={reportFile}
               onDeliver={deliverReport}
               onFileChange={setReportFile}
+              onGeneratePackage={generateReportPackage}
               onMoveRequest={moveRequest}
               onSelectRequest={(requestId) => setSelectedRequestId(requestId)}
               onUpdateForm={setReportForm}
               organizations={state.organizations}
               requests={state.requests}
               selectedRequest={selectedRequest}
+            />
+          ) : null}
+
+          {activeTab === "admin" ? (
+            <AdminTab
+              backendMode={backendMode}
+              clientForm={clientForm}
+              onCreateClient={createClientAccount}
+              onSavePayment={updatePayment}
+              onUpdateClientForm={setClientForm}
+              onUpdatePaymentForm={setPaymentForm}
+              organizations={state.organizations}
+              paymentForm={paymentForm}
+              requests={state.requests}
+              users={state.users}
             />
           ) : null}
 
@@ -665,10 +811,12 @@ function PortalOrgCard({
 
 function PortalNav({
   activeTab,
+  canAdmin,
   canOperate,
   onSelect,
 }: {
   activeTab: PortalTab;
+  canAdmin: boolean;
   canOperate: boolean;
   onSelect: (tab: PortalTab) => void;
 }) {
@@ -683,13 +831,20 @@ function PortalNav({
     { id: "reports", label: "Reports & files", icon: <FileCheck2 size={17} /> },
     { id: "clients", label: "Clients", icon: <Building2 size={17} />, operatorOnly: true },
     { id: "operator", label: "Operator queue", icon: <ListChecks size={17} />, operatorOnly: true },
+    { id: "admin", label: "Admin console", icon: <Users size={17} />, operatorOnly: true },
     { id: "settings", label: "Settings", icon: <KeyRound size={17} /> },
   ];
 
   return (
     <nav className="portalNav" aria-label="Workspace sections">
       {items
-        .filter((item) => canOperate || !item.operatorOnly)
+        .filter((item) => {
+          if (item.id === "admin") {
+            return canAdmin;
+          }
+
+          return canOperate || !item.operatorOnly;
+        })
         .map((item) => (
           <button
             className={activeTab === item.id ? "active" : ""}
@@ -789,6 +944,7 @@ function OverviewTab({
         <PortalMetric icon={<ClipboardList />} label="Active requests" value={String(summary.activeRequests)} />
         <PortalMetric icon={<FileCheck2 />} label="Delivered reports" value={String(summary.deliveredReports)} />
         <PortalMetric icon={<DatabaseZap />} label="Client files" value={String(summary.clientVisibleFiles)} />
+        <PortalMetric icon={<CheckCircle2 />} label="Paid requests" value={String(summary.paidRequests)} />
         <PortalMetric icon={<Building2 />} label="Organizations" value={String(summary.organizations)} />
       </div>
 
@@ -1031,7 +1187,7 @@ function ReportsTab({
               </div>
               <div className="portalFileList">
                 {report.files.map((file) => (
-                  <a href={file.href} key={file.id}>
+                  <a download={file.name} href={file.href} key={file.id}>
                     <FileCheck2 size={16} />
                     <span>
                       <strong>{file.name}</strong>
@@ -1097,6 +1253,7 @@ function OperatorTab({
   reportFile,
   onDeliver,
   onFileChange,
+  onGeneratePackage,
   onMoveRequest,
   onSelectRequest,
   onUpdateForm,
@@ -1109,6 +1266,7 @@ function OperatorTab({
   reportFile: File | null;
   onDeliver: () => void;
   onFileChange: (file: File | null) => void;
+  onGeneratePackage: () => void;
   onMoveRequest: (requestId: string, status: ReportRequestStatus) => void;
   onSelectRequest: (requestId: string) => void;
   onUpdateForm: (form: NewWorkspaceReportInput) => void;
@@ -1233,10 +1391,347 @@ function OperatorTab({
                 <CheckCircle2 size={17} />
                 Mark delivered
               </button>
+              <button className="portalSecondaryAction" onClick={onGeneratePackage} type="button">
+                <FileText size={17} />
+                Generate report package
+              </button>
             </>
           ) : (
             <div className="portalEmpty">Select a request to manage delivery.</div>
           )}
+        </article>
+      </div>
+    </div>
+  );
+}
+
+function AdminTab({
+  backendMode,
+  clientForm,
+  onCreateClient,
+  onSavePayment,
+  onUpdateClientForm,
+  onUpdatePaymentForm,
+  organizations,
+  paymentForm,
+  requests,
+  users,
+}: {
+  backendMode: WorkspaceBackendMode;
+  clientForm: NewWorkspaceClientInput;
+  onCreateClient: () => void;
+  onSavePayment: () => void;
+  onUpdateClientForm: (form: NewWorkspaceClientInput) => void;
+  onUpdatePaymentForm: (form: WorkspacePaymentUpdateInput) => void;
+  organizations: WorkspaceOrganization[];
+  paymentForm: WorkspacePaymentUpdateInput;
+  requests: WorkspaceReportRequest[];
+  users: WorkspaceUser[];
+}) {
+  const selectedPaymentRequest =
+    requests.find((request) => request.id === paymentForm.requestId) ?? requests[0] ?? null;
+  const clientAccounts = organizations.filter((org) => org.protocol !== "Internal");
+
+  return (
+    <div className="portalStack">
+      <PortalTitle
+        eyebrow="Admin console"
+        title="Onboard clients and control deals"
+        text="Create account shells, connect Auth users, track payment status, and keep production readiness visible."
+      />
+
+      <div className="portalAdminGrid">
+        <article className="portalPanel">
+          <div className="portalPanelHead">
+            <div>
+              <span>Client onboarding</span>
+              <h2>Create organization + profile</h2>
+            </div>
+            <Users size={22} />
+          </div>
+          <p>
+            {backendMode === "supabase"
+              ? "Create the user in Supabase Auth first, then paste their Auth UUID here. Browser code must not use service-role invite keys."
+              : "Demo mode creates a local client profile. Supabase mode will persist the organization and profile rows."}
+          </p>
+          <div className="portalFormGrid">
+            <label className="wideField">
+              Supabase Auth user UUID
+              <input
+                value={clientForm.authUserId}
+                onChange={(event) =>
+                  onUpdateClientForm({ ...clientForm, authUserId: event.target.value })
+                }
+                placeholder="Paste auth.users.id after creating/inviting the user"
+              />
+            </label>
+            <label>
+              Organization
+              <input
+                value={clientForm.organizationName}
+                onChange={(event) =>
+                  onUpdateClientForm({ ...clientForm, organizationName: event.target.value })
+                }
+                placeholder="Protocol Growth Team"
+              />
+            </label>
+            <label>
+              Protocol
+              <input
+                value={clientForm.protocol}
+                onChange={(event) =>
+                  onUpdateClientForm({ ...clientForm, protocol: event.target.value })
+                }
+                placeholder="Velodrome"
+              />
+            </label>
+            <label>
+              Website
+              <input
+                value={clientForm.website}
+                onChange={(event) =>
+                  onUpdateClientForm({ ...clientForm, website: event.target.value })
+                }
+                placeholder="https://protocol.example"
+              />
+            </label>
+            <label>
+              Client name
+              <input
+                value={clientForm.clientName}
+                onChange={(event) =>
+                  onUpdateClientForm({ ...clientForm, clientName: event.target.value })
+                }
+                placeholder="Client lead"
+              />
+            </label>
+            <label>
+              Client email
+              <input
+                value={clientForm.clientEmail}
+                onChange={(event) =>
+                  onUpdateClientForm({ ...clientForm, clientEmail: event.target.value })
+                }
+                placeholder="client@protocol.xyz"
+              />
+            </label>
+            <label>
+              Role
+              <select
+                value={clientForm.role}
+                onChange={(event) =>
+                  onUpdateClientForm({
+                    ...clientForm,
+                    role: event.target.value as WorkspaceRole,
+                  })
+                }
+              >
+                <option value="client">Client</option>
+                <option value="operator">Operator</option>
+                <option value="admin">Admin</option>
+              </select>
+            </label>
+            <label>
+              Title
+              <input
+                value={clientForm.title}
+                onChange={(event) =>
+                  onUpdateClientForm({ ...clientForm, title: event.target.value })
+                }
+                placeholder="Growth lead"
+              />
+            </label>
+            <label>
+              Plan
+              <select
+                value={clientForm.plan}
+                onChange={(event) =>
+                  onUpdateClientForm({
+                    ...clientForm,
+                    plan: event.target.value as WorkspaceOrganization["plan"],
+                  })
+                }
+              >
+                <option>Pilot</option>
+                <option>Monitoring</option>
+                <option>Enterprise</option>
+              </select>
+            </label>
+            <label>
+              Status
+              <select
+                value={clientForm.status}
+                onChange={(event) =>
+                  onUpdateClientForm({
+                    ...clientForm,
+                    status: event.target.value as WorkspaceOrganization["status"],
+                  })
+                }
+              >
+                <option>Prospect</option>
+                <option>Active</option>
+                <option>Paused</option>
+              </select>
+            </label>
+            <label className="wideField">
+              Network focus
+              <div className="portalCheckboxGrid">
+                {WORKSPACE_NETWORKS.map((network) => (
+                  <button
+                    className={clientForm.networkFocus.includes(network) ? "selected" : ""}
+                    key={network}
+                    onClick={() =>
+                      onUpdateClientForm({
+                        ...clientForm,
+                        networkFocus: clientForm.networkFocus.includes(network)
+                          ? clientForm.networkFocus.filter((item) => item !== network)
+                          : [...clientForm.networkFocus, network],
+                      })
+                    }
+                    type="button"
+                  >
+                    {network}
+                  </button>
+                ))}
+              </div>
+            </label>
+          </div>
+          <button
+            className="portalPrimaryAction"
+            disabled={backendMode === "supabase" && !clientForm.authUserId.trim()}
+            onClick={onCreateClient}
+            type="button"
+          >
+            <Plus size={17} />
+            Create client workspace
+          </button>
+        </article>
+
+        <article className="portalPanel">
+          <div className="portalPanelHead">
+            <div>
+              <span>Payment control</span>
+              <h2>Invoice and deal status</h2>
+            </div>
+            <BarChart3 size={22} />
+          </div>
+          <div className="portalFormGrid singleColumn">
+            <label>
+              Request
+              <select
+                value={paymentForm.requestId}
+                onChange={(event) => {
+                  const request =
+                    requests.find((item) => item.id === event.target.value) ?? null;
+
+                  onUpdatePaymentForm(defaultPaymentForm(request));
+                }}
+              >
+                {requests.map((request) => (
+                  <option key={request.id} value={request.id}>
+                    {request.protocol} / {request.packageName}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Payment status
+              <select
+                value={paymentForm.paymentStatus}
+                onChange={(event) =>
+                  onUpdatePaymentForm({
+                    ...paymentForm,
+                    paymentStatus: event.target.value as WorkspacePaymentUpdateInput["paymentStatus"],
+                  })
+                }
+              >
+                {WORKSPACE_PAYMENT_STATUSES.map((status) => (
+                  <option key={status}>{status}</option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Payment method
+              <select
+                value={paymentForm.paymentMethod}
+                onChange={(event) =>
+                  onUpdatePaymentForm({ ...paymentForm, paymentMethod: event.target.value })
+                }
+              >
+                {WORKSPACE_PAYMENT_METHODS.map((method) => (
+                  <option key={method}>{method}</option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Invoice URL
+              <input
+                value={paymentForm.invoiceUrl}
+                onChange={(event) =>
+                  onUpdatePaymentForm({ ...paymentForm, invoiceUrl: event.target.value })
+                }
+                placeholder="https://invoice.example/..."
+              />
+            </label>
+          </div>
+          {selectedPaymentRequest ? (
+            <div className="portalDealCard">
+              <strong>{selectedPaymentRequest.protocol}</strong>
+              <span>{selectedPaymentRequest.budget}</span>
+              <span>{selectedPaymentRequest.paymentStatus}</span>
+            </div>
+          ) : null}
+          <button
+            className="portalPrimaryAction"
+            disabled={!paymentForm.requestId}
+            onClick={onSavePayment}
+            type="button"
+          >
+            <CheckCircle2 size={17} />
+            Save payment status
+          </button>
+        </article>
+      </div>
+
+      <div className="portalAdminGrid secondary">
+        <article className="portalPanel">
+          <div className="portalPanelHead">
+            <div>
+              <span>Accounts</span>
+              <h2>{clientAccounts.length} client workspaces</h2>
+            </div>
+            <Building2 size={22} />
+          </div>
+          <div className="portalUserList">
+            {clientAccounts.map((org) => {
+              const owner = users.find((user) => user.organizationId === org.id);
+
+              return (
+                <div key={org.id}>
+                  <strong>{org.name}</strong>
+                  <span>
+                    {org.protocol} / {org.plan} / {owner?.email ?? "No owner profile"}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </article>
+
+        <article className="portalPanel">
+          <div className="portalPanelHead">
+            <div>
+              <span>Production QA</span>
+              <h2>Before selling real access</h2>
+            </div>
+            <ShieldCheck size={22} />
+          </div>
+          <div className="portalSetupList">
+            <span>Client A can only read its own organization rows.</span>
+            <span>Operator/admin can update request status and delivery files.</span>
+            <span>Private Storage files open only through signed URLs.</span>
+            <span>Payment must be Paid or Comped before final delivery.</span>
+          </div>
         </article>
       </div>
     </div>
@@ -1347,8 +1842,14 @@ function RequestCard({
       <div className="portalMiniStats">
         <PortalInlineStat label="Package" value={request.packageName} />
         <PortalInlineStat label="Budget" value={request.budget} />
+        <PortalInlineStat label="Payment" value={request.paymentStatus} />
         <PortalInlineStat label="Deadline" value={request.deadline || "Flexible"} />
       </div>
+      {request.invoiceUrl ? (
+        <a className="portalTinyLink" href={request.invoiceUrl} rel="noreferrer" target="_blank">
+          Open invoice
+        </a>
+      ) : null}
       <small>{request.networkScope.join(", ")} / {request.marketScope}</small>
       {canMove ? (
         <div className="portalStatusStrip compact">

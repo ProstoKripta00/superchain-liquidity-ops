@@ -7482,7 +7482,7 @@ select {
 
 .portalMiniStats {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
   gap: 8px;
 }
 
@@ -7522,10 +7522,46 @@ select {
 }
 
 .portalReportGrid,
-.portalClientGrid {
+.portalClientGrid,
+.portalAdminGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
+}
+
+.portalAdminGrid.secondary {
+  align-items: start;
+}
+
+.portalDealCard {
+  display: grid;
+  gap: 6px;
+  margin-top: 14px;
+  padding: 14px;
+  background: #101010;
+  border-radius: 14px;
+}
+
+.portalDealCard strong,
+.portalDealCard span {
+  display: block;
+}
+
+.portalDealCard strong {
+  color: #ffffff;
+}
+
+.portalDealCard span {
+  color: #cfcfcf;
+  font-weight: 850;
+}
+
+.portalTinyLink {
+  width: fit-content;
+  color: #ff0421;
+  font-size: 13px;
+  font-weight: 950;
+  text-decoration: none;
 }
 
 .portalFileList a {
@@ -7597,7 +7633,8 @@ select {
   .portalAuthShell,
   .portalTwoColumn,
   .portalRequestLayout,
-  .portalOperatorGrid {
+  .portalOperatorGrid,
+  .portalAdminGrid {
     grid-template-columns: 1fr;
   }
 
@@ -7618,6 +7655,7 @@ select {
   .portalMiniStats,
   .portalReportGrid,
   .portalClientGrid,
+  .portalAdminGrid,
   .portalMetricGrid {
     grid-template-columns: 1fr;
   }

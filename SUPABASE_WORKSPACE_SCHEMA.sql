@@ -40,6 +40,9 @@ create table if not exists public.report_requests (
   deadline date,
   goal text,
   notes text,
+  payment_status text not null default 'Unpaid',
+  payment_method text not null default 'USDC',
+  invoice_url text not null default '',
   updated_at timestamptz not null default now(),
   created_at timestamptz not null default now()
 );
@@ -95,6 +98,21 @@ alter table public.reports enable row level security;
 alter table public.report_files enable row level security;
 alter table public.workspace_messages enable row level security;
 alter table public.audit_log enable row level security;
+
+alter table public.organizations
+  add column if not exists network_focus text[] not null default array['OP Mainnet'],
+  add column if not exists owner_user_id uuid references auth.users(id) on delete set null;
+
+alter table public.report_requests
+  add column if not exists payment_status text not null default 'Unpaid',
+  add column if not exists payment_method text not null default 'USDC',
+  add column if not exists invoice_url text not null default '';
+
+alter table public.reports
+  add column if not exists metrics jsonb not null default '[]'::jsonb;
+
+alter table public.report_files
+  add column if not exists size_label text not null default 'Uploaded file';
 
 create or replace function public.current_profile_role()
 returns text

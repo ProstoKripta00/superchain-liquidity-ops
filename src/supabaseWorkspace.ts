@@ -1,6 +1,7 @@
 import { requireSupabase, supabaseReportBucket } from "./supabaseClient";
 import {
   seedWorkspaceState,
+  type NewWorkspaceClientInput,
   type NewWorkspaceReportInput,
   type NewWorkspaceRequestInput,
   type ReportPackage,
@@ -8,6 +9,7 @@ import {
   type ReportRequestStatus,
   type WorkspaceActivity,
   type WorkspaceOrganization,
+  type WorkspacePaymentUpdateInput,
   type WorkspaceReport,
   type WorkspaceReportFile,
   type WorkspaceReportRequest,
@@ -50,6 +52,9 @@ type RequestRow = {
   deadline: string | null;
   goal: string | null;
   notes: string | null;
+  payment_status: WorkspaceReportRequest["paymentStatus"] | null;
+  payment_method: string | null;
+  invoice_url: string | null;
   updated_at: string;
 };
 
@@ -169,6 +174,9 @@ export async function createSupabaseWorkspaceRequest(input: NewWorkspaceRequestI
     deadline: normalizeOptionalDate(input.deadline),
     goal: input.goal.trim() || "Measure DEX volume, fees, weak markets and source quality.",
     notes: input.notes.trim(),
+    payment_status: "Unpaid",
+    payment_method: "USDC",
+    invoice_url: "",
     updated_at: now,
   };
 
@@ -186,6 +194,83 @@ export async function createSupabaseWorkspaceRequest(input: NewWorkspaceRequestI
       input.createdByUserId,
       "Request created",
       `${data.package_name} for ${data.protocol}.`,
+    );
+  }
+}
+
+export async function createSupabaseClientAccount(
+  input: NewWorkspaceClientInput,
+  actorUserId: string,
+) {
+  const client = requireSupabase();
+  const { data: organization, error: organizationError } = await client
+    .from("organizations")
+    .insert({
+      name: input.organizationName.trim() || `${input.protocol || "Protocol"} Workspace`,
+      protocol: input.protocol.trim() || "Unknown protocol",
+      website: input.website.trim() || null,
+      network_focus: input.networkFocus.length > 0 ? input.networkFocus : ["OP Mainnet"],
+      plan: input.plan,
+      status: input.status,
+      owner_user_id: input.authUserId.trim() || null,
+    })
+    .select("id, name")
+    .single();
+
+  throwIfSupabaseError(organizationError);
+
+  if (!organization) {
+    return;
+  }
+
+  const { error: profileError } = await client.from("profiles").insert({
+    id: input.authUserId.trim(),
+    organization_id: organization.id,
+    name: input.clientName.trim() || "Client user",
+    email: input.clientEmail.trim(),
+    role: input.role,
+    title: input.title.trim() || "Client",
+  });
+
+  if (profileError) {
+    await client.from("organizations").delete().eq("id", organization.id);
+  }
+
+  throwIfSupabaseError(profileError);
+
+  await insertActivity(
+    organization.id,
+    actorUserId,
+    "Client account created",
+    `${organization.name} was added with ${input.clientEmail || "no email"} as ${input.role}.`,
+  );
+}
+
+export async function updateSupabasePaymentStatus(
+  input: WorkspacePaymentUpdateInput,
+  actorUserId: string,
+) {
+  const client = requireSupabase();
+  const { data, error } = await client
+    .from("report_requests")
+    .update({
+      payment_status: input.paymentStatus,
+      payment_method: input.paymentMethod,
+      invoice_url: input.invoiceUrl.trim(),
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", input.requestId)
+    .select("organization_id, protocol")
+    .single();
+
+  throwIfSupabaseError(error);
+
+  if (data) {
+    await insertActivity(
+      data.organization_id,
+      actorUserId,
+      "Payment updated",
+      `${data.protocol} payment moved to ${input.paymentStatus}.`,
     );
   }
 }
@@ -299,6 +384,87 @@ export async function createSupabaseWorkspaceReport(
   );
 }
 
+export async function createSupabaseGeneratedReportPackage(
+  request: WorkspaceReportRequest,
+  actorUserId: string,
+) {
+  const client = requireSupabase();
+  const deliveredAt = new Date().toISOString();
+  const files = buildGeneratedPackageFiles(request, deliveredAt);
+  const { data: report, error } = await client
+    .from("reports")
+    .insert({
+      request_id: request.id,
+      organization_id: request.organizationId,
+      title: `${request.protocol} Report Package`,
+      status: "Ready for client",
+      period: "Generated workspace package",
+      delivered_at: deliveredAt,
+      summary:
+        "Generated package includes a client memo, CSV evidence template and JSON manifest for the selected request scope.",
+      metrics: [
+        { label: "Package", value: request.packageName },
+        { label: "Payment", value: request.paymentStatus },
+        { label: "Files", value: String(files.length) },
+      ],
+    })
+    .select("id, title")
+    .single();
+
+  throwIfSupabaseError(error);
+
+  if (!report) {
+    return;
+  }
+
+  const fileRows = await Promise.all(
+    files.map(async (file) => {
+      const storagePath = `${request.organizationId}/${report.id}/${Date.now()}-${safeFileName(
+        file.name,
+      )}`;
+      const { error: uploadError } = await client.storage
+        .from(supabaseReportBucket)
+        .upload(storagePath, new Blob([file.content], { type: file.mimeType }), {
+          cacheControl: "3600",
+          upsert: false,
+        });
+
+      throwIfSupabaseError(uploadError);
+
+      return {
+        report_id: report.id,
+        organization_id: request.organizationId,
+        name: file.name,
+        type: file.type,
+        size_label: `${Math.max(1, Math.round(file.content.length / 1024))} KB`,
+        access: "Client visible",
+        storage_path: storagePath,
+      };
+    }),
+  );
+
+  const { error: filesError } = await client.from("report_files").insert(fileRows);
+
+  throwIfSupabaseError(filesError);
+
+  const { error: requestError } = await client
+    .from("report_requests")
+    .update({
+      status: "Review",
+      updated_at: deliveredAt,
+    })
+    .eq("id", request.id);
+
+  throwIfSupabaseError(requestError);
+
+  await insertActivity(
+    request.organizationId,
+    actorUserId,
+    "Report package generated",
+    `${report.title} generated for client review.`,
+  );
+}
+
 export async function signInWorkspaceUser(email: string, password: string) {
   const client = requireSupabase();
   const { error } = await client.auth.signInWithPassword({ email, password });
@@ -399,6 +565,9 @@ function requestFromRow(row: RequestRow): WorkspaceReportRequest {
     deadline: row.deadline ?? "",
     goal: row.goal ?? "",
     notes: row.notes ?? "",
+    paymentStatus: row.payment_status ?? "Unpaid",
+    paymentMethod: row.payment_method ?? "USDC",
+    invoiceUrl: row.invoice_url ?? "",
     updatedAt: row.updated_at,
   };
 }
@@ -488,6 +657,86 @@ function formatFileSize(size: number) {
 
 function safeFileName(name: string) {
   return name.replace(/[^a-zA-Z0-9._-]/g, "-").replace(/-+/g, "-");
+}
+
+function buildGeneratedPackageFiles(request: WorkspaceReportRequest, generatedAt: string) {
+  const slug = safeFileName(request.protocol.toLowerCase()).replace(/^-|-$/g, "") || "protocol";
+  const markdown = `# ${request.protocol} Liquidity Report Package
+
+Generated: ${generatedAt}
+
+## Scope
+- Package: ${request.packageName}
+- Networks: ${request.networkScope.join(", ")}
+- Markets: ${request.marketScope}
+- Budget: ${request.budget}
+- Payment: ${request.paymentStatus} / ${request.paymentMethod}
+
+## Decision Goal
+${request.goal}
+
+## Notes
+${request.notes || "No additional notes."}
+
+## Delivery Boundary
+This generated package is a workspace handoff. Final numbers should be checked against live public sources before sending as a client-facing final report.
+`;
+  const csv = [
+    "field,value",
+    `protocol,${csvEscape(request.protocol)}`,
+    `package,${csvEscape(request.packageName)}`,
+    `networks,${csvEscape(request.networkScope.join("; "))}`,
+    `markets,${csvEscape(request.marketScope)}`,
+    `budget,${csvEscape(request.budget)}`,
+    `payment_status,${csvEscape(request.paymentStatus)}`,
+    `generated_at,${generatedAt}`,
+  ].join("\n");
+  const manifest = JSON.stringify(
+    {
+      generatedAt,
+      protocol: request.protocol,
+      packageName: request.packageName,
+      requestId: request.id,
+      organizationId: request.organizationId,
+      paymentStatus: request.paymentStatus,
+      scope: {
+        networks: request.networkScope,
+        markets: request.marketScope,
+      },
+      files: [
+        `${slug}-report-package.md`,
+        `${slug}-evidence.csv`,
+        `${slug}-manifest.json`,
+      ],
+    },
+    null,
+    2,
+  );
+
+  return [
+    {
+      content: markdown,
+      mimeType: "text/markdown;charset=utf-8",
+      name: `${slug}-report-package.md`,
+      type: "Markdown" as WorkspaceReportFile["type"],
+    },
+    {
+      content: csv,
+      mimeType: "text/csv;charset=utf-8",
+      name: `${slug}-evidence.csv`,
+      type: "CSV" as WorkspaceReportFile["type"],
+    },
+    {
+      content: manifest,
+      mimeType: "application/json;charset=utf-8",
+      name: `${slug}-manifest.json`,
+      type: "JSON" as WorkspaceReportFile["type"],
+    },
+  ];
+}
+
+function csvEscape(value: string) {
+  return `"${value.replace(/"/g, '""')}"`;
 }
 
 function throwIfSupabaseError(error: unknown) {
