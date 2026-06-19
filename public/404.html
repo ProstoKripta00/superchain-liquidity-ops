@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Superchain Liquidity Ops</title>
+    <script>
+      (function () {
+        var base = "/superchain-liquidity-ops/";
+        var path = window.location.pathname;
+        var search = window.location.search || "";
+        var hash = window.location.hash || "";
+        var wantsApp = /\/app\/?$/.test(path);
+        var next = base + (wantsApp ? "?app=1" : "") + hash;
+
+        if (!wantsApp && search) {
+          next = base + search + hash;
+        }
+
+        window.location.replace(next);
+      })();
+    </script>
+  </head>
+  <body>
+    Redirecting...
+  </body>
+</html>

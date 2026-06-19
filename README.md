@@ -53,6 +53,34 @@ The public site exposes the buyer-facing workflow:
 
 Public sections focus on proof, source transparency, and a clear request path. Internal sales tools are hidden by default.
 
+## Client Workspace
+
+The app now includes a client/operator workspace at:
+
+```text
+https://prostokripta00.github.io/superchain-liquidity-ops/#/app
+```
+
+Current workspace capabilities:
+
+- client dashboard with active requests, report files, messages, and activity
+- request creation for 7-day reports, monitoring, and DAO / incentive evidence packs
+- request pipeline statuses: `New`, `Scoping`, `In progress`, `Review`, `Delivered`
+- delivered report/file library with client-visible vs operator-only access labels
+- operator queue for moving requests and registering report delivery files
+- client/account overview for protocol organizations
+- admin/settings screen with production backend readiness notes
+- local demo storage for sales demos
+
+Production backend target:
+
+- Supabase Auth for users
+- Supabase Postgres for organizations, profiles, requests, reports, files, messages, audit log
+- Supabase Storage private bucket for PDF/CSV/JSON report files
+- Row Level Security so clients only see their own organization
+
+Schema starter: `SUPABASE_WORKSPACE_SCHEMA.sql`
+
 ## Operator Tools
 
 Operator tools are available with:

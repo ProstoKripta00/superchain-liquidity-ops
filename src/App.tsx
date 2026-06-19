@@ -34,6 +34,7 @@ import {
   type PublicCaseStudy,
   type PublicCaseStudyId,
 } from "./caseStudies";
+import { ClientPortal } from "./ClientPortal";
 import {
   loadOutreachCrmRecords,
   saveOutreachCrmRecords,
@@ -202,7 +203,20 @@ const leadStatuses: LeadStatus[] = [
   "Lost",
 ];
 
+function isWorkspaceRoute() {
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+  const path = window.location.pathname.toLowerCase();
+  const hash = window.location.hash.toLowerCase();
+  const params = new URLSearchParams(window.location.search);
+
+  return path.endsWith("/app") || hash === "#/app" || params.get("app") === "1";
+}
+
 function App() {
+  const [workspaceRoute, setWorkspaceRoute] = useState(() => isWorkspaceRoute());
   const [network, setNetwork] = useState<NetworkScope>("All");
   const [target, setTarget] = useState<(typeof targets)[number]>("All");
   const [selectedMarketId, setSelectedMarketId] = useState<string | null>(null);
@@ -318,6 +332,18 @@ function App() {
   useEffect(() => {
     void refreshData();
   }, [refreshData]);
+
+  useEffect(() => {
+    const syncRoute = () => setWorkspaceRoute(isWorkspaceRoute());
+
+    window.addEventListener("hashchange", syncRoute);
+    window.addEventListener("popstate", syncRoute);
+
+    return () => {
+      window.removeEventListener("hashchange", syncRoute);
+      window.removeEventListener("popstate", syncRoute);
+    };
+  }, []);
 
   useEffect(() => {
     saveOutreachCrmRecords(crmRecords);
@@ -1414,6 +1440,10 @@ function App() {
     setTemporaryOutreachFeedback("json", "Downloaded");
   };
 
+  if (workspaceRoute) {
+    return <ClientPortal />;
+  }
+
   return (
     <div className="app">
       <header className="opHeader">
@@ -1432,6 +1462,7 @@ function App() {
           <a href="#methodology">Methodology</a>
           <a href="#pricing">Pricing</a>
           <a className="navCta" href="#request-report">Request 7-day report</a>
+          <a href="#/app">Client portal</a>
           <a href="#sources">Sources</a>
         </nav>
       </header>
@@ -1448,6 +1479,7 @@ function App() {
             </p>
             <div className="heroActions">
               <a href="#request-report">Request 7-day report</a>
+              <a href="#/app">Open client portal</a>
               <a href="#case-studies">View sample case</a>
             </div>
             <small>
@@ -2195,6 +2227,7 @@ function FooterSection() {
         <a href="#methodology">Methodology</a>
         <a href="#sources">Sources</a>
         <a href="#request-report">Request report</a>
+        <a href="#/app">Client portal</a>
       </nav>
     </footer>
   );
