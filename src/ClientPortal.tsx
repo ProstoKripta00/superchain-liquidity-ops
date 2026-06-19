@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { ReactElement } from "react";
+import type { Session } from "@supabase/supabase-js";
 import {
   Activity,
   ArrowLeft,
@@ -48,6 +49,17 @@ import {
   type WorkspaceState,
   type WorkspaceUser,
 } from "./workspaceData";
+import { hasSupabaseConfig, supabase } from "./supabaseClient";
+import {
+  createSupabaseWorkspaceReport,
+  createSupabaseWorkspaceRequest,
+  loadSupabaseWorkspaceState,
+  signInWorkspaceUser,
+  signOutWorkspaceUser,
+  signUpWorkspaceUser,
+  updateSupabaseWorkspaceRequestStatus,
+  type WorkspaceBackendMode,
+} from "./supabaseWorkspace";
 
 type PortalTab =
   | "overview"
@@ -64,6 +76,10 @@ const requestStatuses: ReportRequestStatus[] = [
   "Review",
   "Delivered",
 ];
+
+type BackendStatus = "demo" | "checking" | "ready" | "saving" | "error";
+
+type AuthMode = "sign-in" | "sign-up";
 
 const defaultRequestForm = (user: WorkspaceUser): NewWorkspaceRequestInput => ({
   organizationId: user.organizationId,
@@ -93,6 +109,17 @@ export function ClientPortal() {
   const [state, setState] = useState<WorkspaceState>(() => loadWorkspaceState());
   const [activeUserId, setActiveUserId] = useState(() => state.users[0]?.id ?? "user-client");
   const [activeTab, setActiveTab] = useState<PortalTab>("overview");
+  const [backendMode, setBackendMode] = useState<WorkspaceBackendMode>(
+    hasSupabaseConfig ? "supabase" : "local",
+  );
+  const [backendStatus, setBackendStatus] = useState<BackendStatus>(
+    hasSupabaseConfig ? "checking" : "demo",
+  );
+  const [backendError, setBackendError] = useState("");
+  const [session, setSession] = useState<Session | null>(null);
+  const [authMode, setAuthMode] = useState<AuthMode>("sign-in");
+  const [authBusy, setAuthBusy] = useState(false);
+  const [authMessage, setAuthMessage] = useState("");
   const activeUser = state.users.find((user) => user.id === activeUserId) ?? state.users[0];
   const activeOrg = state.organizations.find((org) => org.id === activeUser.organizationId);
   const isClient = activeUser.role === "client";
@@ -123,10 +150,83 @@ export function ClientPortal() {
     scopedRequests[0] ??
     null;
   const [reportForm, setReportForm] = useState(() => defaultReportForm(selectedRequest));
+  const [reportFile, setReportFile] = useState<File | null>(null);
 
   useEffect(() => {
-    saveWorkspaceState(state);
+    if (!hasSupabaseConfig) {
+      saveWorkspaceState(state);
+    }
   }, [state]);
+
+  useEffect(() => {
+    if (!hasSupabaseConfig || !supabase) {
+      return;
+    }
+
+    let mounted = true;
+
+    supabase.auth.getSession().then(({ data, error }) => {
+      if (!mounted) {
+        return;
+      }
+
+      if (error) {
+        setBackendError(error.message);
+        setBackendStatus("error");
+        return;
+      }
+
+      setSession(data.session);
+      setBackendStatus(data.session ? "checking" : "ready");
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+      setSession(nextSession);
+      setBackendStatus(nextSession ? "checking" : "ready");
+    });
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  const refreshWorkspace = useCallback(async () => {
+    if (!hasSupabaseConfig || !session) {
+      return;
+    }
+
+    setBackendStatus("checking");
+    setBackendError("");
+
+    try {
+      const result = await loadSupabaseWorkspaceState();
+
+      setBackendMode(result.mode);
+      setState(result.state);
+      setActiveUserId((current) => {
+        if (result.state.users.some((user) => user.id === current)) {
+          return current;
+        }
+
+        if (result.state.users.some((user) => user.id === session.user.id)) {
+          return session.user.id;
+        }
+
+        return result.state.users[0]?.id ?? current;
+      });
+      setBackendStatus("ready");
+    } catch (error) {
+      setBackendStatus("error");
+      setBackendError(error instanceof Error ? error.message : String(error));
+    }
+  }, [session]);
+
+  useEffect(() => {
+    void refreshWorkspace();
+  }, [refreshWorkspace]);
 
   useEffect(() => {
     setRequestForm(defaultRequestForm(activeUser));
@@ -140,20 +240,70 @@ export function ClientPortal() {
 
   useEffect(() => {
     setReportForm(defaultReportForm(selectedRequest));
+    setReportFile(null);
   }, [selectedRequest?.id]);
 
-  const createRequest = () => {
+  const createRequest = async () => {
+    if (hasSupabaseConfig && session) {
+      setBackendStatus("saving");
+      setBackendError("");
+
+      try {
+        await createSupabaseWorkspaceRequest(requestForm);
+        setRequestForm(defaultRequestForm(activeUser));
+        setActiveTab("requests");
+        await refreshWorkspace();
+      } catch (error) {
+        setBackendStatus("error");
+        setBackendError(error instanceof Error ? error.message : String(error));
+      }
+
+      return;
+    }
+
     setState((current) => createWorkspaceRequest(current, requestForm));
     setRequestForm(defaultRequestForm(activeUser));
     setActiveTab("requests");
   };
 
-  const moveRequest = (requestId: string, status: ReportRequestStatus) => {
+  const moveRequest = async (requestId: string, status: ReportRequestStatus) => {
+    if (hasSupabaseConfig && session) {
+      setBackendStatus("saving");
+      setBackendError("");
+
+      try {
+        await updateSupabaseWorkspaceRequestStatus(requestId, status, activeUser.id);
+        await refreshWorkspace();
+      } catch (error) {
+        setBackendStatus("error");
+        setBackendError(error instanceof Error ? error.message : String(error));
+      }
+
+      return;
+    }
+
     setState((current) => updateWorkspaceRequestStatus(current, requestId, status, activeUser.id));
   };
 
-  const deliverReport = () => {
+  const deliverReport = async () => {
     if (!reportForm.requestId) {
+      return;
+    }
+
+    if (hasSupabaseConfig && session) {
+      setBackendStatus("saving");
+      setBackendError("");
+
+      try {
+        await createSupabaseWorkspaceReport(reportForm, activeUser.id, reportFile);
+        setReportFile(null);
+        setActiveTab("reports");
+        await refreshWorkspace();
+      } catch (error) {
+        setBackendStatus("error");
+        setBackendError(error instanceof Error ? error.message : String(error));
+      }
+
       return;
     }
 
@@ -169,10 +319,63 @@ export function ClientPortal() {
     setActiveTab("overview");
   };
 
+  const submitAuth = async (email: string, password: string) => {
+    setAuthBusy(true);
+    setAuthMessage("");
+    setBackendError("");
+
+    try {
+      if (authMode === "sign-up") {
+        await signUpWorkspaceUser(email, password);
+        setAuthMessage("Account created. If email confirmation is enabled, check your inbox before signing in.");
+      } else {
+        await signInWorkspaceUser(email, password);
+        setAuthMessage("Signed in.");
+      }
+    } catch (error) {
+      setAuthMessage(error instanceof Error ? error.message : String(error));
+    } finally {
+      setAuthBusy(false);
+    }
+  };
+
+  const signOut = async () => {
+    setAuthBusy(true);
+
+    try {
+      await signOutWorkspaceUser();
+      setSession(null);
+      setState(loadWorkspaceState());
+      setActiveUserId(seedWorkspaceState.users[0]?.id ?? "user-client");
+      setBackendStatus("ready");
+    } catch (error) {
+      setBackendStatus("error");
+      setBackendError(error instanceof Error ? error.message : String(error));
+    } finally {
+      setAuthBusy(false);
+    }
+  };
+
+  if (hasSupabaseConfig && !session) {
+    return (
+      <WorkspaceAuthGate
+        authBusy={authBusy}
+        authMessage={authMessage}
+        authMode={authMode}
+        onChangeMode={setAuthMode}
+        onSubmit={submitAuth}
+      />
+    );
+  }
+
   return (
     <div className="portalApp">
       <PortalHeader
         activeUser={activeUser}
+        backendMode={backendMode}
+        backendStatus={backendStatus}
+        onRefresh={refreshWorkspace}
+        onSignOut={hasSupabaseConfig ? signOut : undefined}
         users={state.users}
         onSelectUser={setActiveUserId}
       />
@@ -187,12 +390,22 @@ export function ClientPortal() {
           <PortalNav activeTab={activeTab} canOperate={canOperate} onSelect={setActiveTab} />
           <div className="portalModeCard">
             <LockKeyhole size={18} />
-            <strong>Demo workspace</strong>
-            <span>Local browser storage now. Supabase-ready backend schema included for production.</span>
+            <strong>{backendMode === "supabase" ? "Supabase live" : "Demo workspace"}</strong>
+            <span>
+              {backendMode === "supabase"
+                ? "Auth, Postgres and private Storage are active for this workspace."
+                : "Local browser storage now. Add Supabase env keys to activate production mode."}
+            </span>
           </div>
         </aside>
 
         <section className="portalContent">
+          <BackendNotice
+            error={backendError}
+            mode={backendMode}
+            status={backendStatus}
+          />
+
           {activeTab === "overview" ? (
             <OverviewTab
               activeOrg={activeOrg}
@@ -233,7 +446,9 @@ export function ClientPortal() {
             <OperatorTab
               activeUser={activeUser}
               form={reportForm}
+              reportFile={reportFile}
               onDeliver={deliverReport}
+              onFileChange={setReportFile}
               onMoveRequest={moveRequest}
               onSelectRequest={(requestId) => setSelectedRequestId(requestId)}
               onUpdateForm={setReportForm}
@@ -246,7 +461,12 @@ export function ClientPortal() {
           {activeTab === "settings" ? (
             <SettingsTab
               activeUser={activeUser}
+              backendError={backendError}
+              backendMode={backendMode}
+              backendStatus={backendStatus}
+              sessionEmail={session?.user.email ?? ""}
               onReset={resetDemo}
+              onRefresh={refreshWorkspace}
               schema={supabaseWorkspaceSchema}
               users={state.users}
             />
@@ -257,12 +477,125 @@ export function ClientPortal() {
   );
 }
 
+function WorkspaceAuthGate({
+  authBusy,
+  authMessage,
+  authMode,
+  onChangeMode,
+  onSubmit,
+}: {
+  authBusy: boolean;
+  authMessage: string;
+  authMode: AuthMode;
+  onChangeMode: (mode: AuthMode) => void;
+  onSubmit: (email: string, password: string) => Promise<void>;
+}) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  return (
+    <div className="portalApp">
+      <header className="portalHeader">
+        <div className="portalBrand">
+          <div className="portalMark">OP</div>
+          <div>
+            <strong>Superchain Liquidity Ops</strong>
+            <span>Supabase workspace</span>
+          </div>
+        </div>
+        <a className="portalHeaderLink" href="./">
+          Public site
+        </a>
+      </header>
+
+      <main className="portalAuthShell">
+        <section className="portalAuthPanel">
+          <span>Production login</span>
+          <h1>Client workspace is connected to Supabase.</h1>
+          <p>
+            Sign in with an invited account to load organizations, requests, reports, private
+            files, messages and audit log from Postgres and Storage.
+          </p>
+
+          <div className="portalAuthTabs">
+            <button
+              className={authMode === "sign-in" ? "active" : ""}
+              onClick={() => onChangeMode("sign-in")}
+              type="button"
+            >
+              Sign in
+            </button>
+            <button
+              className={authMode === "sign-up" ? "active" : ""}
+              onClick={() => onChangeMode("sign-up")}
+              type="button"
+            >
+              Sign up
+            </button>
+          </div>
+
+          <div className="portalFormGrid singleColumn">
+            <label>
+              Email
+              <input
+                autoComplete="email"
+                inputMode="email"
+                onChange={(event) => setEmail(event.target.value)}
+                placeholder="client@protocol.xyz"
+                value={email}
+              />
+            </label>
+            <label>
+              Password
+              <input
+                autoComplete={authMode === "sign-in" ? "current-password" : "new-password"}
+                onChange={(event) => setPassword(event.target.value)}
+                placeholder="Minimum 6 characters"
+                type="password"
+                value={password}
+              />
+            </label>
+          </div>
+
+          <button
+            className="portalPrimaryAction"
+            disabled={authBusy || !email || password.length < 6}
+            onClick={() => onSubmit(email, password)}
+            type="button"
+          >
+            <KeyRound size={17} />
+            {authBusy ? "Working..." : authMode === "sign-in" ? "Sign in" : "Create account"}
+          </button>
+
+          {authMessage ? <p className="portalAuthMessage">{authMessage}</p> : null}
+        </section>
+
+        <aside className="portalAuthAside">
+          <strong>Backend checklist</strong>
+          <span>Supabase Auth session persistence</span>
+          <span>Postgres Row Level Security</span>
+          <span>Private Storage bucket: report-files</span>
+          <span>Signed URLs for report files</span>
+        </aside>
+      </main>
+    </div>
+  );
+}
+
 function PortalHeader({
   activeUser,
+  backendMode,
+  backendStatus,
+  onRefresh,
+  onSignOut,
   onSelectUser,
   users,
 }: {
   activeUser: WorkspaceUser;
+  backendMode: WorkspaceBackendMode;
+  backendStatus: BackendStatus;
+  onRefresh: () => void;
+  onSignOut?: () => void;
   onSelectUser: (userId: string) => void;
   users: WorkspaceUser[];
 }) {
@@ -276,16 +609,31 @@ function PortalHeader({
         </div>
       </div>
 
-      <label className="portalUserSwitch">
-        Workspace role
-        <select value={activeUser.id} onChange={(event) => onSelectUser(event.target.value)}>
-          {users.map((user) => (
-            <option key={user.id} value={user.id}>
-              {user.name} - {roleLabel(user.role)}
-            </option>
-          ))}
-        </select>
-      </label>
+      <div className="portalHeaderActions">
+        <span className={`portalBackendPill ${backendMode}`}>
+          {backendMode === "supabase" ? "Supabase" : "Demo"} / {backendStatus}
+        </span>
+        <button onClick={onRefresh} type="button">
+          <RefreshCcw size={15} />
+          Sync
+        </button>
+        {onSignOut ? (
+          <button onClick={onSignOut} type="button">
+            <LockKeyhole size={15} />
+            Sign out
+          </button>
+        ) : null}
+        <label className="portalUserSwitch">
+          Workspace role
+          <select value={activeUser.id} onChange={(event) => onSelectUser(event.target.value)}>
+            {users.map((user) => (
+              <option key={user.id} value={user.id}>
+                {user.name} - {roleLabel(user.role)}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
     </header>
   );
 }
@@ -355,6 +703,48 @@ function PortalNav({
         ))}
     </nav>
   );
+}
+
+function BackendNotice({
+  error,
+  mode,
+  status,
+}: {
+  error: string;
+  mode: WorkspaceBackendMode;
+  status: BackendStatus;
+}) {
+  if (mode === "local" && !error) {
+    return (
+      <div className="portalBackendNotice">
+        <DatabaseZap size={18} />
+        <span>
+          Demo mode is active. Add Supabase env keys to enable Auth, Postgres and private
+          Storage.
+        </span>
+      </div>
+    );
+  }
+
+  if (status === "checking" || status === "saving") {
+    return (
+      <div className="portalBackendNotice">
+        <RefreshCcw size={18} />
+        <span>{status === "saving" ? "Saving to Supabase..." : "Syncing Supabase workspace..."}</span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="portalBackendNotice error">
+        <ShieldCheck size={18} />
+        <span>{error}</span>
+      </div>
+    );
+  }
+
+  return null;
 }
 
 function OverviewTab({
@@ -704,7 +1094,9 @@ function ClientsTab({
 function OperatorTab({
   activeUser,
   form,
+  reportFile,
   onDeliver,
+  onFileChange,
   onMoveRequest,
   onSelectRequest,
   onUpdateForm,
@@ -714,7 +1106,9 @@ function OperatorTab({
 }: {
   activeUser: WorkspaceUser;
   form: NewWorkspaceReportInput;
+  reportFile: File | null;
   onDeliver: () => void;
+  onFileChange: (file: File | null) => void;
   onMoveRequest: (requestId: string, status: ReportRequestStatus) => void;
   onSelectRequest: (requestId: string) => void;
   onUpdateForm: (form: NewWorkspaceReportInput) => void;
@@ -821,6 +1215,18 @@ function OperatorTab({
                     <option>Markdown</option>
                   </select>
                 </label>
+                <label className="wideField">
+                  Upload file
+                  <input
+                    onChange={(event) => onFileChange(event.target.files?.[0] ?? null)}
+                    type="file"
+                  />
+                  <small>
+                    {reportFile
+                      ? `${reportFile.name} selected`
+                      : "Optional in demo mode, required for real private Storage delivery."}
+                  </small>
+                </label>
               </div>
 
               <button className="portalPrimaryAction" onClick={onDeliver} type="button">
@@ -839,12 +1245,22 @@ function OperatorTab({
 
 function SettingsTab({
   activeUser,
+  backendError,
+  backendMode,
+  backendStatus,
+  sessionEmail,
   onReset,
+  onRefresh,
   schema,
   users,
 }: {
   activeUser: WorkspaceUser;
+  backendError: string;
+  backendMode: WorkspaceBackendMode;
+  backendStatus: BackendStatus;
+  sessionEmail: string;
   onReset: () => void;
+  onRefresh: () => void;
   schema: string;
   users: WorkspaceUser[];
 }) {
@@ -879,6 +1295,10 @@ function SettingsTab({
             <RefreshCcw size={17} />
             Reset demo data
           </button>
+          <button className="portalSecondaryAction" onClick={onRefresh} type="button">
+            <DatabaseZap size={17} />
+            Sync Supabase
+          </button>
         </article>
 
         <article className="portalPanel">
@@ -890,10 +1310,17 @@ function SettingsTab({
             <DatabaseZap size={22} />
           </div>
           <p>
-            Current user: <strong>{activeUser.name}</strong>. Production mode needs
-            `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, private storage bucket and
-            Row Level Security.
+            Current user: <strong>{activeUser.name}</strong>
+            {sessionEmail ? ` / ${sessionEmail}` : ""}. Backend: <strong>{backendMode}</strong>,
+            status: <strong>{backendStatus}</strong>.
           </p>
+          {backendError ? <p className="portalErrorText">{backendError}</p> : null}
+          <div className="portalSetupList">
+            <span>1. Run `SUPABASE_WORKSPACE_SCHEMA.sql` in Supabase SQL editor.</span>
+            <span>2. Create/invite users in Supabase Auth.</span>
+            <span>3. Insert matching `profiles` rows with client/operator/admin roles.</span>
+            <span>4. Add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` to hosting env.</span>
+          </div>
           <pre className="portalSchemaPreview">{schema}</pre>
         </article>
       </div>

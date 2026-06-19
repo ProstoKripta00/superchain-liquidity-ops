@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { Suspense, lazy, useCallback, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import {
   ArrowDownToLine,
@@ -34,7 +34,6 @@ import {
   type PublicCaseStudy,
   type PublicCaseStudyId,
 } from "./caseStudies";
-import { ClientPortal } from "./ClientPortal";
 import {
   loadOutreachCrmRecords,
   saveOutreachCrmRecords,
@@ -202,6 +201,10 @@ const leadStatuses: LeadStatus[] = [
   "Won",
   "Lost",
 ];
+
+const ClientPortal = lazy(() =>
+  import("./ClientPortal").then((module) => ({ default: module.ClientPortal })),
+);
 
 function isWorkspaceRoute() {
   if (typeof window === "undefined") {
@@ -1441,7 +1444,25 @@ function App() {
   };
 
   if (workspaceRoute) {
-    return <ClientPortal />;
+    return (
+      <Suspense
+        fallback={
+          <div className="portalApp">
+            <header className="portalHeader">
+              <div className="portalBrand">
+                <div className="portalMark">OP</div>
+                <div>
+                  <strong>Superchain Liquidity Ops</strong>
+                  <span>Loading client workspace</span>
+                </div>
+              </div>
+            </header>
+          </div>
+        }
+      >
+        <ClientPortal />
+      </Suspense>
+    );
   }
 
   return (

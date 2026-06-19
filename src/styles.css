@@ -6873,7 +6873,7 @@ select {
   top: 0;
   z-index: 20;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(260px, 380px);
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: 18px;
   align-items: center;
   min-height: 78px;
@@ -6921,6 +6921,160 @@ select {
 
 .portalUserSwitch {
   color: #d8d8d8;
+}
+
+.portalHeaderActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.portalHeaderActions button,
+.portalHeaderLink {
+  display: inline-flex;
+  gap: 7px;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 0 12px;
+  color: #ffffff;
+  background: #1d1d1d;
+  border: 1px solid #383838;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.portalBackendPill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 0 12px;
+  color: #101010;
+  background: #ffffff;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.portalBackendPill.supabase {
+  color: #ffffff;
+  background: #1c7c54;
+}
+
+.portalAuthShell {
+  display: grid;
+  grid-template-columns: minmax(0, 620px) minmax(260px, 360px);
+  gap: 18px;
+  align-items: start;
+  width: min(1060px, calc(100% - 36px));
+  margin: 42px auto;
+}
+
+.portalAuthPanel,
+.portalAuthAside,
+.portalBackendNotice {
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid #e4e4e4;
+  border-radius: 18px;
+  box-shadow: 0 14px 34px rgba(15, 15, 15, 0.07);
+}
+
+.portalAuthPanel {
+  padding: 28px;
+}
+
+.portalAuthPanel > span,
+.portalAuthAside strong {
+  color: #ff0421;
+  font-size: 12px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.portalAuthPanel h1 {
+  margin: 10px 0 12px;
+  font-size: clamp(34px, 5vw, 64px);
+  line-height: 0.95;
+}
+
+.portalAuthPanel p {
+  max-width: 58ch;
+  color: #555555;
+  line-height: 1.55;
+}
+
+.portalAuthTabs {
+  display: inline-flex;
+  gap: 6px;
+  padding: 6px;
+  margin: 18px 0;
+  background: #101010;
+  border-radius: 999px;
+}
+
+.portalAuthTabs button {
+  min-height: 36px;
+  padding: 0 14px;
+  color: #ffffff;
+  background: transparent;
+  border: 0;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 950;
+}
+
+.portalAuthTabs button.active {
+  color: #101010;
+  background: #ffffff;
+}
+
+.portalAuthAside {
+  display: grid;
+  gap: 12px;
+  padding: 22px;
+}
+
+.portalAuthAside span,
+.portalSetupList span {
+  display: block;
+  padding: 10px 12px;
+  color: #3b3b3b;
+  background: #f4f4f2;
+  border-radius: 12px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.portalAuthMessage,
+.portalErrorText {
+  margin-top: 12px;
+  color: #9b0014;
+  font-weight: 900;
+}
+
+.portalBackendNotice {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 14px 16px;
+  color: #101010;
+  font-weight: 900;
+}
+
+.portalBackendNotice svg {
+  flex: 0 0 auto;
+  color: #ff0421;
+}
+
+.portalBackendNotice.error {
+  color: #9b0014;
+  border-color: #ffd1d8;
+  background: #fff5f6;
 }
 
 .portalShell {
@@ -7228,6 +7382,10 @@ select {
   gap: 12px;
 }
 
+.portalFormGrid.singleColumn {
+  grid-template-columns: 1fr;
+}
+
 .portalFormGrid input,
 .portalFormGrid textarea,
 .portalFormGrid select,
@@ -7241,6 +7399,19 @@ select {
   border-radius: 12px;
   font: inherit;
   font-weight: 850;
+}
+
+.portalFormGrid input[type="file"] {
+  min-height: auto;
+  padding: 12px;
+}
+
+.portalFormGrid small {
+  display: block;
+  margin-top: 6px;
+  color: #777777;
+  font-weight: 800;
+  line-height: 1.35;
 }
 
 .portalFormGrid textarea {
@@ -7285,10 +7456,22 @@ select {
   border: 0;
 }
 
+.portalPrimaryAction:disabled,
+.portalSecondaryAction:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
 .portalSecondaryAction {
   color: #101010;
   background: #ffffff;
   border: 1px solid #d9d9d9;
+}
+
+.portalSetupList {
+  display: grid;
+  gap: 8px;
+  margin: 16px 0;
 }
 
 .portalRequestCard {
@@ -7411,6 +7594,7 @@ select {
 
 @media (max-width: 1180px) {
   .portalShell,
+  .portalAuthShell,
   .portalTwoColumn,
   .portalRequestLayout,
   .portalOperatorGrid {
@@ -7428,6 +7612,7 @@ select {
 
 @media (max-width: 820px) {
   .portalHeader,
+  .portalAuthShell,
   .portalTitle,
   .portalFormGrid,
   .portalMiniStats,
@@ -7438,13 +7623,27 @@ select {
   }
 
   .portalHeader,
+  .portalHeaderActions,
   .portalShell {
     padding: 18px;
+  }
+
+  .portalHeaderActions {
+    justify-content: flex-start;
+    padding: 0;
+  }
+
+  .portalAuthShell {
+    width: min(100% - 24px, 1060px);
+    margin: 18px auto;
   }
 
   .portalBrand,
   .portalBrand strong,
   .portalBrand span,
+  .portalAuthPanel,
+  .portalAuthPanel h1,
+  .portalAuthPanel p,
   .portalTitle,
   .portalTitle h1,
   .portalTitle p,

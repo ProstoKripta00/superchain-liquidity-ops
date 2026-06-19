@@ -79,7 +79,36 @@ Production backend target:
 - Supabase Storage private bucket for PDF/CSV/JSON report files
 - Row Level Security so clients only see their own organization
 
-Schema starter: `SUPABASE_WORKSPACE_SCHEMA.sql`
+Implemented backend connection:
+
+- `src/supabaseClient.ts` creates the browser Supabase client when env keys exist.
+- `src/supabaseWorkspace.ts` loads/saves workspace data through Supabase Postgres.
+- Operator delivery can upload a selected file to the private `report-files` Storage bucket.
+- Report file links are generated as signed URLs.
+- Without env keys, the public GitHub Pages app stays in local demo mode.
+
+Supabase setup:
+
+1. Create a Supabase project.
+2. Run `SUPABASE_WORKSPACE_SCHEMA.sql` in the Supabase SQL editor.
+3. Create/invite the first user in Supabase Auth.
+4. Insert the first `organizations` and `profiles` rows using the bootstrap example at the bottom of the SQL file.
+5. Add env vars locally or in the deployment environment:
+
+```text
+VITE_SUPABASE_URL=https://your-project-ref.supabase.co
+VITE_SUPABASE_ANON_KEY=your-public-anon-key
+VITE_SUPABASE_REPORT_BUCKET=report-files
+```
+
+Local example:
+
+```bash
+cp .env.example .env.local
+npm run dev
+```
+
+GitHub Pages note: Vite bakes `VITE_*` values into the static bundle at build time, so repository or workflow secrets must be available during the deploy build.
 
 ## Operator Tools
 
