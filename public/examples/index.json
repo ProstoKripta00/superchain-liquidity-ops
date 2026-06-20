@@ -8,49 +8,49 @@
       "id": "protocol-diagnostic",
       "title": "Protocol Diagnostic Sprint Example",
       "format": "markdown",
-      "path": "samples/protocol-diagnostic-sample.md",
+      "path": "examples/protocol-diagnostic-example.md",
       "useCase": "Send before pitching a fixed-scope diagnostic."
     },
     {
       "id": "liquidity-monitoring",
       "title": "Liquidity Monitoring Retainer Example",
       "format": "markdown",
-      "path": "samples/liquidity-monitoring-sample.md",
+      "path": "examples/liquidity-monitoring-example.md",
       "useCase": "Show weekly monitoring structure."
     },
     {
       "id": "incentive-evidence-pack",
       "title": "Liquidity Evidence Pack Example",
       "format": "markdown",
-      "path": "samples/incentive-evidence-pack-sample.md",
+      "path": "examples/incentive-evidence-pack-example.md",
       "useCase": "Show decision-ready evidence structure."
     },
     {
       "id": "client-intake",
       "title": "Client Intake Form Example",
       "format": "markdown",
-      "path": "samples/client-intake-sample.md",
+      "path": "examples/client-intake-example.md",
       "useCase": "Show what a scoped client request looks like."
     },
     {
       "id": "request-report",
       "title": "Request Report Example",
       "format": "markdown",
-      "path": "samples/request-report-sample.md",
+      "path": "examples/request-report-example.md",
       "useCase": "Show how a report request is framed."
     },
     {
       "id": "market-impact-csv",
       "title": "Market Impact CSV Example",
       "format": "csv",
-      "path": "samples/market-impact-sample.csv",
+      "path": "examples/market-impact-example.csv",
       "useCase": "Show the expected tabular evidence format."
     },
     {
       "id": "source-audit-json",
       "title": "Source Audit JSON Example",
       "format": "json",
-      "path": "samples/source-audit-sample.json",
+      "path": "examples/source-audit-example.json",
       "useCase": "Show source transparency and delivery boundaries."
     }
   ]

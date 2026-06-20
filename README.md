@@ -293,8 +293,8 @@ src/protocols.ts             Tracked protocol profiles and slug matchers
 src/scanner.ts               Protocol readiness scoring and next-action logic
 src/reportGenerator.ts       Markdown mini-report generation
 src/caseStudies.ts           Public protocol case studies
-src/sampleReports.ts         Public delivery example generation
-src/staticSamples.ts         Stable delivery example metadata and GitHub Pages URLs
+report example module        Public delivery example generation
+artifact metadata module     Stable delivery example metadata and GitHub Pages URLs
 src/trustProof.ts            Verifiable proof stack and delivery boundaries
 src/requestReport.ts         Request report package and buyer intake copy
 src/exportPack.ts            Operator export pack manifest, CSV generation, JSON handoff
@@ -306,7 +306,7 @@ src/leadTargets.ts           Operator lead shortlist
 src/outreachPipeline.ts      Operator outreach pipeline and local follow-up fields
 src/App.tsx                  Main UI
 src/styles.css               Product UI
-public/samples/              Static Markdown, CSV, JSON, and manifest delivery examples
+public/examples/             Static Markdown, CSV, JSON, and manifest delivery examples
 public/snapshots/latest/     Latest generated public snapshot artifacts
 snapshots/                   Archived dated snapshot runs
 ```

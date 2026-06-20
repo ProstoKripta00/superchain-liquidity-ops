@@ -774,7 +774,7 @@ function App() {
       await writeClipboardText(report.markdown);
       setTemporarySampleReportFeedback("copy", "Copied", report.id);
     } catch {
-      setTemporarySampleReportFeedback("copy", "Sample ready", report.id);
+      setTemporarySampleReportFeedback("copy", "Example ready", report.id);
     }
   };
 
@@ -785,7 +785,7 @@ function App() {
 
   const downloadSampleReportsJson = (reports: SampleReport[]) => {
     downloadTextFile(
-      "superchain-public-sample-reports.json",
+      "superchain-public-report-examples.json",
       buildSampleReportsJson(reports),
       "application/json;charset=utf-8",
     );
@@ -1498,7 +1498,7 @@ function App() {
             </p>
             <div className="heroActions">
               <a href="#request-report">Request 7-day report</a>
-              <a href="#sample-reports">View sample report</a>
+              <a href="#report-examples">View example report</a>
             </div>
             <small>
               Independent tool. Not affiliated with or endorsed by Optimism Foundation.
@@ -2301,7 +2301,7 @@ function OfferPricingSection({
           <span>Commercial page</span>
           <h3>Buy a narrow report first. Expand only when the data proves value.</h3>
           <p>
-            These packages turn the live scanner, public sample reports, export pack
+            These packages turn the live scanner, public report examples, export pack
             and outreach workflow into fixed-scope services with visible price ranges,
             delivery timelines and acceptance criteria.
           </p>
@@ -4500,7 +4500,7 @@ function CaseStudiesSection({
         <aside className="caseStudyQueue">
           <div className="caseStudyQueueHeader">
             <span>Evidence examples</span>
-            <strong>Use these instead of vague sample claims</strong>
+            <strong>Use these instead of vague claims</strong>
             <p>
               Each study answers an operator-style question with live scanner data
               when available, then separates findings from limitations.
@@ -4649,10 +4649,10 @@ function SampleReportsSection({
     : "";
 
   return (
-    <section className="sampleReportsSection" id="sample-reports">
+    <section className="sampleReportsSection" id="report-examples">
       <div className="sectionHeader">
         <div>
-          <p className="sectionKicker">Sample Report</p>
+          <p className="sectionKicker">Report Example</p>
           <h2>Client-ready delivery examples that show what the service includes</h2>
         </div>
         <span>{items.length > 0 ? `${items.length} examples` : "Waiting for data"}</span>
@@ -4808,7 +4808,7 @@ function StaticSampleFilesSection({
             <DatabaseZap size={18} />
             <div>
               <span>Manifest</span>
-              <strong>samples/index.json</strong>
+              <strong>examples/index.json</strong>
               <small>Machine-readable list of every static delivery example.</small>
             </div>
             <a href={manifestUrl} target="_blank" rel="noreferrer">
@@ -5259,7 +5259,7 @@ function buildPricingSheet(layer: ServiceLayer) {
     "",
     "## Next Step",
     "",
-    "Pick one package, confirm the protocol or Superchain scope, then send a sample report plus the buyer brief.",
+    "Pick one package, confirm the protocol or Superchain scope, then send an example report plus the buyer brief.",
     "",
   ].join("\n");
 }

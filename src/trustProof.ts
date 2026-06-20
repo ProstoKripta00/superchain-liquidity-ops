@@ -47,7 +47,7 @@ type BuildTrustProofPackInput = {
 const REPO_URL = "https://github.com/ProstoKripta00/superchain-liquidity-ops";
 const LIVE_APP_URL = "https://prostokripta00.github.io/superchain-liquidity-ops/";
 const MANIFEST_URL =
-  "https://prostokripta00.github.io/superchain-liquidity-ops/samples/index.json";
+  "https://prostokripta00.github.io/superchain-liquidity-ops/examples/index.json";
 
 export function buildTrustProofPack({
   launchStatus,
