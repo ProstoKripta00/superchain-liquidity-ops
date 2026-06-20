@@ -2,7 +2,7 @@
 
 Independent OP / Superchain liquidity intelligence for teams that need source-backed DEX reports.
 
-Superchain Liquidity Ops turns public OP and Superchain DEX data into practical reports for protocol teams, growth leads, ecosystem operators, and DAO contributors: volume, fees, weak markets, watchlists, source limits, and next actions.
+Superchain Liquidity Ops turns public OP and Superchain DEX data into practical reports for protocol teams, growth leads, ecosystem operators, and liquidity stakeholders: volume, fees, weak markets, watchlists, source limits, and next actions.
 
 ## Live Site
 
@@ -26,10 +26,12 @@ The report answers:
 - where a protocol has real DEX activity
 - which markets are weak, stale, or underused
 - whether volume is producing visible fee output
-- which public data can be verified by a buyer or DAO
+- which public data can be verified by a buyer or stakeholder
 - what action is justified next
 
 Pilot price: `$500`.
+
+Accepted payment: `OP`, `USDT`, or `USDC` by agreed wallet and network after scope confirmation.
 
 Standard pricing after initial proof:
 
@@ -65,7 +67,7 @@ https://prostokripta00.github.io/superchain-liquidity-ops/#/app
 Current workspace capabilities:
 
 - client dashboard with active requests, report files, messages, and activity
-- request creation for 7-day reports, monitoring, and DAO / incentive evidence packs
+- request creation for 7-day reports, monitoring, and deeper liquidity evidence packs
 - request pipeline statuses: `New`, `Scoping`, `In progress`, `Review`, `Delivered`
 - delivered report/file library with client-visible vs operator-only access labels
 - operator queue for moving requests and registering report delivery files
@@ -252,7 +254,7 @@ First buyer path:
 2. Offer a fixed 7-day report for one protocol, DEX, or network scope.
 3. Deliver PDF/Markdown report, CSV evidence, source audit, weak-market review, and 3-5 next actions.
 4. If the buyer needs recurring visibility, offer monthly monitoring.
-5. If the buyer is preparing DAO, incentive, or ecosystem reporting, package a larger evidence pack.
+5. If the buyer needs ecosystem, liquidity, or stakeholder reporting, package a larger evidence pack.
 
 ## Architecture
 

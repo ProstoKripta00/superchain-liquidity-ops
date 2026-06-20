@@ -1482,6 +1482,7 @@ function App() {
           <a href="#case-studies">Case studies</a>
           <a href="#methodology">Methodology</a>
           <a href="#pricing">Pricing</a>
+          <a href="#payment-terms">Payment</a>
           <a className="navCta" href="#request-report">Request 7-day report</a>
         </nav>
       </header>
@@ -1714,6 +1715,13 @@ function App() {
 
         <PublicPricingSection />
 
+        <PaymentTermsSection
+          feedback={paymentTermsFeedback}
+          onCopy={() => void copyPaymentTerms(paymentTermsPack)}
+          onDownload={() => downloadPaymentTerms(paymentTermsPack)}
+          pack={paymentTermsPack}
+        />
+
         <TrustProofSection pack={trustProofPack} />
 
         <RequestReportSection
@@ -1746,13 +1754,6 @@ function App() {
               onDownloadPricing={() => downloadPricingSheet(serviceLayer)}
               onSelectOffer={setSelectedServiceOfferId}
               selectedOffer={selectedServiceOffer}
-            />
-
-            <PaymentTermsSection
-              feedback={paymentTermsFeedback}
-              onCopy={() => void copyPaymentTerms(paymentTermsPack)}
-              onDownload={() => downloadPaymentTerms(paymentTermsPack)}
-              pack={paymentTermsPack}
             />
 
             <StaticSampleFilesSection
@@ -5221,7 +5222,7 @@ function buildPricingSheet(layer: ServiceLayer) {
     "",
     "## What You Can Buy",
     "",
-    "Fixed-scope analytics services for protocols, growth teams, DAO contributors, and ecosystem operators that need source-backed Superchain DEX volume, fee, liquidity, and market-health evidence.",
+    "Fixed-scope analytics services for protocols, growth teams, liquidity stakeholders, and ecosystem operators that need source-backed Superchain DEX volume, fee, liquidity, and market-health evidence.",
     "",
     "## Packages",
     "",

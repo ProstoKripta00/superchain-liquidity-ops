@@ -52,8 +52,9 @@ export function buildPaymentTermsPack({
   ];
 
   const methods = [
+    "OP transfer by agreed wallet and network",
+    "USDT transfer by agreed wallet and network",
     "USDC transfer by agreed wallet and network",
-    "Bank transfer, invoice route, or another method agreed outside the dashboard",
     "No card checkout, wallet collection, or payment custody inside the public app",
   ];
 
@@ -68,7 +69,7 @@ export function buildPaymentTermsPack({
       id: "payment-route",
       title: "Payment route confirmed",
       detail:
-        "Client confirms payment method, payer identity, wallet or invoice details, and any compliance notes outside the public dashboard.",
+        "Client confirms OP, USDT or USDC payment method, payer identity, wallet details, network and any compliance notes outside the public dashboard.",
     },
     {
       id: "start",
@@ -126,6 +127,7 @@ export function buildPaymentTermsPack({
   const clientMessage = [
     `For ${packageName}, the current quote is ${priceLabel} with ${timeline} delivery.`,
     `Payment terms: ${paymentStructure}.`,
+    "Accepted payment: OP, USDT or USDC by agreed wallet and network.",
     "Before I start, we confirm the protocol scope, chains, metrics, deadline, deliverable format and payment route.",
     finalHandoff,
     "The work is source-backed analytics, not financial advice or a security audit.",

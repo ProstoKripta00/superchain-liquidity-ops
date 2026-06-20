@@ -124,6 +124,7 @@ export function buildRequestReportPack({
     `Contact route: ${contact}`,
     `Request type: ${requestTypeLabel}`,
     `Suggested budget: ${budget}`,
+    `Accepted payment: OP / USDT / USDC`,
     `Urgency: ${urgency}`,
     "",
     "## Selected Package",
@@ -201,6 +202,7 @@ export function buildRequestReportPack({
     `Organization: ${organization}`,
     `Market: ${market}`,
     `Budget: ${budget}`,
+    `Accepted payment: OP / USDT / USDC`,
     `Urgency: ${urgency}`,
     `Contact: ${contact}`,
     "",
@@ -216,8 +218,8 @@ export function buildRequestReportPack({
     {
       id: "scope-payment",
       label: "Scope and payment",
-      value: "Confirm scope, price, delivery date, and payment route before work starts",
-      note: "Private details stay outside the public site.",
+      value: "Confirm scope, price, delivery date, token and network before work starts",
+      note: "Accepted payment: OP, USDT or USDC. Wallet details are shared after scope confirmation.",
     },
     {
       id: "manual-copy",

@@ -5,6 +5,13 @@
   "description": "Stable public delivery examples for client outreach, buyer previews, and service handoff.",
   "files": [
     {
+      "id": "7-day-liquidity-impact-report",
+      "title": "7-Day Liquidity Impact Report Example",
+      "format": "markdown",
+      "path": "examples/7-day-liquidity-impact-report-example.md",
+      "useCase": "Send as the primary buyer-facing report example."
+    },
+    {
       "id": "protocol-diagnostic",
       "title": "Protocol Diagnostic Sprint Example",
       "format": "markdown",

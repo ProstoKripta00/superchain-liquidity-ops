@@ -15,6 +15,17 @@ export const STATIC_SAMPLE_MANIFEST_URL = `${SAMPLE_BASE_URL}index.json`;
 
 export const STATIC_SAMPLE_FILES: StaticSampleFile[] = [
   {
+    id: "7-day-liquidity-impact-report",
+    title: "7-Day Liquidity Impact Report",
+    category: "Primary report example",
+    format: "Markdown",
+    fileName: "7-day-liquidity-impact-report-example.md",
+    href: `${SAMPLE_BASE_URL}7-day-liquidity-impact-report-example.md`,
+    description:
+      "Primary buyer-facing report example with scope, evidence table, recommendation format, payment terms and delivery boundary.",
+    useCase: "Send as the first proof artifact before offering the $500 report.",
+  },
+  {
     id: "protocol-diagnostic",
     title: "Protocol Diagnostic Sprint",
     category: "Service proof",

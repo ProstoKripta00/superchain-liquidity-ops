@@ -185,10 +185,9 @@ export const WORKSPACE_PAYMENT_STATUSES: WorkspacePaymentStatus[] = [
 ];
 
 export const WORKSPACE_PAYMENT_METHODS = [
+  "OP",
   "USDC",
   "USDT",
-  "Stripe",
-  "Bank transfer",
   "Manual",
 ];
 

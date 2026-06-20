@@ -19,6 +19,7 @@ Product: Superchain Liquidity Ops
 - Deliverable format: Full export pack
 - Deadline: Flexible
 - Budget: $2,000-$4,000
+- Accepted payment: OP / USDT / USDC
 
 ## Source Links
 
@@ -33,5 +34,5 @@ The client wants a source-backed report that can be shared with protocol operato
 
 - Confirm whether the scope is public or private.
 - Refresh live data before delivery.
-- Confirm payment method outside the public dashboard.
+- Confirm OP, USDT, or USDC payment route outside the public dashboard.
 - Deliver Markdown, CSV, and JSON artifacts from the same snapshot.
