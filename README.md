@@ -102,8 +102,9 @@ Supabase setup:
 1. Create a Supabase project.
 2. Run `SUPABASE_WORKSPACE_SCHEMA.sql` in the Supabase SQL editor.
 3. Create/invite the first user in Supabase Auth.
-4. Insert the first `organizations` and `profiles` rows using the bootstrap example at the bottom of the SQL file.
-5. Add env vars locally or in the deployment environment:
+4. Run the updated SQL again after policy changes. It is idempotent and keeps `Operator only` report files private from client accounts.
+5. Insert the first `organizations` and `profiles` rows using the bootstrap example at the bottom of the SQL file, or use the bootstrap script below.
+6. Add env vars locally or in the deployment environment:
 
 ```text
 VITE_SUPABASE_URL=https://your-project-ref.supabase.co
@@ -117,6 +118,17 @@ Local example:
 ```bash
 cp .env.example .env.local
 npm run dev
+```
+
+Seed a production demo workspace after env vars are available:
+
+```bash
+SUPABASE_URL=https://your-project-ref.supabase.co \
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key \
+ADMIN_EMAIL=owner@example.com \
+CLIENT_EMAIL=demo.client@example.com \
+CLIENT_PASSWORD='change-this-demo-password' \
+npm run bootstrap:workspace
 ```
 
 GitHub Pages note: Vite bakes `VITE_*` values into the static bundle at build time, so repository or workflow secrets must be available during the deploy build.

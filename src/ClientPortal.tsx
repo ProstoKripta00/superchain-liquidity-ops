@@ -64,9 +64,11 @@ import {
   createSupabaseWorkspaceReport,
   createSupabaseWorkspaceRequest,
   loadSupabaseWorkspaceState,
+  sendWorkspacePasswordReset,
   signInWorkspaceUser,
   signOutWorkspaceUser,
   signUpWorkspaceUser,
+  updateWorkspacePassword,
   updateSupabasePaymentStatus,
   updateSupabaseWorkspaceRequestStatus,
   type WorkspaceBackendMode,
@@ -91,7 +93,7 @@ const requestStatuses: ReportRequestStatus[] = [
 
 type BackendStatus = "demo" | "checking" | "ready" | "saving" | "error";
 
-type AuthMode = "sign-in" | "sign-up";
+type AuthMode = "sign-in" | "sign-up" | "reset";
 
 const defaultRequestForm = (user: WorkspaceUser): NewWorkspaceRequestInput => ({
   organizationId: user.organizationId,
@@ -155,6 +157,8 @@ export function ClientPortal() {
   const [authMode, setAuthMode] = useState<AuthMode>("sign-in");
   const [authBusy, setAuthBusy] = useState(false);
   const [authMessage, setAuthMessage] = useState("");
+  const [securityBusy, setSecurityBusy] = useState(false);
+  const [securityMessage, setSecurityMessage] = useState("");
   const activeUser = state.users.find((user) => user.id === activeUserId) ?? state.users[0];
   const activeOrg = state.organizations.find((org) => org.id === activeUser.organizationId);
   const isClient = activeUser.role === "client";
@@ -451,7 +455,10 @@ export function ClientPortal() {
     setBackendError("");
 
     try {
-      if (authMode === "sign-up") {
+      if (authMode === "reset") {
+        await sendWorkspacePasswordReset(email);
+        setAuthMessage("Password reset email sent if this address exists in Supabase Auth.");
+      } else if (authMode === "sign-up") {
         await signUpWorkspaceUser(email, password);
         setAuthMessage("Account created. If email confirmation is enabled, check your inbox before signing in.");
       } else {
@@ -462,6 +469,21 @@ export function ClientPortal() {
       setAuthMessage(error instanceof Error ? error.message : String(error));
     } finally {
       setAuthBusy(false);
+    }
+  };
+
+  const changePassword = async (password: string) => {
+    setSecurityBusy(true);
+    setSecurityMessage("");
+    setBackendError("");
+
+    try {
+      await updateWorkspacePassword(password);
+      setSecurityMessage("Password updated. Use the new password on your next sign-in.");
+    } catch (error) {
+      setSecurityMessage(error instanceof Error ? error.message : String(error));
+    } finally {
+      setSecurityBusy(false);
     }
   };
 
@@ -612,6 +634,9 @@ export function ClientPortal() {
               backendMode={backendMode}
               backendStatus={backendStatus}
               sessionEmail={session?.user.email ?? ""}
+              securityBusy={securityBusy}
+              securityMessage={securityMessage}
+              onChangePassword={changePassword}
               onReset={resetDemo}
               onRefresh={refreshWorkspace}
               schema={supabaseWorkspaceSchema}
@@ -679,6 +704,13 @@ function WorkspaceAuthGate({
             >
               Sign up
             </button>
+            <button
+              className={authMode === "reset" ? "active" : ""}
+              onClick={() => onChangeMode("reset")}
+              type="button"
+            >
+              Reset password
+            </button>
           </div>
 
           <div className="portalFormGrid singleColumn">
@@ -692,26 +724,34 @@ function WorkspaceAuthGate({
                 value={email}
               />
             </label>
-            <label>
-              Password
-              <input
-                autoComplete={authMode === "sign-in" ? "current-password" : "new-password"}
-                onChange={(event) => setPassword(event.target.value)}
-                placeholder="Minimum 6 characters"
-                type="password"
-                value={password}
-              />
-            </label>
+            {authMode !== "reset" ? (
+              <label>
+                Password
+                <input
+                  autoComplete={authMode === "sign-in" ? "current-password" : "new-password"}
+                  onChange={(event) => setPassword(event.target.value)}
+                  placeholder="Minimum 6 characters"
+                  type="password"
+                  value={password}
+                />
+              </label>
+            ) : null}
           </div>
 
           <button
             className="portalPrimaryAction"
-            disabled={authBusy || !email || password.length < 6}
+            disabled={authBusy || !email || (authMode !== "reset" && password.length < 6)}
             onClick={() => onSubmit(email, password)}
             type="button"
           >
             <KeyRound size={17} />
-            {authBusy ? "Working..." : authMode === "sign-in" ? "Sign in" : "Create account"}
+            {authBusy
+              ? "Working..."
+              : authMode === "reset"
+                ? "Send reset email"
+                : authMode === "sign-in"
+                  ? "Sign in"
+                  : "Create account"}
           </button>
 
           {authMessage ? <p className="portalAuthMessage">{authMessage}</p> : null}
@@ -1762,7 +1802,10 @@ function SettingsTab({
   backendError,
   backendMode,
   backendStatus,
+  securityBusy,
+  securityMessage,
   sessionEmail,
+  onChangePassword,
   onReset,
   onRefresh,
   schema,
@@ -1772,12 +1815,19 @@ function SettingsTab({
   backendError: string;
   backendMode: WorkspaceBackendMode;
   backendStatus: BackendStatus;
+  securityBusy: boolean;
+  securityMessage: string;
   sessionEmail: string;
+  onChangePassword: (password: string) => Promise<void>;
   onReset: () => void;
   onRefresh: () => void;
   schema: string;
   users: WorkspaceUser[];
 }) {
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const passwordReady = newPassword.length >= 8 && newPassword === confirmPassword;
+
   return (
     <div className="portalStack">
       <PortalTitle
@@ -1813,6 +1863,53 @@ function SettingsTab({
             <DatabaseZap size={17} />
             Sync Supabase
           </button>
+          {backendMode === "supabase" ? (
+            <div className="portalSecurityBox">
+              <div>
+                <span>Account security</span>
+                <strong>Change password</strong>
+              </div>
+              <div className="portalFormGrid singleColumn">
+                <label>
+                  New password
+                  <input
+                    autoComplete="new-password"
+                    onChange={(event) => setNewPassword(event.target.value)}
+                    placeholder="Minimum 8 characters"
+                    type="password"
+                    value={newPassword}
+                  />
+                </label>
+                <label>
+                  Confirm password
+                  <input
+                    autoComplete="new-password"
+                    onChange={(event) => setConfirmPassword(event.target.value)}
+                    placeholder="Repeat new password"
+                    type="password"
+                    value={confirmPassword}
+                  />
+                </label>
+              </div>
+              <button
+                className="portalSecondaryAction"
+                disabled={securityBusy || !passwordReady}
+                onClick={async () => {
+                  await onChangePassword(newPassword);
+                  setNewPassword("");
+                  setConfirmPassword("");
+                }}
+                type="button"
+              >
+                <KeyRound size={17} />
+                {securityBusy ? "Updating..." : "Update password"}
+              </button>
+              {securityMessage ? <p className="portalAuthMessage">{securityMessage}</p> : null}
+              {newPassword && newPassword !== confirmPassword ? (
+                <p className="portalErrorText">Passwords do not match.</p>
+              ) : null}
+            </div>
+          ) : null}
         </article>
 
         <article className="portalPanel">

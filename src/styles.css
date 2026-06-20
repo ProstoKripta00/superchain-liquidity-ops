@@ -7057,6 +7057,30 @@ select {
   font-weight: 900;
 }
 
+.portalSecurityBox {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid #e3e3e0;
+}
+
+.portalSecurityBox > div:first-child {
+  display: grid;
+  gap: 4px;
+}
+
+.portalSecurityBox > div:first-child span {
+  color: #ff0421;
+  font-size: 0.78rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.portalSecurityBox > div:first-child strong {
+  font-size: 1.05rem;
+}
+
 .portalBackendNotice {
   display: flex;
   gap: 10px;

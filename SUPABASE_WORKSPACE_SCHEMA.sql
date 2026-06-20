@@ -281,8 +281,11 @@ create policy "file read access"
 on public.report_files
 for select
 using (
-  organization_id = public.current_profile_org()
-  or public.current_profile_role() in ('operator', 'admin')
+  public.current_profile_role() in ('operator', 'admin')
+  or (
+    organization_id = public.current_profile_org()
+    and access = 'Client visible'
+  )
 );
 
 drop policy if exists "operators manage files" on public.report_files;
@@ -346,8 +349,14 @@ for select
 using (
   bucket_id = 'report-files'
   and (
-    split_part(name, '/', 1) = public.current_profile_org()::text
-    or public.current_profile_role() in ('operator', 'admin')
+    public.current_profile_role() in ('operator', 'admin')
+    or exists (
+      select 1
+      from public.report_files
+      where report_files.storage_path = storage.objects.name
+        and report_files.organization_id = public.current_profile_org()
+        and report_files.access = 'Client visible'
+    )
   )
 );
 

@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview --host 127.0.0.1",
     "lint": "tsc -b --pretty false",
-    "snapshot": "node scripts/generate-snapshot.mjs"
+    "snapshot": "node scripts/generate-snapshot.mjs",
+    "bootstrap:workspace": "node scripts/bootstrap-workspace.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.108.2",

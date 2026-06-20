@@ -135,11 +135,16 @@ export async function loadSupabaseWorkspaceState(): Promise<WorkspaceLoadResult>
   throwIfSupabaseError(messagesResult.error);
   throwIfSupabaseError(activityResult.error);
 
-  const fileRows = (filesResult.data ?? []) as ReportFileRow[];
+  const profileRows = (profilesResult.data ?? []) as ProfileRow[];
+  const currentProfile = await getCurrentProfile(profileRows);
+  const fileRows = filterReportFilesForProfile(
+    (filesResult.data ?? []) as ReportFileRow[],
+    currentProfile,
+  );
   const fileUrlMap = await buildSignedFileUrlMap(fileRows);
 
   const state: WorkspaceState = {
-    users: ((profilesResult.data ?? []) as ProfileRow[]).map(profileFromRow),
+    users: profileRows.map(profileFromRow),
     organizations: ((organizationsResult.data ?? []) as OrganizationRow[]).map(organizationFromRow),
     requests: ((requestsResult.data ?? []) as RequestRow[]).map(requestFromRow),
     reports: ((reportsResult.data ?? []) as ReportRow[]).map((report) =>
@@ -157,6 +162,25 @@ export async function loadSupabaseWorkspaceState(): Promise<WorkspaceLoadResult>
     mode: "supabase",
     state: hydrateEmptyState(state),
   };
+}
+
+async function getCurrentProfile(profiles: ProfileRow[]) {
+  const client = requireSupabase();
+  const { data, error } = await client.auth.getUser();
+
+  if (error || !data.user) {
+    return null;
+  }
+
+  return profiles.find((profile) => profile.id === data.user.id) ?? null;
+}
+
+function filterReportFilesForProfile(files: ReportFileRow[], profile: ProfileRow | null) {
+  if (profile?.role === "client") {
+    return files.filter((file) => file.access === "Client visible");
+  }
+
+  return files;
 }
 
 export async function createSupabaseWorkspaceRequest(input: NewWorkspaceRequestInput) {
@@ -489,6 +513,24 @@ export async function createSupabaseGeneratedReportPackage(
 export async function signInWorkspaceUser(email: string, password: string) {
   const client = requireSupabase();
   const { error } = await client.auth.signInWithPassword({ email, password });
+
+  throwIfSupabaseError(error);
+}
+
+export async function sendWorkspacePasswordReset(email: string) {
+  const client = requireSupabase();
+  const redirectTo =
+    typeof window === "undefined"
+      ? undefined
+      : `${window.location.origin}${window.location.pathname}#/app`;
+  const { error } = await client.auth.resetPasswordForEmail(email, { redirectTo });
+
+  throwIfSupabaseError(error);
+}
+
+export async function updateWorkspacePassword(password: string) {
+  const client = requireSupabase();
+  const { error } = await client.auth.updateUser({ password });
 
   throwIfSupabaseError(error);
 }
