@@ -4935,7 +4935,6 @@ function ProtocolLogo({ scan }: { scan: ProtocolScan }) {
       <span className="protocolLogoFallback">{initials(scan.name)}</span>
       <img
         alt=""
-        loading="lazy"
         onError={(event) => {
           event.currentTarget.style.display = "none";
         }}
