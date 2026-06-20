@@ -5,6 +5,13 @@
   "description": "Stable public delivery examples for client outreach, buyer previews, and service handoff.",
   "files": [
     {
+      "id": "7-day-liquidity-impact-report-pdf",
+      "title": "7-Day Liquidity Impact Report PDF Example",
+      "format": "pdf",
+      "path": "examples/7-day-liquidity-impact-report-example.pdf",
+      "useCase": "Send as the primary proof artifact before offering the $500 report."
+    },
+    {
       "id": "7-day-liquidity-impact-report",
       "title": "7-Day Liquidity Impact Report Example",
       "format": "markdown",

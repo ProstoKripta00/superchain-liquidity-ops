@@ -2,7 +2,7 @@ export type StaticSampleFile = {
   id: string;
   title: string;
   category: string;
-  format: "Markdown" | "CSV" | "JSON";
+  format: "PDF" | "Markdown" | "CSV" | "JSON";
   fileName: string;
   href: string;
   description: string;
@@ -14,6 +14,17 @@ const SAMPLE_BASE_URL = "/superchain-liquidity-ops/examples/";
 export const STATIC_SAMPLE_MANIFEST_URL = `${SAMPLE_BASE_URL}index.json`;
 
 export const STATIC_SAMPLE_FILES: StaticSampleFile[] = [
+  {
+    id: "7-day-liquidity-impact-report-pdf",
+    title: "7-Day Liquidity Impact Report PDF",
+    category: "Primary PDF example",
+    format: "PDF",
+    fileName: "7-day-liquidity-impact-report-example.pdf",
+    href: `${SAMPLE_BASE_URL}7-day-liquidity-impact-report-example.pdf`,
+    description:
+      "Polished buyer-facing PDF example with executive answer, evidence table, recommendations, payment boundary and handoff rules.",
+    useCase: "Send as the primary proof artifact before offering the $500 report.",
+  },
   {
     id: "7-day-liquidity-impact-report",
     title: "7-Day Liquidity Impact Report",

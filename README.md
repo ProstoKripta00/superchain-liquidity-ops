@@ -7,6 +7,7 @@ Superchain Liquidity Ops turns public OP and Superchain DEX data into practical 
 ## Live Site
 
 - Public site: https://prostokripta00.github.io/superchain-liquidity-ops/
+- Primary PDF example: https://prostokripta00.github.io/superchain-liquidity-ops/examples/7-day-liquidity-impact-report-example.pdf
 - Methodology: `METHODOLOGY.md`
 - Production runbook: `PRODUCTION_RUNBOOK.md`
 - Repository: https://github.com/ProstoKripta00/superchain-liquidity-ops

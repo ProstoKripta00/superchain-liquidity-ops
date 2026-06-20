@@ -2211,12 +2211,26 @@ function PublicPricingSection() {
       </div>
 
       <div className="buyerPricingLead">
-        <h3>Get a 7-day Liquidity Impact Report for your OP / Superchain protocol.</h3>
-        <p>
-          Best for protocol teams that need to understand whether liquidity and
-          incentive programs are producing measurable DEX outcomes before they
-          commit more budget or write an update.
-        </p>
+        <div>
+          <h3>Get a 7-day Liquidity Impact Report for your OP / Superchain protocol.</h3>
+          <p>
+            Best for protocol teams that need to understand whether liquidity and
+            incentive programs are producing measurable DEX outcomes before they
+            commit more budget or write an update.
+          </p>
+        </div>
+        <aside>
+          <span>Buyer artifact</span>
+          <strong>PDF report example</strong>
+          <a
+            href="/superchain-liquidity-ops/examples/7-day-liquidity-impact-report-example.pdf"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Open PDF example
+            <ExternalLink size={14} />
+          </a>
+        </aside>
       </div>
 
       <div className="buyerPricingGrid">
@@ -4799,6 +4813,7 @@ function StaticSampleFilesSection({
           </div>
 
           <div className="staticSamplesStats">
+            <Stat label="PDF" value={String(files.filter((file) => file.format === "PDF").length)} />
             <Stat label="Markdown" value={String(files.filter((file) => file.format === "Markdown").length)} />
             <Stat label="CSV" value={String(files.filter((file) => file.format === "CSV").length)} />
             <Stat label="JSON" value={String(files.filter((file) => file.format === "JSON").length)} />

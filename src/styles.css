@@ -594,6 +594,22 @@ select {
   line-height: 1;
 }
 
+.buyerPricingLead aside a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  width: fit-content;
+  margin-top: 10px;
+  color: #0f0f0f;
+  font-size: 14px;
+  font-weight: 950;
+  text-decoration: none;
+}
+
+.buyerPricingLead aside a:hover {
+  color: #ff0421;
+}
+
 .buyerPricingGrid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
