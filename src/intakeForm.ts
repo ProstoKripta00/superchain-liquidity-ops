@@ -72,7 +72,7 @@ export const INTAKE_METRIC_OPTIONS: Array<{ id: IntakeMetricId; label: string }>
 
 export const INTAKE_DECISIONS: Array<{ id: IntakeDecisionId; label: string }> = [
   { id: "growth-budget", label: "Growth budget decision" },
-  { id: "incentive-review", label: "DAO / incentive evidence" },
+  { id: "incentive-review", label: "Liquidity impact evidence" },
   { id: "lp-update", label: "LP / stakeholder update" },
   { id: "protocol-monitoring", label: "Protocol monitoring" },
   { id: "custom", label: "Custom decision" },
@@ -87,9 +87,9 @@ export const INTAKE_DELIVERABLE_FORMATS = [
 ];
 
 export const INTAKE_BUDGETS = [
-  "$750-$1,500",
-  "$1,000-$2,500/mo",
-  "$2,000-$4,000",
+  "$500 pilot",
+  "$1,500-$3,000",
+  "From $1,500/mo",
   "Need quote",
 ];
 
@@ -115,8 +115,8 @@ export function buildDefaultIntakeForm({
 
   return {
     protocolName: requestForm.protocol,
-    teamName: selectedLead?.protocolName ?? requestForm.protocol,
-    contactName: selectedLead?.contactName ?? "",
+    teamName: requestForm.organization || selectedLead?.protocolName || requestForm.protocol,
+    contactName: requestForm.name || selectedLead?.contactName || "",
     contactRoute: selectedLead?.contactUrl || requestForm.contact,
     role: selectedLead ? "Growth / liquidity owner" : "Founder / growth / ecosystem",
     decision:
@@ -130,7 +130,13 @@ export function buildDefaultIntakeForm({
     deadline: requestForm.deadline,
     budget: requestForm.budget,
     sourceLinks: selectedLead?.sourceUrls.join("\n") ?? "",
-    notes: requestForm.notes,
+    notes: [
+      requestForm.evaluationGoal,
+      requestForm.urgency ? `Urgency: ${requestForm.urgency}` : "",
+      requestForm.notes,
+    ]
+      .filter(Boolean)
+      .join("\n"),
     publicIssueOk: false,
   };
 }

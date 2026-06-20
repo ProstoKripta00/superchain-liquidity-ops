@@ -22,7 +22,7 @@ export const STATIC_SAMPLE_FILES: StaticSampleFile[] = [
     fileName: "protocol-diagnostic-sample.md",
     href: `${SAMPLE_BASE_URL}protocol-diagnostic-sample.md`,
     description:
-      "Fixed-scope protocol diagnostic sample with findings, recommendation, metrics and delivery boundary.",
+      "Fixed-scope protocol diagnostic example with findings, recommendation, metrics and delivery boundary.",
     useCase: "Send before pitching a paid diagnostic sprint.",
   },
   {
@@ -33,7 +33,7 @@ export const STATIC_SAMPLE_FILES: StaticSampleFile[] = [
     fileName: "liquidity-monitoring-sample.md",
     href: `${SAMPLE_BASE_URL}liquidity-monitoring-sample.md`,
     description:
-      "Weekly monitoring sample with watchlist, operating cadence and source-health notes.",
+      "Weekly monitoring example with watchlist, operating cadence and source-health notes.",
     useCase: "Use when selling recurring monitoring.",
   },
   {
@@ -44,7 +44,7 @@ export const STATIC_SAMPLE_FILES: StaticSampleFile[] = [
     fileName: "incentive-evidence-pack-sample.md",
     href: `${SAMPLE_BASE_URL}incentive-evidence-pack-sample.md`,
     description:
-      "Decision-ready sample that maps DEX activity, fees, market health and source transparency.",
+      "Decision-ready example that maps DEX activity, fees, market health and source transparency.",
     useCase: "Attach to protocol, growth, incentive, or ecosystem evidence pitches.",
   },
   {
@@ -55,7 +55,7 @@ export const STATIC_SAMPLE_FILES: StaticSampleFile[] = [
     fileName: "client-intake-sample.md",
     href: `${SAMPLE_BASE_URL}client-intake-sample.md`,
     description:
-      "Sample client-scope form showing contact, decision, chains, metrics, budget and next steps.",
+      "Client-scope example showing contact, decision, chains, metrics, budget and next steps.",
     useCase: "Show prospects what information is needed before paid work starts.",
   },
   {
@@ -66,7 +66,7 @@ export const STATIC_SAMPLE_FILES: StaticSampleFile[] = [
     fileName: "request-report-sample.md",
     href: `${SAMPLE_BASE_URL}request-report-sample.md`,
     description:
-      "Sample report request with selected package, need, deliverables and acceptance criteria.",
+      "Report request example with selected package, need, deliverables and acceptance criteria.",
     useCase: "Use as a public request template.",
   },
   {

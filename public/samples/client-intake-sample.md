@@ -1,6 +1,6 @@
-# Client Intake Form Sample
+# Client Intake Form Example
 
-Generated: static sample
+Generated: static delivery example
 Product: Superchain Liquidity Ops
 
 ## Client

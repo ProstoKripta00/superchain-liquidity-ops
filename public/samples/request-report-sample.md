@@ -1,12 +1,15 @@
-# Request Report Sample
+# Request Report Example
 
-Generated: static sample
+Generated: static delivery example
 Project: Superchain Liquidity Ops
+Name: Not provided in public example
+Organization: Example Protocol Growth
 Protocol / client: Example Protocol
-Contact route: Not provided in public sample
+Protocol / market scope: OP Mainnet DEX liquidity
+Contact route: Not provided in public example
 Request type: Liquidity Evidence Pack
 Suggested budget: $1,500-$3,000
-Target deadline: Flexible
+Urgency: Flexible
 
 ## Selected Package
 

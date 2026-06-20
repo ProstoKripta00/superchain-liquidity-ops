@@ -1,13 +1,13 @@
-# Liquidity Monitoring Retainer Sample
+# Liquidity Monitoring Retainer Example
 
-Generated: static sample
+Generated: static delivery example
 Product: Superchain Liquidity Ops
 Service: Liquidity Monitoring Retainer
-Audience: Protocol growth, liquidity, and incentives operators
+Audience: Protocol growth, liquidity, and ecosystem operators
 
 ## Purpose
 
-This sample shows the weekly monitoring format for a protocol that needs repeatable visibility into Superchain market quality.
+This example shows the monitoring format for a protocol that needs repeatable visibility into Superchain market quality.
 
 ## Weekly Snapshot
 
@@ -30,7 +30,7 @@ This sample shows the weekly monitoring format for a protocol that needs repeata
 - Export the market CSV.
 - Update the source-audit notes.
 - Send a short action memo to the client.
-- Save follow-up state in the CRM.
+- Save the follow-up owner and next action outside the public report.
 
 ## Delivery Boundary
 

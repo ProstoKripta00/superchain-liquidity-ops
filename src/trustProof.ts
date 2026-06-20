@@ -67,7 +67,7 @@ export function buildTrustProofPack({
       {
         title: "No fake client logos",
         detail:
-          "The public page does not invent customers, testimonials, audits, or paid case studies. Proof is limited to the repo, live app, exports, docs, and sample artifacts.",
+          "The public page does not invent customers, testimonials, audits, or paid case studies. Proof is limited to the repo, live app, exports, docs, and delivery examples.",
       },
       {
         title: "Not a security audit",
@@ -80,9 +80,9 @@ export function buildTrustProofPack({
           "If a public source does not expose a metric, the app keeps that gap visible instead of filling it with manual or synthetic numbers.",
       },
       {
-        title: "Static deployment boundary",
+        title: "Private client data boundary",
         detail:
-          "Current CRM and intake records are saved in browser local storage. Shared backend storage is intentionally listed as a future service upgrade.",
+          "The public site does not collect private client data automatically. Paid delivery is scoped manually before private report files are shared.",
       },
     ],
     generatedAt: new Date().toISOString(),
@@ -91,7 +91,7 @@ export function buildTrustProofPack({
         action: "Open repo",
         category: "Source",
         description:
-          "Public TypeScript code, deployment workflow, methodology docs, and sample files can be inspected before a buyer responds.",
+          "Public TypeScript code, deployment workflow, methodology docs, and delivery examples can be inspected before a buyer responds.",
         href: REPO_URL,
         id: "public-repository",
         proof: "GitHub repository",
@@ -99,7 +99,7 @@ export function buildTrustProofPack({
         title: "Open-source repository",
       },
       {
-        action: "Open demo",
+        action: "Open live site",
         category: "Product",
         description:
           "The dashboard runs from GitHub Pages and loads public Superchain market data directly in the browser.",
@@ -126,10 +126,10 @@ export function buildTrustProofPack({
         description:
           "Stable Markdown, CSV, JSON, and manifest files are served as public delivery examples.",
         href: MANIFEST_URL,
-        id: "static-sample-manifest",
-        proof: `${staticSampleCount} static sample files`,
+        id: "static-delivery-manifest",
+        proof: `${staticSampleCount} static delivery files`,
         status: "Public",
-        title: "Static sample manifest",
+        title: "Static delivery manifest",
       },
       {
         action: "View cases",
@@ -182,13 +182,13 @@ export function buildTrustProofPack({
         value: String(protocolCount),
       },
       {
-        label: "Sample reports",
+        label: "Report examples",
         note: "Generated product reports",
         value: String(sampleReportCount),
       },
       {
         label: "Static files",
-        note: "Permanent sample artifacts",
+        note: "Permanent delivery examples",
         value: String(staticSampleCount),
       },
       {
@@ -198,6 +198,6 @@ export function buildTrustProofPack({
       },
     ],
     summary:
-      "A compact proof layer for buyers and operators: public source code, live demo, methodology, sample artifacts, source audit, and clear delivery boundaries without fake traction claims.",
+      "A compact proof layer for buyers and operators: public source code, live site, methodology, delivery examples, source audit, and clear delivery boundaries without fake traction claims.",
   };
 }

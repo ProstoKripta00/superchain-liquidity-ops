@@ -9,11 +9,16 @@ export type RequestReportType =
   | "custom";
 
 export type RequestReportForm = {
+  name: string;
+  organization: string;
   protocol: string;
+  market: string;
   contact: string;
   requestType: RequestReportType;
-  deadline: string;
+  urgency: string;
   budget: string;
+  evaluationGoal: string;
+  deadline: string;
   notes: string;
 };
 
@@ -24,7 +29,6 @@ export type RequestReportPack = {
   requestMarkdown: string;
   requestJson: string;
   telegramCopy: string;
-  githubIssueUrl: string;
   contactRoutes: Array<{
     id: string;
     label: string;
@@ -44,14 +48,10 @@ export const REQUEST_TYPES: Array<{ id: RequestReportType; label: string }> = [
 
 export const REQUEST_BUDGETS = [
   "$500 pilot",
-  "$750-$1,500",
-  "$750-$1,500/mo",
   "$1,500-$3,000",
+  "From $1,500/mo",
   "Need quote",
 ];
-
-const ISSUE_REPO_URL =
-  "https://github.com/ProstoKripta00/superchain-liquidity-ops/issues/new";
 
 export function buildDefaultRequestReportForm({
   salesKit,
@@ -66,12 +66,17 @@ export function buildDefaultRequestReportForm({
   const requestType = mapOfferToRequestType(selectedOffer);
 
   return {
+    name: "",
+    organization: selectedLead?.protocolName ?? "",
     protocol,
+    market: "",
     contact: selectedLead?.contactUrl ?? selectedLead?.contactTarget ?? "",
     requestType,
-    deadline: "",
+    urgency: "This week",
     budget: "$500 pilot",
-    notes: `Need a 7-day Liquidity Impact Report for ${protocol}: OP / Superchain volume, fees, weak markets, source audit, CSV evidence, PDF report, and next actions.`,
+    evaluationGoal: `Evaluate whether ${protocol} liquidity incentives are creating real DEX outcomes.`,
+    deadline: "",
+    notes: "",
   };
 }
 
@@ -93,8 +98,11 @@ export function buildRequestReportPack({
   const requestTypeLabel =
     REQUEST_TYPES.find((item) => item.id === form.requestType)?.label ?? "Custom scope";
   const protocol = form.protocol.trim() || salesKit.targetProtocol;
+  const name = form.name.trim() || "Not provided";
+  const organization = form.organization.trim() || "Not provided";
+  const market = form.market.trim() || "Not specified";
   const contact = form.contact.trim() || "Not provided";
-  const deadline = form.deadline || "Flexible";
+  const urgency = form.urgency || form.deadline || "Flexible";
   const budget = form.budget || offer?.priceLabel || salesKit.priceLabel;
   const title = `${protocol} ${requestTypeLabel} request`;
   const intakeChecklist = [
@@ -109,11 +117,14 @@ export function buildRequestReportPack({
     "",
     `Generated: ${generatedAt}`,
     `Project: Superchain Liquidity Ops`,
+    `Name: ${name}`,
+    `Organization: ${organization}`,
     `Protocol / client: ${protocol}`,
+    `Protocol / market scope: ${market}`,
     `Contact route: ${contact}`,
     `Request type: ${requestTypeLabel}`,
     `Suggested budget: ${budget}`,
-    `Target deadline: ${deadline}`,
+    `Urgency: ${urgency}`,
     "",
     "## Selected Package",
     "",
@@ -122,7 +133,8 @@ export function buildRequestReportPack({
     "",
     "## Need",
     "",
-    form.notes.trim() || "Client wants a source-backed OP / Superchain liquidity impact report.",
+    form.evaluationGoal.trim() ||
+      "Client wants to evaluate whether liquidity incentives are creating real DEX outcomes.",
     "",
     "## Deliverables",
     "",
@@ -157,9 +169,12 @@ export function buildRequestReportPack({
     title,
     form: {
       ...form,
+      name,
+      organization,
       protocol,
+      market,
       contact,
-      deadline,
+      urgency,
       budget,
       requestTypeLabel,
     },
@@ -172,39 +187,37 @@ export function buildRequestReportPack({
           deliverables: offer.deliverables,
           acceptanceCriteria: offer.acceptanceCriteria,
         }
-      : null,
+      : "Not selected",
     publicScope: {
       targetProtocol: salesKit.targetProtocol,
-      selectedLead: selectedLead?.protocolName ?? null,
-      recommendedOffer: selectedLead?.recommendedOfferName ?? offer?.name ?? null,
+      selectedLead: selectedLead?.protocolName ?? "Not selected",
+      recommendedOffer: selectedLead?.recommendedOfferName ?? offer?.name ?? "Not selected",
     },
   };
   const requestJson = JSON.stringify(requestPayload, null, 2);
   const telegramCopy = [
     `Request: ${requestTypeLabel} for ${protocol}`,
+    `Name: ${name}`,
+    `Organization: ${organization}`,
+    `Market: ${market}`,
     `Budget: ${budget}`,
-    `Deadline: ${deadline}`,
+    `Urgency: ${urgency}`,
     `Contact: ${contact}`,
     "",
-    form.notes.trim() || "Need source-backed OP / Superchain liquidity evidence.",
+    form.evaluationGoal.trim() || "Need source-backed OP / Superchain liquidity evidence.",
   ].join("\n");
-  const githubIssueUrl = `${ISSUE_REPO_URL}?title=${encodeURIComponent(
-    title,
-  )}&body=${encodeURIComponent(requestMarkdown)}`;
   const contactRoutes = [
     {
-      id: "github-issue",
-      label: "Public request",
-      value: "Open a structured public request",
-      href: githubIssueUrl,
-      note: "Use only when the buyer is comfortable with a public scope.",
+      id: "direct-request",
+      label: "Direct request",
+      value: "Send the copied request by email, Telegram, X, or Discord",
+      note: "Best first step for a paid 7-day report.",
     },
     {
-      id: "github-profile",
-      label: "GitHub profile",
-      value: "github.com/ProstoKripta00",
-      href: "https://github.com/ProstoKripta00",
-      note: "Use this when a client wants to inspect the builder profile first.",
+      id: "scope-payment",
+      label: "Scope and payment",
+      value: "Confirm scope, price, delivery date, and payment route before work starts",
+      note: "Private details stay outside the public site.",
     },
     {
       id: "manual-copy",
@@ -217,11 +230,10 @@ export function buildRequestReportPack({
   return {
     generatedAt,
     title,
-    summary: `${requestTypeLabel} request for ${protocol}. Budget ${budget}, deadline ${deadline}.`,
+    summary: `${requestTypeLabel} request for ${protocol}. Budget ${budget}, urgency ${urgency}.`,
     requestMarkdown,
     requestJson,
     telegramCopy,
-    githubIssueUrl,
     contactRoutes,
     intakeChecklist,
   };
@@ -249,7 +261,7 @@ function normalizeBudget(priceLabel: string) {
   }
 
   if (priceLabel.includes("/mo")) {
-    return "$750-$1,500/mo";
+    return "From $1,500/mo";
   }
 
   if (priceLabel.includes("$1,500")) {

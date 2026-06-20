@@ -1,54 +1,54 @@
 {
-  "generatedAt": "static-sample",
+  "generatedAt": "static-delivery-example",
   "product": "Superchain Liquidity Ops",
-  "type": "static-sample-file-manifest",
-  "description": "Stable public sample files for client outreach, buyer previews, and service delivery examples.",
+  "type": "static-delivery-example-manifest",
+  "description": "Stable public delivery examples for client outreach, buyer previews, and service handoff.",
   "files": [
     {
       "id": "protocol-diagnostic",
-      "title": "Protocol Diagnostic Sprint Sample",
+      "title": "Protocol Diagnostic Sprint Example",
       "format": "markdown",
       "path": "samples/protocol-diagnostic-sample.md",
       "useCase": "Send before pitching a fixed-scope diagnostic."
     },
     {
       "id": "liquidity-monitoring",
-      "title": "Liquidity Monitoring Retainer Sample",
+      "title": "Liquidity Monitoring Retainer Example",
       "format": "markdown",
       "path": "samples/liquidity-monitoring-sample.md",
       "useCase": "Show weekly monitoring structure."
     },
     {
       "id": "incentive-evidence-pack",
-      "title": "Liquidity Evidence Pack Sample",
+      "title": "Liquidity Evidence Pack Example",
       "format": "markdown",
       "path": "samples/incentive-evidence-pack-sample.md",
       "useCase": "Show decision-ready evidence structure."
     },
     {
       "id": "client-intake",
-      "title": "Client Intake Form Sample",
+      "title": "Client Intake Form Example",
       "format": "markdown",
       "path": "samples/client-intake-sample.md",
       "useCase": "Show what a scoped client request looks like."
     },
     {
       "id": "request-report",
-      "title": "Request Report Sample",
+      "title": "Request Report Example",
       "format": "markdown",
       "path": "samples/request-report-sample.md",
       "useCase": "Show how a report request is framed."
     },
     {
       "id": "market-impact-csv",
-      "title": "Market Impact CSV Sample",
+      "title": "Market Impact CSV Example",
       "format": "csv",
       "path": "samples/market-impact-sample.csv",
       "useCase": "Show the expected tabular evidence format."
     },
     {
       "id": "source-audit-json",
-      "title": "Source Audit JSON Sample",
+      "title": "Source Audit JSON Example",
       "format": "json",
       "path": "samples/source-audit-sample.json",
       "useCase": "Show source transparency and delivery boundaries."

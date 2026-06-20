@@ -7,7 +7,7 @@ export type PublicCaseStudy = {
   title: string;
   protocolName: string;
   networkFocus: string;
-  status: "Live generated" | "Template fallback";
+  status: "Live generated" | "Delivery example";
   generatedAt: string;
   summary: string;
   decisionQuestion: string;
@@ -54,7 +54,7 @@ const CASE_STUDY_DEFINITIONS: CaseStudyDefinition[] = [
     decisionQuestion:
       "Does Uniswap have enough Superchain activity to support an incentive-impact evidence pack?",
     fallbackSummary:
-      "Template for measuring whether Uniswap Superchain markets produce enough volume, fees, and source confidence for operator evidence.",
+      "Example study for measuring whether Uniswap Superchain markets produce enough volume, fees, and source confidence for operator evidence.",
   },
   {
     id: "aerodrome-base",
@@ -63,16 +63,16 @@ const CASE_STUDY_DEFINITIONS: CaseStudyDefinition[] = [
     decisionQuestion:
       "Is Base DEX activity translating into measurable fee output and sustainable market health?",
     fallbackSummary:
-      "Template for a Base-focused DEX incentive review using volume, fee capture, and watchlist market signals.",
+      "Example study for a Base-focused DEX liquidity review using volume, fee capture, and watchlist market signals.",
   },
   {
     id: "velodrome-op",
     protocolName: "Velodrome",
     networkFocus: "OP Mainnet",
     decisionQuestion:
-      "Can OP Mainnet liquidity programs show clear before/after impact evidence for DAO or incentive updates?",
+      "Can OP Mainnet liquidity programs show clear before/after impact evidence for ecosystem or protocol updates?",
     fallbackSummary:
-      "Template for an OP Mainnet liquidity-program evidence review with public data limitations disclosed.",
+      "Example study for an OP Mainnet liquidity-program evidence review with public data limitations disclosed.",
   },
 ];
 
@@ -92,7 +92,7 @@ export function buildPublicCaseStudies({
     const topMarkets = [...matchedMarkets]
       .sort((left, right) => (right.volume30dUsd ?? 0) - (left.volume30dUsd ?? 0))
       .slice(0, 5);
-    const status = scan ? "Live generated" : "Template fallback";
+    const status = scan ? "Live generated" : "Delivery example";
     const summary = scan
       ? `${scan.name} scores ${scan.score}/100 with grade ${scan.healthScore.grade} across ${scan.marketCount} matched Superchain markets. The case study focuses on whether volume, fees, trend, and source confidence are strong enough for incentive-impact evidence.`
       : definition.fallbackSummary;
@@ -115,7 +115,7 @@ export function buildPublicCaseStudies({
         ]
       : [
           { label: "Health score", value: "Unavailable" },
-          { label: "Grade", value: "Template" },
+          { label: "Grade", value: "Example" },
           { label: "Data confidence", value: "Unavailable" },
           { label: "30d volume", value: "Refresh live data" },
           { label: "30d fees", value: "Refresh live data" },

@@ -6,7 +6,7 @@ export type SampleReportId =
   | "velodrome-monitoring"
   | "aerodrome-incentive-evidence";
 
-export type SampleReportStatus = "Live generated" | "Template fallback";
+export type SampleReportStatus = "Live generated" | "Delivery example";
 
 export type SampleReportMetric = {
   label: string;
@@ -53,18 +53,18 @@ const sampleDefinitions: SampleReportDefinition[] = [
     fallbackSummary:
       "A public diagnostic format for reviewing Superchain market activity, fee visibility, weak spots, and next actions for a major DEX venue.",
     sampleUse:
-      "Send this as a delivery sample before offering a paid diagnostic sprint.",
+      "Send this as a delivery example before offering a paid diagnostic sprint.",
   },
   {
     id: "velodrome-monitoring",
     protocolId: "velodrome",
     protocolName: "Velodrome",
-    title: "Velodrome Liquidity Monitoring Sample",
+    title: "Velodrome Liquidity Monitoring Example",
     serviceType: "Liquidity Monitoring Retainer",
-    audience: "OP-aligned protocol and incentives operators",
+    audience: "OP-aligned protocol and liquidity operators",
     fallbackSegment: "OP-aligned liquidity hub",
     fallbackSummary:
-      "A recurring monitoring sample for tracking Superchain liquidity outcomes, watch markets, source status, and weekly operating actions.",
+      "A recurring monitoring example for tracking Superchain liquidity outcomes, watch markets, source status, and operating actions.",
     sampleUse:
       "Use this to sell weekly monitoring after showing that the scanner can produce repeatable evidence.",
   },
@@ -72,14 +72,14 @@ const sampleDefinitions: SampleReportDefinition[] = [
     id: "aerodrome-incentive-evidence",
     protocolId: "aerodrome",
     protocolName: "Aerodrome",
-    title: "Aerodrome DAO / Incentive Evidence Pack Sample",
-    serviceType: "DAO / Incentive Evidence Pack",
+    title: "Aerodrome Deeper Evidence Pack Example",
+    serviceType: "Deeper Evidence Pack",
     audience: "Ecosystem teams, growth leads, and protocol contributors",
     fallbackSegment: "Base liquidity hub",
     fallbackSummary:
-      "An incentive evidence sample that packages activity, fee visibility, market quality, source limits, and decision-ready next steps.",
+      "A deeper evidence example that packages activity, fee visibility, market quality, source limits, and decision-ready next steps.",
     sampleUse:
-      "Attach this sample when pitching DAO reporting, incentive review, or post-program evidence work.",
+      "Attach this example when pitching a deeper paid report, liquidity review, or post-program evidence work.",
   },
 ];
 
@@ -111,9 +111,9 @@ export function buildSampleReportsJson(reports: SampleReport[]) {
   return JSON.stringify(
     {
       generatedAt: new Date().toISOString(),
-      type: "public-sample-reports",
+      type: "public-delivery-examples",
       description:
-        "Client-ready public sample reports generated from the Superchain Liquidity Ops scanner when live protocol data is available.",
+        "Client-ready public delivery examples generated from the Superchain Liquidity Ops scanner when live protocol data is available.",
       reports: reports.map((report) => ({
         id: report.id,
         title: report.title,
@@ -158,19 +158,19 @@ function buildSampleReport(
     `Generated: ${miniReport.generatedAt}`,
     `Data refresh: ${scan.updatedAt}`,
     "",
-    "## Sample Delivery Context",
+    "## Delivery Example Context",
     "",
     `Service type: ${definition.serviceType}`,
     `Audience: ${definition.audience}`,
-    `Sample status: Live generated from current public scanner data`,
+    `Example status: Live generated from current public scanner data`,
     "",
-    "## How This Sample Is Used",
+    "## How This Example Is Used",
     "",
     definition.sampleUse,
     "",
     "## Client Delivery Boundary",
     "",
-    "- This sample is a delivery example, not a security audit.",
+    "- This is a delivery example, not a security audit.",
     "- Paid delivery can add custom protocol scope, deeper pool analysis, and recurring update cadence.",
     "- The report is generated from public endpoints and keeps missing values visible.",
     "",
@@ -205,7 +205,7 @@ function buildFallbackSampleReport(
     `# ${definition.title}`,
     "",
     `Generated: ${generatedAt}`,
-    "Sample status: Template fallback because live scanner data is not available for this protocol in the current snapshot.",
+    "Example status: Delivery example because live scanner data is not available for this protocol in the current snapshot.",
     "",
     "## Executive Summary",
     "",
@@ -221,19 +221,19 @@ function buildFallbackSampleReport(
     "| Health score | Unavailable |",
     "| Data confidence | Unavailable |",
     "",
-    "## Sample Delivery Context",
+    "## Delivery Example Context",
     "",
     `Service type: ${definition.serviceType}`,
     `Audience: ${definition.audience}`,
-    `Sample status: Template fallback`,
+    `Example status: Delivery example`,
     "",
-    "## How This Sample Is Used",
+    "## How This Example Is Used",
     "",
     definition.sampleUse,
     "",
     "## Client Delivery Boundary",
     "",
-    "- This sample is a delivery format, not a security audit.",
+    "- This is a delivery format, not a security audit.",
     "- Paid delivery starts when current protocol data is available and scoped.",
     "- Missing values remain visible instead of being replaced with manual numbers.",
     "",
@@ -246,12 +246,12 @@ function buildFallbackSampleReport(
     title: definition.title,
     serviceType: definition.serviceType,
     audience: definition.audience,
-    status: "Template fallback",
+    status: "Delivery example",
     fileName: `${definition.id}.md`,
     generatedAt,
     summary: definition.fallbackSummary,
     metrics: [
-      { label: "Status", value: "Template" },
+      { label: "Status", value: "Example" },
       { label: "Markets", value: "Unavailable" },
       { label: "30d volume", value: "Unavailable" },
       { label: "30d fees", value: "Unavailable" },

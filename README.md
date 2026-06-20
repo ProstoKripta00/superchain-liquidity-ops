@@ -33,9 +33,9 @@ Pilot price: `$500`.
 
 Standard pricing after initial proof:
 
-- 7-day Liquidity Impact Report: `$750-$1,500`
-- Monthly Monitoring: `$750-$1,500/mo`
-- DAO / Incentive Evidence Pack: `$1,500-$3,000`
+- 7-day Diagnostic Report: `$500`
+- Deeper Evidence Pack: `$1,500-$3,000`
+- Monthly Monitoring: `from $1,500/mo`
 
 ## Public Product
 
@@ -45,7 +45,7 @@ The public site exposes the buyer-facing workflow:
 2. What You Get
 3. Protocol Scanner
 4. Generated Reports
-5. Sample Case Studies
+5. Public Case Studies
 6. Methodology
 7. Pricing
 8. Trust / Boundaries
@@ -76,7 +76,7 @@ Current workspace capabilities:
 - client/account overview for protocol organizations
 - admin console for creating organization/profile shells and production QA checks
 - settings screen with Supabase backend readiness notes
-- local demo storage for sales demos
+- local workspace storage for operator previews
 
 Production backend target:
 
@@ -94,7 +94,7 @@ Implemented backend connection:
 - Operator delivery can generate a Markdown/HTML/CSV/JSON report package and store it in private Storage.
 - Report file links are generated as signed URLs.
 - Admin console can create `organizations` and `profiles` rows for an existing Supabase Auth user UUID.
-- Without env keys, the public GitHub Pages app stays in local demo mode.
+- Without env keys, the public GitHub Pages app stays in local workspace mode.
 - `npm run snapshot` generates daily public snapshot artifacts for GitHub Pages and optional Supabase metadata upload.
 
 Supabase setup:
@@ -120,14 +120,14 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Seed a production demo workspace after env vars are available:
+Seed a production workspace after env vars are available:
 
 ```bash
 SUPABASE_URL=https://your-project-ref.supabase.co \
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key \
 ADMIN_EMAIL=owner@example.com \
-CLIENT_EMAIL=demo.client@example.com \
-CLIENT_PASSWORD='change-this-demo-password' \
+CLIENT_EMAIL=client@example.com \
+CLIENT_PASSWORD='change-this-client-password' \
 npm run bootstrap:workspace
 ```
 
@@ -170,14 +170,14 @@ They include:
 
 - pricing and service package builder
 - payment / terms block
-- static sample file links
+- static delivery example links
 - intake form
 - export pack builder
 - automation runbook
 - scheduled snapshots plan and public latest artifact links
 - service layer
 - lead target list
-- outreach pipeline with browser-local CRM fields
+- outreach pipeline with local operator follow-up fields
 
 These tools support manual commercialization. They are not required for a public buyer to understand the product.
 
@@ -191,7 +191,7 @@ Live now:
 - protocol scanner for Uniswap, Aerodrome, Velodrome, Curve, PancakeSwap, SushiSwap, Balancer, and KIM Exchange
 - protocol health score with grade, confidence, component weights, strengths, risks, and recommendation
 - generated Markdown reports with copy, download, and browser print flow
-- public case studies and sample reports
+- public case studies and delivery examples
 - request report flow with package, budget, scope, contact, and deliverable checklist
 - source audit with public endpoint links and status
 - scheduled snapshot worker with latest public JSON/CSV artifacts
@@ -248,7 +248,7 @@ The practical monetization path is manual reporting first, not a full SaaS subsc
 
 First buyer path:
 
-1. Send the public site and one sample case.
+1. Send the public site and one report example.
 2. Offer a fixed 7-day report for one protocol, DEX, or network scope.
 3. Deliver PDF/Markdown report, CSV evidence, source audit, weak-market review, and 3-5 next actions.
 4. If the buyer needs recurring visibility, offer monthly monitoring.
@@ -267,7 +267,7 @@ Live data adapters
         +-- DefiLlama fees endpoint
         |
         v
-Data engine: normalization, nullable metrics, ratios, weighted trends, market health
+Data engine: normalization, unavailable-metric handling, ratios, weighted trends, market health
         |
         v
 Protocol scanner, reports, case studies, pricing, request flow, source audit
@@ -293,8 +293,8 @@ src/protocols.ts             Tracked protocol profiles and slug matchers
 src/scanner.ts               Protocol readiness scoring and next-action logic
 src/reportGenerator.ts       Markdown mini-report generation
 src/caseStudies.ts           Public protocol case studies
-src/sampleReports.ts         Public sample report generation
-src/staticSamples.ts         Stable sample file metadata and GitHub Pages URLs
+src/sampleReports.ts         Public delivery example generation
+src/staticSamples.ts         Stable delivery example metadata and GitHub Pages URLs
 src/trustProof.ts            Verifiable proof stack and delivery boundaries
 src/requestReport.ts         Request report package and buyer intake copy
 src/exportPack.ts            Operator export pack manifest, CSV generation, JSON handoff
@@ -303,10 +303,10 @@ src/scheduledSnapshots.ts    Operator snapshot schedule plan, YAML template, JSO
 scripts/generate-snapshot.mjs Node worker for public snapshot artifacts and optional Supabase upload
 src/serviceLayer.ts          Operator service offers and package briefs
 src/leadTargets.ts           Operator lead shortlist
-src/outreachPipeline.ts      Operator outreach pipeline and local CRM fields
+src/outreachPipeline.ts      Operator outreach pipeline and local follow-up fields
 src/App.tsx                  Main UI
 src/styles.css               Product UI
-public/samples/              Static Markdown, CSV, JSON, and manifest sample files
+public/samples/              Static Markdown, CSV, JSON, and manifest delivery examples
 public/snapshots/latest/     Latest generated public snapshot artifacts
 snapshots/                   Archived dated snapshot runs
 ```
@@ -344,10 +344,10 @@ npm run snapshot
 4. Add true server-rendered PDF files if browser/PDF-ready HTML is not enough for buyers.
 5. Publish more public case studies from live data.
 6. Add alerting for declining activity, weak fee output, or source degradation.
-7. Add optional shared backend storage for operator CRM/intake records.
+7. Add optional shared backend storage for operator follow-up and intake records.
 
 ## Status
 
 Beta / production-ready pilot.
 
-The current version is suitable for demonstrating the report workflow, transparent public data handling, case-study model, pricing, request flow, client portal, payment-gated delivery, and scheduled public snapshots. The next serious upgrade is deeper pool-level data and paid outreach execution.
+The current version is suitable for showing the report workflow, transparent public data handling, case-study model, pricing, request flow, private client workspace, paid delivery path, and scheduled public snapshots. The next serious upgrade is deeper pool-level data and paid outreach execution.

@@ -1,13 +1,13 @@
-# Protocol Diagnostic Sprint Sample
+# Protocol Diagnostic Sprint Example
 
-Generated: static sample
+Generated: static delivery example
 Product: Superchain Liquidity Ops
 Service: Protocol Diagnostic Sprint
 Audience: DEX, bridge, wallet, or protocol growth team
 
 ## Executive Summary
 
-This sample shows the expected structure for a fixed-scope protocol diagnostic. The report is designed to answer whether a protocol's Superchain liquidity, volume, fee visibility, and market quality justify a deeper paid engagement.
+This example shows the expected structure for a fixed-scope protocol diagnostic. The report is designed to answer whether a protocol's Superchain liquidity, volume, fee visibility, and market quality justify a deeper paid engagement.
 
 ## Scope
 
@@ -21,8 +21,8 @@ This sample shows the expected structure for a fixed-scope protocol diagnostic. 
 
 | Metric | Value | Note |
 | --- | ---: | --- |
-| 30d DEX volume | $128.4M | Public DEX volume sample |
-| 30d fees | $216.8K | Protocol fee visibility sample |
+| 30d DEX volume | $128.4M | Public DEX volume example |
+| 30d fees | $216.8K | Protocol fee visibility example |
 | Fee / volume | 0.17% | Used as an efficiency proxy |
 | Watch markets | 2 | Markets needing review |
 
@@ -32,4 +32,4 @@ Start with a diagnostic sprint before committing to recurring monitoring. The fi
 
 ## Delivery Boundary
 
-This is an analytics and reporting sample. It is not a smart-contract audit, investment advice, or a guarantee that incentives will produce future growth.
+This is an analytics and reporting example. It is not financial advice, not investment advice, and not an official OP assessment.

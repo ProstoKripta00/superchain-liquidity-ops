@@ -1,4 +1,4 @@
 network,protocol,pair,dex,tvl_usd,volume_30d_usd,fees_30d_usd,fee_to_volume_pct,health,source_url,notes
-OP Mainnet,Example DEX,ETH/USDC,Example v3,18400000,128400000,216800,0.17,Strong,https://api.llama.fi/overview/dexs/Optimism,Static sample row
+OP Mainnet,Example DEX,ETH/USDC,Example v3,18400000,128400000,216800,0.17,Strong,https://api.llama.fi/overview/dexs/Optimism,Static example row
 Base,Example DEX,USDC/USDT,Example stable,24500000,84200000,84200,0.10,Watch,https://api.llama.fi/overview/dexs/Base,Fee output needs review
-Unichain,Example DEX,ETH/USDC,Example v3,9600000,51800000,,,"At risk",https://api.llama.fi/overview/dexs/Unichain,Fees unavailable in sample
+Unichain,Example DEX,ETH/USDC,Example v3,9600000,51800000,,,"At risk",https://api.llama.fi/overview/dexs/Unichain,Fees unavailable in example

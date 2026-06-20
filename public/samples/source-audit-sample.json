@@ -1,7 +1,7 @@
 {
-  "generatedAt": "static-sample",
+  "generatedAt": "static-delivery-example",
   "product": "Superchain Liquidity Ops",
-  "type": "source-audit-sample",
+  "type": "source-audit-example",
   "sources": [
     {
       "name": "DefiLlama chains",
@@ -25,7 +25,7 @@
   ],
   "boundaries": [
     "Unavailable values are disclosed instead of filled manually.",
-    "This file is a static sample and not a live source audit.",
+    "This file is a static delivery example and not a live source audit.",
     "Final delivery should refresh live endpoint status before handoff."
   ]
 }

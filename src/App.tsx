@@ -1492,13 +1492,13 @@ function App() {
             <p className="eyebrow">Independent OP / Superchain liquidity intelligence</p>
             <h1>Measure whether liquidity incentives create real DEX outcomes.</h1>
             <p>
-              We turn public OP / Superchain DEX data into source-backed reports for
-              protocol teams, growth leads, and ecosystem operators: volume, fees,
-              weak markets, watchlists, and next actions.
+              Superchain Liquidity Ops helps OP and Superchain teams turn public
+              DEX data into source-backed reports: volume, fees, fee/volume,
+              market impact, risks, limitations, and next actions.
             </p>
             <div className="heroActions">
               <a href="#request-report">Request 7-day report</a>
-              <a href="#case-studies">View sample case</a>
+              <a href="#sample-reports">View sample report</a>
             </div>
             <small>
               Independent tool. Not affiliated with or endorsed by Optimism Foundation.
@@ -1561,6 +1561,12 @@ function App() {
             <div>
               <p className="sectionKicker">Protocol Scanner</p>
               <h2>Find protocols worth evidence review</h2>
+              <p>
+                The scanner compares tracked OP / Superchain DEX protocols by
+                30d volume, fee output, fee/volume, trend, network coverage,
+                market quality, and source confidence so a buyer can see which
+                markets need continue, adjust, pause, or investigate decisions.
+              </p>
             </div>
             <span>{isLoading ? "Scanning" : `${protocolScans.length} protocol targets`}</span>
           </div>
@@ -2099,9 +2105,14 @@ function WhatYouGetSection() {
       text: "A 7-day liquidity impact report that a protocol team can share internally or attach to an incentive update.",
     },
     {
+      icon: <Layers3 />,
+      title: "Protocol / pool breakdown",
+      text: "A scoped view of the protocol, DEX, pool or token markets that matter for the buyer's decision.",
+    },
+    {
       icon: <DatabaseZap />,
-      title: "CSV evidence",
-      text: "Market rows with volume, fees, health labels, source URLs and timestamps for independent review.",
+      title: "CSV / API-ready evidence",
+      text: "Market rows with volume, fees, fee/volume, trends, health labels, source URLs and timestamps.",
     },
     {
       icon: <ShieldCheck />,
@@ -2109,9 +2120,14 @@ function WhatYouGetSection() {
       text: "Clear disclosure of public endpoints, unavailable fields, and assumptions that were not made.",
     },
     {
+      icon: <Radar />,
+      title: "Watchlist signals",
+      text: "Strong, watch and at-risk markets separated so the buyer can see what needs attention first.",
+    },
+    {
       icon: <Target />,
-      title: "Action memo",
-      text: "Three to five concrete next actions around weak markets, fee output, watchlists and follow-up scope.",
+      title: "Decision memo",
+      text: "A continue / adjust / pause / investigate recommendation with risks, limitations and next actions.",
     },
   ];
 
@@ -2141,9 +2157,9 @@ function WhatYouGetSection() {
 function PublicPricingSection() {
   const offers = [
     {
-      name: "7-day Liquidity Impact Report",
-      price: "$500 pilot",
-      standard: "$750-$1,500 standard",
+      name: "7-day Diagnostic Report",
+      price: "$500",
+      standard: "First paid step",
       timeline: "7 days",
       featured: true,
       points: [
@@ -2156,20 +2172,7 @@ function PublicPricingSection() {
       ],
     },
     {
-      name: "Monthly Monitoring",
-      price: "$750-$1,500 / month",
-      standard: "After first report",
-      timeline: "Weekly cadence",
-      featured: false,
-      points: [
-        "Recurring watchlist refresh",
-        "Source-health check",
-        "Weak-market updates",
-        "Short action memo",
-      ],
-    },
-    {
-      name: "DAO / Incentive Evidence Pack",
+      name: "Deeper Evidence Pack",
       price: "$1,500-$3,000",
       standard: "After validated case",
       timeline: "7-10 days",
@@ -2179,6 +2182,19 @@ function PublicPricingSection() {
         "Decision-ready narrative",
         "Public-source limitations",
         "Exportable evidence pack",
+      ],
+    },
+    {
+      name: "Monthly Monitoring",
+      price: "From $1,500/mo",
+      standard: "Custom after first report",
+      timeline: "Monthly cadence",
+      featured: false,
+      points: [
+        "Recurring watchlist refresh",
+        "Source-health check",
+        "Weak-market updates",
+        "Short action memo",
       ],
     },
   ];
@@ -2516,7 +2532,7 @@ function LaunchDeskSection({
       <div className="launchDeskLayout">
         <article className="launchLead">
           <div className="launchTitle">
-            <span>Readiness score</span>
+            <span>Launch score</span>
             <h3>{kit.readinessScore}/100</h3>
             <strong className={`launchStatus ${launchStatusClass(kit.status)}`}>
               {kit.status}
@@ -2661,10 +2677,10 @@ function RequestReportSection({
           </div>
 
           <div className="requestMetaGrid">
+            <Stat label="Name" value={form.name || "Not set"} />
+            <Stat label="Organization" value={form.organization || "Not set"} />
             <Stat label="Protocol" value={form.protocol || "Not set"} />
-            <Stat label="Budget" value={form.budget || "Need quote"} />
-            <Stat label="Deadline" value={form.deadline || "Flexible"} />
-            <Stat label="Route" value={form.contact || "Manual"} />
+            <Stat label="Urgency" value={form.urgency || "Flexible"} />
           </div>
 
           <div className="requestActions">
@@ -2684,16 +2700,6 @@ function RequestReportSection({
               <DatabaseZap size={17} />
               {feedbackFor("download-json") ?? "Download JSON"}
             </button>
-            <a
-              className="requestOpenIssue"
-              href={pack.githubIssueUrl}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <GitBranch size={17} />
-              Open public request
-              <ExternalLink size={15} />
-            </a>
           </div>
 
           <pre className="requestPreview">{preview}</pre>
@@ -2713,23 +2719,54 @@ function RequestReportSection({
 
           <div className="requestFields">
             <label>
+              Name
+              <input
+                value={form.name}
+                onChange={(event) => onUpdate({ name: event.target.value })}
+              />
+            </label>
+            <label>
+              Organization
+              <input
+                value={form.organization}
+                onChange={(event) => onUpdate({ organization: event.target.value })}
+              />
+            </label>
+            <label>
+              Email / Telegram
+              <input
+                value={form.contact}
+                onChange={(event) => onUpdate({ contact: event.target.value })}
+              />
+            </label>
+            <label>
               Protocol / project
               <input
                 value={form.protocol}
                 onChange={(event) => onUpdate({ protocol: event.target.value })}
-                placeholder="Protocol name"
               />
             </label>
             <label>
-              Contact route
+              Protocol / market
               <input
-                value={form.contact}
-                onChange={(event) => onUpdate({ contact: event.target.value })}
-                placeholder="Telegram, email, X, Discord, GitHub"
+                value={form.market}
+                onChange={(event) => onUpdate({ market: event.target.value })}
               />
             </label>
             <label>
-              Request type
+              Urgency
+              <select
+                value={form.urgency}
+                onChange={(event) => onUpdate({ urgency: event.target.value })}
+              >
+                <option>This week</option>
+                <option>Within 2 weeks</option>
+                <option>This month</option>
+                <option>Flexible</option>
+              </select>
+            </label>
+            <label>
+              Report type
               <select
                 value={form.requestType}
                 onChange={(event) =>
@@ -2744,15 +2781,7 @@ function RequestReportSection({
               </select>
             </label>
             <label>
-              Deadline
-              <input
-                type="date"
-                value={form.deadline}
-                onChange={(event) => onUpdate({ deadline: event.target.value })}
-              />
-            </label>
-            <label>
-              Budget
+              Budget range
               <select
                 value={form.budget}
                 onChange={(event) => onUpdate({ budget: event.target.value })}
@@ -2763,11 +2792,17 @@ function RequestReportSection({
               </select>
             </label>
             <label className="requestNotes">
-              Notes
+              What do you want to evaluate?
+              <textarea
+                value={form.evaluationGoal}
+                onChange={(event) => onUpdate({ evaluationGoal: event.target.value })}
+              />
+            </label>
+            <label className="requestNotes">
+              Optional notes
               <textarea
                 value={form.notes}
                 onChange={(event) => onUpdate({ notes: event.target.value })}
-                placeholder="What should the report answer?"
               />
             </label>
           </div>
@@ -3923,7 +3958,7 @@ function OutreachPipelineSection({
               <p>{selectedLead.reason}</p>
 
               <div className="crmStatusBar">
-                <span>Lead status</span>
+                <span>Target status</span>
                 <div>
                   {leadStatuses.map((status) => (
                     <button
@@ -4241,9 +4276,9 @@ function MethodologySection() {
           <span>Boundary</span>
           <strong>Unavailable metrics stay unavailable.</strong>
           <p>
-            The scanner is not a security audit, investment rating, or guarantee
-            that liquidity will grow. It is an evidence triage layer for incentive,
-            liquidity-program, and protocol-growth reporting.
+            The scanner is not financial advice, not investment advice, and not
+            an official OP assessment. It is an evidence triage layer for
+            liquidity-program and protocol-growth reporting.
           </p>
         </aside>
       </div>
@@ -4487,7 +4522,7 @@ function CaseStudiesSection({
                     <strong>{caseStudy.protocolName}</strong>
                     <small>{caseStudy.networkFocus}</small>
                   </span>
-                  <em>{caseStudy.status === "Live generated" ? "Live" : "Template"}</em>
+                  <em>{caseStudy.status === "Live generated" ? "Live" : "Example"}</em>
                 </button>
               ))
             ) : (
@@ -4617,10 +4652,10 @@ function SampleReportsSection({
     <section className="sampleReportsSection" id="sample-reports">
       <div className="sectionHeader">
         <div>
-          <p className="sectionKicker">Public Sample Reports</p>
-          <h2>Client-ready examples that show what the service delivers</h2>
+          <p className="sectionKicker">Sample Report</p>
+          <h2>Client-ready delivery examples that show what the service includes</h2>
         </div>
-        <span>{items.length > 0 ? `${items.length} samples` : "Waiting for data"}</span>
+        <span>{items.length > 0 ? `${items.length} examples` : "Waiting for data"}</span>
       </div>
 
       <div className="sampleReportsLayout">
@@ -4629,8 +4664,8 @@ function SampleReportsSection({
             <span>Proof-of-work library</span>
             <strong>Use these before asking protocols to pay</strong>
             <p>
-              These samples turn scanner output into public artifacts for protocol
-              program updates, monitoring workflows, and protocol evidence reviews.
+              These examples turn scanner output into public artifacts for
+              protocol updates, monitoring workflows, and paid evidence reviews.
             </p>
           </div>
 
@@ -4649,14 +4684,14 @@ function SampleReportsSection({
                     <strong>{report.title}</strong>
                     <small>{report.serviceType}</small>
                   </span>
-                  <em>{report.status === "Live generated" ? "Live" : "Template"}</em>
+                  <em>{report.status === "Live generated" ? "Live" : "Example"}</em>
                 </button>
               ))
             ) : (
               <div className="emptyState">
                 {isLoading
-                  ? "Preparing public sample reports from live scanner data..."
-                  : "No sample reports are available yet."}
+                  ? "Preparing public report examples from live scanner data..."
+                  : "No report examples are available yet."}
               </div>
             )}
           </div>
@@ -4704,7 +4739,7 @@ function SampleReportsSection({
                   <FileCheck2 size={17} />
                   {selectedFeedback?.action === "copy"
                     ? selectedFeedback.label
-                    : "Copy sample"}
+                    : "Copy example"}
                 </button>
                 <button onClick={() => onDownload(selectedReport)}>
                   <ArrowDownToLine size={17} />
@@ -4720,12 +4755,12 @@ function SampleReportsSection({
                 </button>
                 <button onClick={() => onDownloadJson(items)}>
                   <ArrowDownToLine size={17} />
-                  {feedback?.action === "json" ? feedback.label : "Download sample JSON"}
+                  {feedback?.action === "json" ? feedback.label : "Download examples JSON"}
                 </button>
               </div>
             </>
           ) : (
-            <div className="emptyState">Select a public sample report to preview it.</div>
+            <div className="emptyState">Select a public report example to preview it.</div>
           )}
         </article>
       </div>
@@ -4744,7 +4779,7 @@ function StaticSampleFilesSection({
     <section className="staticSamplesSection" id="static-samples">
       <div className="sectionHeader">
         <div>
-          <p className="sectionKicker">Static Sample Files</p>
+          <p className="sectionKicker">Delivery Examples</p>
           <h2>Stable public artifacts for outreach and buyer previews</h2>
         </div>
         <span>{files.length} files</span>
@@ -4754,10 +4789,10 @@ function StaticSampleFilesSection({
         <article className="staticSamplesLead">
           <div className="staticSamplesTitle">
             <span>Public file pack</span>
-            <h3>Permanent sample links that work without live data</h3>
+            <h3>Permanent example links that work without live data</h3>
             <p>
               These files are served directly from GitHub Pages. Use them in
-              DAO updates, public reviews, and client calls when you need a
+              protocol updates, public reviews, and client calls when you need a
               stable delivery example instead of a generated browser download.
             </p>
           </div>
@@ -4774,7 +4809,7 @@ function StaticSampleFilesSection({
             <div>
               <span>Manifest</span>
               <strong>samples/index.json</strong>
-              <small>Machine-readable list of every static sample file.</small>
+              <small>Machine-readable list of every static delivery example.</small>
             </div>
             <a href={manifestUrl} target="_blank" rel="noreferrer">
               Open manifest

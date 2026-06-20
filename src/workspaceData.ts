@@ -34,7 +34,7 @@ export type WorkspacePaymentStatus = "Unpaid" | "Invoice sent" | "Paid" | "Compe
 export type ReportPackage =
   | "7-day Liquidity Impact Report"
   | "Monthly Monitoring"
-  | "DAO / Incentive Evidence Pack";
+  | "Deeper Evidence Pack";
 
 export type WorkspaceReportRequest = {
   id: string;
@@ -158,7 +158,7 @@ const WORKSPACE_STORAGE_KEY = "superchain-liquidity-ops.workspace.v1";
 export const WORKSPACE_PACKAGES: ReportPackage[] = [
   "7-day Liquidity Impact Report",
   "Monthly Monitoring",
-  "DAO / Incentive Evidence Pack",
+  "Deeper Evidence Pack",
 ];
 
 export const WORKSPACE_BUDGETS = [
@@ -375,7 +375,7 @@ export const seedWorkspaceState: WorkspaceState = {
       organizationId: "org-superchain-ops",
       actorUserId: "user-admin",
       label: "Workspace ready",
-      detail: "Client workspace, operator queue and admin readiness checks are enabled in demo mode.",
+      detail: "Client workspace, operator queue and admin readiness checks are enabled in local workspace mode.",
       createdAt: nowIso,
     },
   ],

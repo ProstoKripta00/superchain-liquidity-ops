@@ -123,9 +123,9 @@ export function buildServiceLayer({
     {
       id: "monitoring-retainer",
       name: "Liquidity Monitoring Retainer",
-      audience: "Protocol growth, ecosystem, or DAO operations team",
-      priceLabel: "$750-$1,500 / month after pilot",
-      timeline: "Weekly after first case",
+      audience: "Protocol growth, ecosystem, or liquidity operations team",
+      priceLabel: "From $1,500/mo after first report",
+      timeline: "Monthly or weekly after first case",
       status: filteredMarkets.length > 0
         ? automationRun.blockedCount > 0
           ? "Needs review"
@@ -157,8 +157,8 @@ export function buildServiceLayer({
     },
     {
       id: "incentive-evidence-pack",
-      name: "DAO / Incentive Evidence Pack",
-      audience: "Protocol team, DAO contributor, or ecosystem operations team",
+      name: "Deeper Evidence Pack",
+      audience: "Protocol team, ecosystem operator, or growth team",
       priceLabel: "$1,500-$3,000 after validated case",
       timeline: "7-10 days",
       status: selectedExportPack
@@ -170,7 +170,7 @@ export function buildServiceLayer({
       fitScore: Math.min(100, (selectedProtocol?.healthScore.confidence ?? 40) + 20),
       protocolName,
       problem:
-        "DAO and incentive teams need evidence that liquidity programs created measurable DEX activity, fee output and market health, not just screenshots.",
+        "Growth and ecosystem teams need evidence that liquidity programs created measurable DEX activity, fee output and market health, not just screenshots.",
       salesAngle: selectedExportPack
         ? `${selectedExportPack.title} already packages Markdown, CSV and JSON artifacts for operator handoff.`
         : "Create an export pack before pitching this service.",
