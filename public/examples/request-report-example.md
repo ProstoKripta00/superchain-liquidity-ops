@@ -7,14 +7,14 @@ Organization: Example Protocol Growth
 Protocol / client: Example Protocol
 Protocol / market scope: OP Mainnet DEX liquidity
 Contact route: Not provided in public example
-Request type: Liquidity Evidence Pack
+Request type: Liquidity Impact Pack
 Suggested budget: $1,500-$3,000
 Accepted payment: OP / USDT / USDC
 Urgency: Flexible
 
 ## Selected Package
 
-- Package: Liquidity Evidence Pack
+- Package: Liquidity Impact Pack
 - Timeline: 7-10 days
 
 ## Need
@@ -30,7 +30,7 @@ Client wants a source-backed Superchain liquidity report that can be used for pr
 
 ## Acceptance Criteria
 
-- Evidence pack lists the metric scope and public endpoints.
+- Impact pack lists the metric scope and public endpoints.
 - Stakeholders can reproduce exported numbers from dashboard sources.
 - Final handoff separates facts, risks, and recommendations.
 

@@ -1,4 +1,5 @@
 import type { ExportPack } from "./exportPack";
+import { formatUtcDateTime } from "./dateFormat";
 import type {
   DexMarket,
   LiquiditySnapshot,
@@ -241,7 +242,7 @@ function buildAutomationRunbook(run: Omit<AutomationRun, "runbook">) {
   return [
     "# Superchain Liquidity Ops Automation Runbook",
     "",
-    `Generated: ${run.generatedAt}`,
+    `Generated: ${formatUtcDateTime(run.generatedAt)}`,
     `Mode: ${run.mode}`,
     `Scope: ${run.scopeLabel}`,
     `Status: ${run.status}`,

@@ -1,6 +1,8 @@
 import type { SalesKit } from "./salesKit";
 import type { ServiceOffer } from "./serviceLayer";
 
+import { formatUtcDateTime } from "./dateFormat";
+
 export type PaymentTermGate = {
   detail: string;
   id: string;
@@ -149,7 +151,7 @@ export function buildPaymentTermsPack({
     methods,
     policies,
     summary:
-      "Manual payment terms for selling a fixed-scope Superchain liquidity report without adding checkout, custody, fake guarantees, or hidden delivery conditions.",
+      "Manual payment terms for selling a fixed-scope Superchain liquidity report without adding checkout, custody, unsupported guarantees, or hidden delivery conditions.",
     termsMarkdown,
     values,
   };
@@ -173,7 +175,7 @@ function buildTermsMarkdown({
   return [
     "# Superchain Liquidity Ops Payment Terms",
     "",
-    `Generated: ${generatedAt}`,
+    `Generated: ${formatUtcDateTime(generatedAt)}`,
     "",
     "## Commercial Snapshot",
     "",

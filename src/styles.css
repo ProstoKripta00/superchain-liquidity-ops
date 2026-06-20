@@ -117,6 +117,10 @@ button {
   border-color: #e1001b;
 }
 
+.mobileStickyCta {
+  display: none;
+}
+
 .operatorToggle {
   display: inline-flex;
   align-items: center;
@@ -3532,9 +3536,43 @@ select {
   overflow-wrap: anywhere;
 }
 
+.requestDirectActions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.requestDirectActions a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 12px;
+  color: #0f0f0f;
+  background: #fff1b8;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 950;
+  line-height: 1.15;
+  text-align: center;
+  text-decoration: none;
+}
+
+.requestDirectActions a.primary {
+  color: #ffffff;
+  background: #ff0421;
+  border-color: #ff0421;
+}
+
+.requestDirectActions a:hover {
+  transform: translateY(-1px);
+}
+
 .requestActions {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
 }
 
@@ -6739,6 +6777,27 @@ select {
     padding: 14px 18px;
   }
 
+  .mobileStickyCta {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 30;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 48px;
+    padding: 0 16px;
+    color: #ffffff;
+    background: #ff0421;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 999px;
+    box-shadow: 0 14px 34px rgba(15, 15, 15, 0.24);
+    font-size: 14px;
+    font-weight: 950;
+    text-decoration: none;
+  }
+
   .opMark {
     width: 42px;
     height: 42px;
@@ -6765,7 +6824,7 @@ select {
 
   .topNav {
     justify-content: flex-start;
-    max-height: 96px;
+    max-height: 72px;
     overflow: hidden;
   }
 
@@ -6776,7 +6835,7 @@ select {
   }
 
   .main {
-    padding: 18px;
+    padding: 18px 18px 84px;
   }
 
   .heroCopy,
@@ -6864,6 +6923,7 @@ select {
   .launchStats,
   .launchActions,
   .requestMetaGrid,
+  .requestDirectActions,
   .requestActions,
   .requestFields,
   .intakeStats,

@@ -1,4 +1,5 @@
 import { requireSupabase, supabaseReportBucket } from "./supabaseClient";
+import { formatUtcDateTime } from "./dateFormat";
 import {
   seedWorkspaceState,
   isWorkspacePaymentCleared,
@@ -726,7 +727,7 @@ function buildGeneratedPackageFiles(request: WorkspaceReportRequest, generatedAt
   const slug = safeFileName(request.protocol.toLowerCase()).replace(/^-|-$/g, "") || "protocol";
   const markdown = `# ${request.protocol} Liquidity Report Package
 
-Generated: ${generatedAt}
+Generated: ${formatUtcDateTime(generatedAt)}
 
 ## Scope
 - Package: ${request.packageName}

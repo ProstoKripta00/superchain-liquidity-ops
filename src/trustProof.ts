@@ -65,9 +65,9 @@ export function buildTrustProofPack({
   return {
     boundaries: [
       {
-        title: "No fake client logos",
+        title: "Verifiable public proof",
         detail:
-          "The public page does not invent customers, testimonials, audits, or paid case studies. Proof is limited to the repo, live app, exports, docs, and delivery examples.",
+          "The public page only uses proof a buyer can open directly: repository, live app, exports, docs, methodology, sources, and delivery examples.",
       },
       {
         title: "Not a security audit",
@@ -198,6 +198,6 @@ export function buildTrustProofPack({
       },
     ],
     summary:
-      "A compact proof layer for buyers and operators: public source code, live site, methodology, delivery examples, source audit, and clear delivery boundaries without fake traction claims.",
+      "A compact proof layer for buyers and operators: public source code, live site, methodology, delivery examples, source audit, and transparent delivery boundaries.",
   };
 }

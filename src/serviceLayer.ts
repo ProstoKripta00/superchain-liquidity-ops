@@ -1,5 +1,6 @@
 import type { AutomationRun } from "./automation";
 import type { ExportPack } from "./exportPack";
+import { formatUtcDateTime } from "./dateFormat";
 import type {
   DexMarket,
   MarketScopeMetrics,
@@ -104,7 +105,7 @@ export function buildServiceLayer({
       problem:
         "Protocol teams need a fast, source-backed read on Superchain volume quality, fee capture and weak markets before they spend growth budget or ask for incentives.",
       salesAngle: selectedProtocol
-        ? `${protocolName} has ${formatUsd(selectedProtocol.volume30dUsd)} in matched 30d DEX volume and scanner score ${selectedProtocol.score}/100. Start with a narrow evidence report before proposing a larger package.`
+        ? `${protocolName} has ${formatUsd(selectedProtocol.volume30dUsd)} in matched 30d DEX volume and scanner score ${selectedProtocol.score}/100. Start with a narrow impact report before proposing a larger package.`
         : "Wait for a live protocol scan before pitching a diagnostic sprint.",
       operatingCadence: "One-off diagnostic with one revision pass.",
       deliverables: [
@@ -157,7 +158,7 @@ export function buildServiceLayer({
     },
     {
       id: "incentive-evidence-pack",
-      name: "Deeper Evidence Pack",
+      name: "Deeper Impact Pack",
       audience: "Protocol team, ecosystem operator, or growth team",
       priceLabel: "$1,500-$3,000 after validated case",
       timeline: "7-10 days",
@@ -174,7 +175,7 @@ export function buildServiceLayer({
       salesAngle: selectedExportPack
         ? `${selectedExportPack.title} already packages Markdown, CSV and JSON artifacts for operator handoff.`
         : "Create an export pack before pitching this service.",
-      operatingCadence: "Project delivery with kickoff, evidence pack, and final handoff.",
+      operatingCadence: "Project delivery with kickoff, impact pack, and final handoff.",
       deliverables: [
         "Decision-ready narrative",
         "Before/after metric scope",
@@ -182,7 +183,7 @@ export function buildServiceLayer({
         "Methodology and source limitation notes",
       ],
       acceptanceCriteria: [
-        "Evidence pack lists the metric scope and public endpoints",
+        "Impact pack lists the metric scope and public endpoints",
         "Buyer can reproduce the exported numbers from dashboard sources",
         "Final handoff separates facts, risks and recommendations",
       ],
@@ -251,7 +252,7 @@ function buildClientBrief(
   return [
     `# ${offer.name}`,
     "",
-    `Generated: ${generatedAt}`,
+    `Generated: ${formatUtcDateTime(generatedAt)}`,
     `Status: ${offer.status}`,
     `Audience: ${offer.audience}`,
     `Suggested quote: ${offer.priceLabel}`,

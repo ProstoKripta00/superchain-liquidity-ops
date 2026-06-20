@@ -1,4 +1,5 @@
 import type { ExportPack } from "./exportPack";
+import { formatUtcDateTime } from "./dateFormat";
 import type { OutreachLead, OutreachPipeline } from "./outreachPipeline";
 import type { SampleReport } from "./sampleReports";
 import type { ServiceLayer, ServiceOffer } from "./serviceLayer";
@@ -292,7 +293,7 @@ function buildProposalMarkdown({
   return [
     "# Superchain Liquidity Ops Proposal",
     "",
-    `Generated: ${generatedAt}`,
+    `Generated: ${formatUtcDateTime(generatedAt)}`,
     `Sales package status: ${status}`,
     `Client / protocol: ${targetProtocol}`,
     `Package: ${offer?.name ?? "Service package"}`,
@@ -361,13 +362,13 @@ function buildOnboardingEmail({
   targetProtocol: string;
 }) {
   return [
-    `Subject: ${targetProtocol} Superchain liquidity evidence package`,
+    `Subject: ${targetProtocol} Superchain liquidity impact report`,
     "",
     `Hi ${targetProtocol} team,`,
     "",
     "I built Superchain Liquidity Ops, an open-source workflow for source-backed DEX volume, fee, market health and liquidity reporting across the Superchain.",
     "",
-    `The package I would suggest is ${offer?.name ?? "a focused evidence package"} (${offer?.priceLabel ?? "quote after scope"}, ${offer?.timeline ?? "timeline after scope"}).`,
+    `The package I would suggest is ${offer?.name ?? "a focused liquidity impact package"} (${offer?.priceLabel ?? "quote after scope"}, ${offer?.timeline ?? "timeline after scope"}).`,
     selectedSampleReport
       ? `I can send ${selectedSampleReport.title} as a public delivery sample.`
       : "I can send a public delivery sample before asking you to commit.",
@@ -400,7 +401,7 @@ function buildDeliveryChecklistMarkdown({
   return [
     "# Delivery Checklist",
     "",
-    `Generated: ${generatedAt}`,
+    `Generated: ${formatUtcDateTime(generatedAt)}`,
     `Status: ${status}`,
     `Protocol: ${targetProtocol}`,
     `Package: ${offer?.name ?? "Service package"}`,

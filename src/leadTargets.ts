@@ -1,4 +1,5 @@
 import type { OutreachLead, OutreachPipeline } from "./outreachPipeline";
+import { formatUtcDateTime } from "./dateFormat";
 
 export type LeadTargetTier = "A - pitch now" | "B - enrich next" | "C - monitor";
 
@@ -192,7 +193,7 @@ function buildLeadTargetsMarkdown(
   return [
     "# Superchain Lead Target List",
     "",
-    `Generated: ${generatedAt}`,
+    `Generated: ${formatUtcDateTime(generatedAt)}`,
     summary,
     "",
     "## Priority Targets",

@@ -1,4 +1,5 @@
 import type { AutomationRun } from "./automation";
+import { formatUtcDateTime } from "./dateFormat";
 import type { LeadTargetList } from "./leadTargets";
 import type { ExportPack } from "./exportPack";
 import type { LiquiditySnapshot, MarketScopeMetrics, NetworkScope, OutcomeTarget } from "./types";
@@ -281,7 +282,7 @@ function buildMarkdown({
   return [
     "# Superchain Scheduled Snapshots",
     "",
-    `Generated: ${generatedAt}`,
+    `Generated: ${formatUtcDateTime(generatedAt)}`,
     `Automation status: ${automationRun.status}`,
     "",
     "## Summary",

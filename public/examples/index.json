@@ -34,7 +34,7 @@
     },
     {
       "id": "incentive-evidence-pack",
-      "title": "Liquidity Evidence Pack Example",
+      "title": "Liquidity Impact Pack Example",
       "format": "markdown",
       "path": "examples/incentive-evidence-pack-example.md",
       "useCase": "Show decision-ready evidence structure."

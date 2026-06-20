@@ -47,6 +47,7 @@ import {
   type ExportPack,
   type ExportPackArtifactId,
 } from "./exportPack";
+import { formatUtcDateTime } from "./dateFormat";
 import {
   INTAKE_BUDGETS,
   INTAKE_CHAIN_OPTIONS,
@@ -153,6 +154,12 @@ const targets: Array<"All" | OutcomeTarget> = [
   "Rebalance liquidity",
   "Monitor incentives",
 ];
+
+const CONTACT_EMAIL = "dzmitru.papkou@gmail.com";
+
+function buildMailtoHref(subject: string, body: string) {
+  return `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
 
 type ReportLibraryItem = {
   scan: ProtocolScan;
@@ -651,15 +658,7 @@ function App() {
   );
 
   const liveState = useMemo(() => getLiveState(snapshot, loadError), [loadError, snapshot]);
-  const lastUpdated = snapshot?.updatedAt
-    ? new Intl.DateTimeFormat("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        day: "2-digit",
-        month: "short",
-      }).format(new Date(snapshot.updatedAt))
-    : "Not loaded";
+  const lastUpdated = snapshot?.updatedAt ? formatUtcDateTime(snapshot.updatedAt) : "Not loaded";
   const metricsAreLoading = isLoading || !snapshot;
   const trustProofPack = useMemo(
     () =>
@@ -1476,16 +1475,17 @@ function App() {
           <span>Liquidity impact reports for OP and Superchain teams</span>
         </div>
         <nav className="topNav" aria-label="Product areas">
-          <a href="#snapshot">Snapshot</a>
-          <a href="#what-you-get">What you get</a>
           <a href="#protocol-scanner">Scanner</a>
           <a href="#case-studies">Case studies</a>
           <a href="#methodology">Methodology</a>
           <a href="#pricing">Pricing</a>
-          <a href="#payment-terms">Payment</a>
           <a className="navCta" href="#request-report">Request 7-day report</a>
         </nav>
       </header>
+      <a className="mobileStickyCta" href="#request-report">
+        <Send size={16} />
+        Request report
+      </a>
 
       <main className="main">
         <section className="hero">
@@ -1541,7 +1541,7 @@ function App() {
           <div className="sectionHeader">
             <div>
               <p className="sectionKicker">Live OP / Superchain Snapshot</p>
-              <h2>Current liquidity evidence scope</h2>
+              <h2>Current liquidity impact scope</h2>
             </div>
             <span>{metricsAreLoading ? "Loading public data" : liveState.title}</span>
           </div>
@@ -1561,7 +1561,7 @@ function App() {
           <div className="sectionHeader">
             <div>
               <p className="sectionKicker">Protocol Scanner</p>
-              <h2>Find protocols worth evidence review</h2>
+              <h2>Find protocols worth a paid impact report</h2>
               <p>
                 The scanner compares tracked OP / Superchain DEX protocols by
                 30d volume, fee output, fee/volume, trend, network coverage,
@@ -1653,7 +1653,7 @@ function App() {
                   ) : null}
 
                   <div className="scannerAction">
-                    <span>Evidence opportunity</span>
+                    <span>Impact opportunity</span>
                     <strong>{selectedProtocol.status}</strong>
                     <p>{selectedProtocol.opportunity}</p>
                     <p>{selectedProtocol.healthScore.recommendation}</p>
@@ -1666,7 +1666,7 @@ function App() {
                   </div>
                 </>
               ) : (
-                <div className="emptyState">Select a protocol scan to inspect the evidence angle.</div>
+                <div className="emptyState">Select a protocol scan to inspect the impact angle.</div>
               )}
             </aside>
           </div>
@@ -2038,7 +2038,7 @@ function App() {
             <section className="evidencePack" id="buyer-evidence-pack">
               <div className="sectionHeader">
                 <div>
-                  <p className="sectionKicker">Buyer evidence pack</p>
+                  <p className="sectionKicker">Buyer decision pack</p>
                   <h2>How to evaluate OP / Superchain liquidity outcomes</h2>
                 </div>
                 <span>Operator-only</span>
@@ -2173,7 +2173,7 @@ function PublicPricingSection() {
       ],
     },
     {
-      name: "Deeper Evidence Pack",
+      name: "Deeper Impact Pack",
       price: "$1,500-$3,000",
       standard: "After validated case",
       timeline: "7-10 days",
@@ -2182,7 +2182,7 @@ function PublicPricingSection() {
         "Before/after metric scope",
         "Decision-ready narrative",
         "Public-source limitations",
-        "Exportable evidence pack",
+        "Exportable impact pack",
       ],
     },
     {
@@ -2306,7 +2306,7 @@ function OfferPricingSection({
       <div className="sectionHeader">
         <div>
           <p className="sectionKicker">Offer / Pricing</p>
-          <h2>Clear packages for teams that need liquidity evidence</h2>
+          <h2>Clear packages for teams that need liquidity impact reports</h2>
         </div>
         <span>{layer.readyCount} ready to sell</span>
       </div>
@@ -2325,7 +2325,7 @@ function OfferPricingSection({
             <Stat label="Scope" value={layer.scopeLabel} />
             <Stat label="Recommended" value={layer.recommendedOfferName} />
             <Stat label="Pipeline" value={layer.totalPipelineLabel} />
-            <Stat label="Updated" value={new Date(layer.generatedAt).toLocaleDateString()} />
+            <Stat label="Updated" value={formatUtcDateTime(layer.generatedAt)} />
           </div>
 
           <div className="pricingActions">
@@ -2474,7 +2474,7 @@ function PaymentTermsSection({
             </div>
           ))}
           <small>
-            Generated: {new Date(pack.generatedAt).toLocaleString()}
+            Generated: {formatUtcDateTime(pack.generatedAt)}
           </small>
         </aside>
 
@@ -2672,13 +2672,29 @@ function RequestReportSection({
     feedback?.action === action ? feedback.label : null;
   const budgetOptions = Array.from(new Set([form.budget, ...REQUEST_BUDGETS]));
   const preview = pack.requestMarkdown.split("\n").slice(0, 34).join("\n");
+  const requestEmailHref = buildMailtoHref(pack.title, pack.requestMarkdown);
+  const introCallHref = buildMailtoHref(
+    "Intro call: Superchain Liquidity Ops",
+    [
+      "Hi,",
+      "",
+      "I want to discuss a 7-day Liquidity Impact Report.",
+      "",
+      `Protocol / project: ${form.protocol || "Not specified"}`,
+      `Organization: ${form.organization || "Not specified"}`,
+      `Contact route: ${form.contact || "Not specified"}`,
+      `Budget: ${form.budget}`,
+      "",
+      "Please suggest a time for a short intro call.",
+    ].join("\n"),
+  );
 
   return (
     <section className="requestReportSection" id="request-report">
       <div className="sectionHeader">
         <div>
           <p className="sectionKicker">Contact / Request Report</p>
-          <h2>Make it easy to request an evidence report</h2>
+          <h2>Make it easy to request a liquidity impact report</h2>
         </div>
         <span>{pack.title}</span>
       </div>
@@ -2688,7 +2704,7 @@ function RequestReportSection({
           <div className="requestTitle">
             <span>Request pack</span>
             <h3>{pack.summary}</h3>
-            <small>{new Date(pack.generatedAt).toLocaleString()}</small>
+            <small>{formatUtcDateTime(pack.generatedAt)}</small>
           </div>
 
           <div className="requestMetaGrid">
@@ -2696,6 +2712,17 @@ function RequestReportSection({
             <Stat label="Organization" value={form.organization || "Not set"} />
             <Stat label="Protocol" value={form.protocol || "Not set"} />
             <Stat label="Urgency" value={form.urgency || "Flexible"} />
+          </div>
+
+          <div className="requestDirectActions">
+            <a className="primary" href={requestEmailHref}>
+              <Mail size={17} />
+              Send request by email
+            </a>
+            <a href={introCallHref}>
+              <Send size={17} />
+              Book intro call
+            </a>
           </div>
 
           <div className="requestActions">
@@ -2911,7 +2938,7 @@ function IntakeFormSection({
       <div className="sectionHeader">
         <div>
           <p className="sectionKicker">Intake Form</p>
-          <h2>Capture scope before doing manual evidence work</h2>
+          <h2>Capture scope before doing manual impact work</h2>
         </div>
         <span>{pack.status}</span>
       </div>
@@ -2921,7 +2948,7 @@ function IntakeFormSection({
           <div className="intakeTitle">
             <span>Client intake</span>
             <h3>{pack.summary}</h3>
-            <small>{new Date(pack.generatedAt).toLocaleString()}</small>
+            <small>{formatUtcDateTime(pack.generatedAt)}</small>
           </div>
 
           <div className="intakeStats">
@@ -3014,7 +3041,7 @@ function IntakeFormSection({
                         {record.status}
                       </span>
                       <strong>{record.title}</strong>
-                      <small>{new Date(record.updatedAt).toLocaleString()}</small>
+                      <small>{formatUtcDateTime(record.updatedAt)}</small>
                     </button>
                     <button
                       className="intakeDelete"
@@ -3232,7 +3259,7 @@ function ExportPackSection({
       <div className="sectionHeader">
         <div>
           <p className="sectionKicker">Export Pack</p>
-          <h2>One handoff package for protocol evidence and operator work</h2>
+          <h2>One handoff package for protocol reporting and operator work</h2>
         </div>
         <span>{pack ? `${pack.artifacts.length} artifacts` : "Waiting for report"}</span>
       </div>
@@ -3243,7 +3270,7 @@ function ExportPackSection({
             <div className="exportPackTitle">
               <span>Selected package</span>
               <h3>{pack.title}</h3>
-              <small>{new Date(pack.generatedAt).toLocaleString()}</small>
+              <small>{formatUtcDateTime(pack.generatedAt)}</small>
             </div>
 
             <p>{pack.summary}</p>
@@ -3342,7 +3369,7 @@ function AutomationSection({
           <div className="automationStatus">
             <span>{run.mode}</span>
             <strong>{run.status} run</strong>
-            <small>{new Date(run.generatedAt).toLocaleString()}</small>
+            <small>{formatUtcDateTime(run.generatedAt)}</small>
           </div>
 
           <p>{run.summary}</p>
@@ -3429,7 +3456,7 @@ function ScheduledSnapshotsSection({
       <div className="sectionHeader">
         <div>
           <p className="sectionKicker">Scheduled Snapshots</p>
-          <h2>Keep daily and weekly evidence without manual screenshots</h2>
+          <h2>Keep daily and weekly impact snapshots without manual screenshots</h2>
         </div>
         <span>{pack.readyCount}/{pack.schedules.length} ready</span>
       </div>
@@ -3441,7 +3468,7 @@ function ScheduledSnapshotsSection({
             <div>
               <span>Snapshot plan</span>
               <h3>{pack.summary}</h3>
-              <small>{new Date(pack.generatedAt).toLocaleString()}</small>
+              <small>{formatUtcDateTime(pack.generatedAt)}</small>
             </div>
           </div>
 
@@ -3449,7 +3476,7 @@ function ScheduledSnapshotsSection({
             <Stat label="Ready" value={String(pack.readyCount)} />
             <Stat label="Watch" value={String(pack.watchCount)} />
             <Stat label="Blocked" value={String(pack.blockedCount)} />
-            <Stat label="Next UTC" value={new Date(pack.nextSnapshotUtc).toLocaleString()} />
+            <Stat label="Next UTC" value={formatUtcDateTime(pack.nextSnapshotUtc)} />
           </div>
 
           <div className="scheduledSnapshotActions">
@@ -3505,7 +3532,7 @@ function ScheduledSnapshotsSection({
               <p>{schedule.detail}</p>
               <div className="snapshotScheduleMeta">
                 <Stat label="Cron" value={schedule.cron} />
-                <Stat label="Next UTC" value={new Date(schedule.nextRunUtc).toLocaleString()} />
+                <Stat label="Next UTC" value={formatUtcDateTime(schedule.nextRunUtc)} />
                 <Stat label="Owner" value={schedule.owner} />
                 <Stat label="Retention" value={schedule.retention} />
               </div>
@@ -3552,7 +3579,7 @@ function ServiceLayerSection({
       <div className="sectionHeader">
         <div>
           <p className="sectionKicker">Service Layer</p>
-          <h2>Turn analytics evidence into sellable client packages</h2>
+          <h2>Turn analytics output into sellable client packages</h2>
         </div>
         <span>
           {layer.readyCount}/{layer.offers.length} ready
@@ -3564,7 +3591,7 @@ function ServiceLayerSection({
           <div className="serviceLeadTitle">
             <span>Recommended offer</span>
             <h3>{layer.recommendedOfferName}</h3>
-            <small>{new Date(layer.generatedAt).toLocaleString()}</small>
+            <small>{formatUtcDateTime(layer.generatedAt)}</small>
           </div>
 
           <p>{layer.summary}</p>
@@ -3718,7 +3745,7 @@ function LeadTargetListSection({
             <div>
               <span>Priority shortlist</span>
               <h3>{list.summary}</h3>
-              <small>{new Date(list.generatedAt).toLocaleString()}</small>
+              <small>{formatUtcDateTime(list.generatedAt)}</small>
             </div>
           </div>
 
@@ -3891,7 +3918,7 @@ function OutreachPipelineSection({
           <div className="outreachLeadTitle">
             <span>Lead export</span>
             <h3>{pipeline.summary}</h3>
-            <small>{new Date(pipeline.generatedAt).toLocaleString()}</small>
+            <small>{formatUtcDateTime(pipeline.generatedAt)}</small>
           </div>
 
           <div className="outreachStats">
@@ -4238,7 +4265,7 @@ function MethodologySection() {
       <div className="sectionHeader">
         <div>
           <p className="sectionKicker">Methodology</p>
-          <h2>Decision-ready evidence, not another raw-data dashboard</h2>
+          <h2>Decision-ready impact, not another raw-data dashboard</h2>
         </div>
         <span>Explainable scoring</span>
       </div>
@@ -4246,7 +4273,7 @@ function MethodologySection() {
       <div className="methodologyLayout">
         <article className="methodologyLead">
           <span>Product position</span>
-          <h3>Package public data into incentive impact evidence</h3>
+          <h3>Package public data into an incentive impact memo</h3>
           <p>
             The tool does not try to compete with DeFiLlama, Dune, Artemis, or
             Token Terminal. It uses public data to answer a narrower question:
@@ -4254,7 +4281,7 @@ function MethodologySection() {
             and a decision-ready next action?
           </p>
           <div className="methodologyPillGrid">
-            <strong>Before / after evidence</strong>
+            <strong>Before / after impact</strong>
             <strong>Weak-pair detection</strong>
             <strong>Fee generation checks</strong>
             <strong>Program update exports</strong>
@@ -4380,7 +4407,7 @@ function ReportsSection({
                   <div>
                     <span>{selectedItem.scan.status}</span>
                     <h3>{selectedItem.report.title}</h3>
-                    <small>{new Date(selectedItem.report.generatedAt).toLocaleString()}</small>
+                    <small>{formatUtcDateTime(selectedItem.report.generatedAt)}</small>
                   </div>
                   <div
                     className={`scorePill grade-${selectedItem.scan.healthScore.grade.toLowerCase()}`}
@@ -4506,7 +4533,7 @@ function CaseStudiesSection({
       <div className="sectionHeader">
         <div>
           <p className="sectionKicker">Public Case Studies</p>
-          <h2>Concrete Superchain incentive reviews without fake client proof</h2>
+          <h2>Source-backed Superchain impact studies</h2>
         </div>
         <span>{items.length > 0 ? `${items.length} public studies` : "Waiting for data"}</span>
       </div>
@@ -4514,7 +4541,7 @@ function CaseStudiesSection({
       <div className="caseStudiesLayout">
         <aside className="caseStudyQueue">
           <div className="caseStudyQueueHeader">
-            <span>Evidence examples</span>
+            <span>Impact examples</span>
             <strong>Use these instead of vague claims</strong>
             <p>
               Each study answers an operator-style question with live scanner data
@@ -4557,7 +4584,7 @@ function CaseStudiesSection({
                 <div>
                   <span>{selectedCaseStudy.status}</span>
                   <h3>{selectedCaseStudy.title}</h3>
-                  <small>{new Date(selectedCaseStudy.generatedAt).toLocaleString()}</small>
+                  <small>{formatUtcDateTime(selectedCaseStudy.generatedAt)}</small>
                 </div>
                 <div className="caseStudyBadge">
                   <Target size={18} />
@@ -4680,7 +4707,7 @@ function SampleReportsSection({
             <strong>Use these before asking protocols to pay</strong>
             <p>
               These examples turn scanner output into public artifacts for
-              protocol updates, monitoring workflows, and paid evidence reviews.
+              protocol updates, monitoring workflows, and paid impact reports.
             </p>
           </div>
 
@@ -4719,7 +4746,7 @@ function SampleReportsSection({
                 <div>
                   <span>{selectedReport.status}</span>
                   <h3>{selectedReport.title}</h3>
-                  <small>{new Date(selectedReport.generatedAt).toLocaleString()}</small>
+                  <small>{formatUtcDateTime(selectedReport.generatedAt)}</small>
                 </div>
                 <div className="sampleReportBadge">
                   <Target size={18} />
@@ -4891,7 +4918,7 @@ function TrustProofSection({ pack }: { pack: TrustProofPack }) {
             <ShieldCheck size={24} />
             <div>
               <span>Proof stack</span>
-              <h3>No fake traction, only links a buyer can verify</h3>
+              <h3>Verifiable public proof and transparent delivery boundaries</h3>
             </div>
           </div>
           <p>{pack.summary}</p>
@@ -4907,7 +4934,7 @@ function TrustProofSection({ pack }: { pack: TrustProofPack }) {
           </div>
 
           <small className="trustProofGenerated">
-            Generated from current app state: {new Date(pack.generatedAt).toLocaleString()}
+            Generated from current app state: {formatUtcDateTime(pack.generatedAt)}
           </small>
         </article>
 
@@ -5076,7 +5103,7 @@ function MiniReportPanel({
           <span>Mini report generator</span>
           <strong>{report.title}</strong>
         </div>
-        <small>{new Date(report.generatedAt).toLocaleString()}</small>
+        <small>{formatUtcDateTime(report.generatedAt)}</small>
       </div>
       <p>{report.summary}</p>
       <pre>{preview}</pre>
@@ -5230,14 +5257,14 @@ function buildPricingSheet(layer: ServiceLayer) {
   return [
     "# Superchain Liquidity Ops Offer / Pricing",
     "",
-    `Generated: ${layer.generatedAt}`,
+    `Generated: ${formatUtcDateTime(layer.generatedAt)}`,
     `Scope: ${layer.scopeLabel}`,
     `Recommended offer: ${layer.recommendedOfferName}`,
     `Ready packages: ${layer.readyCount}/${layer.offers.length}`,
     "",
     "## What You Can Buy",
     "",
-    "Fixed-scope analytics services for protocols, growth teams, liquidity stakeholders, and ecosystem operators that need source-backed Superchain DEX volume, fee, liquidity, and market-health evidence.",
+    "Fixed-scope analytics services for protocols, growth teams, liquidity stakeholders, and ecosystem operators that need source-backed Superchain DEX volume, fee, liquidity, and market-health reporting.",
     "",
     "## Packages",
     "",
@@ -5297,7 +5324,7 @@ function buildProtocolSummary(scan: ProtocolScan) {
       .join("; ")}`,
     `Strengths: ${scan.healthScore.strengths.join("; ")}`,
     `Risks: ${scan.healthScore.risks.join("; ")}`,
-    `Evidence opportunity: ${scan.opportunity}`,
+    `Impact opportunity: ${scan.opportunity}`,
     `Recommendation: ${scan.healthScore.recommendation}`,
     `Next action: ${scan.nextAction}`,
   ].join("\n");
@@ -5425,7 +5452,7 @@ function buildPrintableHtml(title: string, markdown: string) {
 </head>
 <body>
   <header>
-    <span>Superchain Liquidity Ops / printable evidence report</span>
+    <span>Superchain Liquidity Ops / printable impact report</span>
     <h1>${escapeHtml(title)}</h1>
   </header>
   <pre>${escapeHtml(markdown)}</pre>

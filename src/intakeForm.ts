@@ -1,6 +1,7 @@
 import type { OutreachLead } from "./outreachPipeline";
 import type { RequestReportForm, RequestReportPack } from "./requestReport";
 import type { ServiceLayer, ServiceOffer } from "./serviceLayer";
+import { formatUtcDateTime } from "./dateFormat";
 import { SUPERCHAIN_NETWORKS } from "./sources";
 
 export type IntakeMetricId =
@@ -174,7 +175,7 @@ export function buildIntakePack({
   const intakeMarkdown = [
     "# Client Intake Form",
     "",
-    `Generated: ${generatedAt}`,
+    `Generated: ${formatUtcDateTime(generatedAt)}`,
     `Status: ${status}`,
     `Project: Superchain Liquidity Ops`,
     "",
@@ -222,7 +223,7 @@ export function buildIntakePack({
   const publicIssueMarkdown = [
     "# Public Intake Scope",
     "",
-    `Generated: ${generatedAt}`,
+    `Generated: ${formatUtcDateTime(generatedAt)}`,
     `Protocol / project: ${protocol}`,
     `Decision supported: ${decisionLabel}`,
     `Chains: ${chains.join(", ")}`,

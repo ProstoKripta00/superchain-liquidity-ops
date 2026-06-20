@@ -37,7 +37,7 @@ Accepted payment: `OP`, `USDT`, or `USDC` by agreed wallet and network after sco
 Standard pricing after initial proof:
 
 - 7-day Diagnostic Report: `$500`
-- Deeper Evidence Pack: `$1,500-$3,000`
+- Deeper Impact Pack: `$1,500-$3,000`
 - Monthly Monitoring: `from $1,500/mo`
 
 ## Public Product
@@ -68,7 +68,7 @@ https://prostokripta00.github.io/superchain-liquidity-ops/#/app
 Current workspace capabilities:
 
 - client dashboard with active requests, report files, messages, and activity
-- request creation for 7-day reports, monitoring, and deeper liquidity evidence packs
+- request creation for 7-day reports, monitoring, and deeper liquidity impact packs
 - request pipeline statuses: `New`, `Scoping`, `In progress`, `Review`, `Delivered`
 - delivered report/file library with client-visible vs operator-only access labels
 - operator queue for moving requests and registering report delivery files
@@ -255,7 +255,7 @@ First buyer path:
 2. Offer a fixed 7-day report for one protocol, DEX, or network scope.
 3. Deliver PDF/Markdown report, CSV evidence, source audit, weak-market review, and 3-5 next actions.
 4. If the buyer needs recurring visibility, offer monthly monitoring.
-5. If the buyer needs ecosystem, liquidity, or stakeholder reporting, package a larger evidence pack.
+5. If the buyer needs ecosystem, liquidity, or stakeholder reporting, package a larger impact pack.
 
 ## Architecture
 

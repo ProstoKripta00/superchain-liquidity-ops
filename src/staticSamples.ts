@@ -60,14 +60,14 @@ export const STATIC_SAMPLE_FILES: StaticSampleFile[] = [
   },
   {
     id: "incentive-evidence-pack",
-    title: "Liquidity Evidence Pack",
+    title: "Liquidity Impact Pack",
     category: "Decision proof",
     format: "Markdown",
     fileName: "incentive-evidence-pack-example.md",
     href: `${SAMPLE_BASE_URL}incentive-evidence-pack-example.md`,
     description:
       "Decision-ready example that maps DEX activity, fees, market health and source transparency.",
-    useCase: "Attach to protocol, growth, incentive, or ecosystem evidence pitches.",
+    useCase: "Attach to protocol, growth, incentive, or ecosystem impact pitches.",
   },
   {
     id: "client-intake",

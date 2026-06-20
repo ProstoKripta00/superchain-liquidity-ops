@@ -1,3 +1,5 @@
+import { formatUtcDateTime } from "./dateFormat";
+
 export type WorkspaceRole = "client" | "operator" | "admin";
 
 export type WorkspaceUser = {
@@ -34,7 +36,7 @@ export type WorkspacePaymentStatus = "Unpaid" | "Invoice sent" | "Paid" | "Compe
 export type ReportPackage =
   | "7-day Liquidity Impact Report"
   | "Monthly Monitoring"
-  | "Deeper Evidence Pack";
+  | "Deeper Impact Pack";
 
 export type WorkspaceReportRequest = {
   id: string;
@@ -158,7 +160,7 @@ const WORKSPACE_STORAGE_KEY = "superchain-liquidity-ops.workspace.v1";
 export const WORKSPACE_PACKAGES: ReportPackage[] = [
   "7-day Liquidity Impact Report",
   "Monthly Monitoring",
-  "Deeper Evidence Pack",
+  "Deeper Impact Pack",
 ];
 
 export const WORKSPACE_BUDGETS = [
@@ -806,7 +808,7 @@ function buildLocalGeneratedPackageFiles(
   const slug = slugify(request.protocol);
   const markdown = `# ${request.protocol} Liquidity Report Package
 
-Generated: ${generatedAt}
+Generated: ${formatUtcDateTime(generatedAt)}
 
 ## Scope
 - Package: ${request.packageName}

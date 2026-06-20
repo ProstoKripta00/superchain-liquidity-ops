@@ -1,15 +1,15 @@
-# Liquidity Evidence Pack Example
+# Liquidity Impact Pack Example
 
 Generated: static delivery example
 Product: Superchain Liquidity Ops
-Service: Liquidity Evidence Pack
+Service: Liquidity Impact Pack
 Audience: Protocol teams, ecosystem operators, liquidity owners, and growth leads
 
 ## Decision Question
 
-Did a liquidity program create measurable Superchain outcomes across DEX volume, fee output, market quality, and source-backed evidence?
+Did a liquidity program create measurable Superchain outcomes across DEX volume, fee output, market quality, and source-backed impact?
 
-## Evidence Table
+## Impact Table
 
 | Outcome | Example Evidence | Stakeholder Use |
 | --- | --- | --- |
@@ -28,8 +28,8 @@ Did a liquidity program create measurable Superchain outcomes across DEX volume,
 
 ## Example Conclusion
 
-The evidence pack should separate facts, limits, and recommendations. If a metric is unavailable, the report should say so directly and avoid substituting manual guesses.
+The impact pack should separate facts, limits, and recommendations. If a metric is unavailable, the report should say so directly and avoid substituting manual guesses.
 
 ## Delivery Boundary
 
-This example is not financial advice, not investment advice, and not an official OP assessment. It is a format for preparing reproducible evidence from public sources and agreed scope.
+This example is not financial advice, not investment advice, and not an official OP assessment. It is a format for preparing reproducible operator memos from public sources and agreed scope.

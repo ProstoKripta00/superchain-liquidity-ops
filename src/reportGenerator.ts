@@ -1,4 +1,5 @@
 import type { DexMarket, ProtocolMiniReport, ProtocolScan } from "./types";
+import { formatUtcDateTime } from "./dateFormat";
 
 const usd = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 2,
@@ -24,8 +25,8 @@ export function buildProtocolMiniReport(
   const markdown = [
     `# ${title}`,
     "",
-    `Generated: ${generatedAt}`,
-    `Data refresh: ${scan.updatedAt}`,
+    `Generated: ${formatUtcDateTime(generatedAt)}`,
+    `Data refresh: ${formatUtcDateTime(scan.updatedAt)}`,
     "",
     "## Executive Summary",
     "",
@@ -100,7 +101,7 @@ export function buildProtocolMiniReport(
     "- This mini-report uses public DefiLlama browser-accessible endpoints.",
     "- Missing fee or trend values are marked unavailable instead of being replaced with manual estimates.",
     "- This is not a security audit, investment rating, or financial recommendation.",
-    "- The report is intended for protocol growth, incentive reporting, internal reviews, DAO updates, and ecosystem evidence when needed.",
+    "- The report is intended for protocol growth, incentive reporting, internal updates, stakeholder memos, and ecosystem reporting when needed.",
     "",
   ]
     .filter((line) => line !== null)
@@ -127,10 +128,10 @@ function buildNextActions(scan: ProtocolScan) {
 
   if (scan.status === "Ready for report") {
     actions.push("Prepare a public one-page case study with CSV evidence and source limitations.");
-    actions.push("Use the report as a liquidity-program update or protocol-growth evidence pack before proposing deeper work.");
+    actions.push("Use the report as a liquidity-program update or protocol-growth decision memo before proposing deeper work.");
   } else if (scan.status === "Monitor") {
     actions.push("Track the same protocol weekly until trend, fee attribution, or confidence improves.");
-    actions.push("Use a small diagnostic snapshot instead of proposing a full evidence pack immediately.");
+    actions.push("Use a small diagnostic snapshot instead of proposing a full impact package immediately.");
   } else {
     actions.push("Keep the protocol in automated monitoring and avoid manual research effort for now.");
   }

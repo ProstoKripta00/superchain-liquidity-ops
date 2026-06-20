@@ -1,4 +1,5 @@
 import type { DexMarket, ProtocolScan } from "./types";
+import { formatUtcDateTime } from "./dateFormat";
 
 export type PublicCaseStudyId = "uniswap-superchain" | "aerodrome-base" | "velodrome-op";
 
@@ -52,9 +53,9 @@ const CASE_STUDY_DEFINITIONS: CaseStudyDefinition[] = [
     protocolName: "Uniswap",
     networkFocus: "OP Mainnet / Base / Unichain",
     decisionQuestion:
-      "Does Uniswap have enough Superchain activity to support an incentive-impact evidence pack?",
+      "Does Uniswap have enough Superchain activity to support a liquidity impact report?",
     fallbackSummary:
-      "Example study for measuring whether Uniswap Superchain markets produce enough volume, fees, and source confidence for operator evidence.",
+      "Example study for measuring whether Uniswap Superchain markets produce enough volume, fees, and source confidence for an operator decision memo.",
   },
   {
     id: "aerodrome-base",
@@ -70,9 +71,9 @@ const CASE_STUDY_DEFINITIONS: CaseStudyDefinition[] = [
     protocolName: "Velodrome",
     networkFocus: "OP Mainnet",
     decisionQuestion:
-      "Can OP Mainnet liquidity programs show clear before/after impact evidence for ecosystem or protocol updates?",
+      "Can OP Mainnet liquidity programs show clear before/after impact for ecosystem or protocol updates?",
     fallbackSummary:
-      "Example study for an OP Mainnet liquidity-program evidence review with public data limitations disclosed.",
+      "Example study for an OP Mainnet liquidity impact review with public data limitations disclosed.",
   },
 ];
 
@@ -94,14 +95,14 @@ export function buildPublicCaseStudies({
       .slice(0, 5);
     const status = scan ? "Live generated" : "Delivery example";
     const summary = scan
-      ? `${scan.name} scores ${scan.score}/100 with grade ${scan.healthScore.grade} across ${scan.marketCount} matched Superchain markets. The case study focuses on whether volume, fees, trend, and source confidence are strong enough for incentive-impact evidence.`
+      ? `${scan.name} scores ${scan.score}/100 with grade ${scan.healthScore.grade} across ${scan.marketCount} matched Superchain markets. The case study focuses on whether volume, fees, trend, and source confidence are strong enough for a paid liquidity impact report.`
       : definition.fallbackSummary;
     const findings = scan ? buildFindings(scan) : buildFallbackFindings(definition);
     const limitations = scan
       ? buildLimitations(scan, matchedMarkets)
       : [
           "Live protocol scan is not available in the current browser snapshot.",
-          "Final evidence pack must refresh public data before delivery.",
+          "Final impact report must refresh public data before delivery.",
           "Unavailable values should remain unavailable instead of being manually filled.",
         ];
     const metrics = scan
@@ -179,7 +180,7 @@ function buildFindings(scan: ProtocolScan) {
   }
 
   if ((scan.weightedChange7dPct ?? 0) < 0) {
-    findings.push("Weighted 7d trend is negative, so the evidence pack should explain whether this is temporary or incentive-related.");
+    findings.push("Weighted 7d trend is negative, so the impact report should explain whether this is temporary or incentive-related.");
   } else {
     findings.push("Weighted 7d trend is non-negative, which supports a stronger impact narrative if source freshness is healthy.");
   }
@@ -242,7 +243,7 @@ function buildMarkdown({
   return [
     `# ${title}`,
     "",
-    `Generated: ${generatedAt}`,
+    `Generated: ${formatUtcDateTime(generatedAt)}`,
     `Status: ${status}`,
     `Network focus: ${definition.networkFocus}`,
     "",

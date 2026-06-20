@@ -1,6 +1,7 @@
 import type { OutreachLead } from "./outreachPipeline";
 import type { SalesKit } from "./salesKit";
 import type { ServiceLayer, ServiceOffer } from "./serviceLayer";
+import { formatUtcDateTime } from "./dateFormat";
 
 export type RequestReportType =
   | "diagnostic"
@@ -42,7 +43,7 @@ export type RequestReportPack = {
 export const REQUEST_TYPES: Array<{ id: RequestReportType; label: string }> = [
   { id: "diagnostic", label: "7-day Liquidity Impact Report" },
   { id: "monitoring", label: "Monthly monitoring" },
-  { id: "incentive-evidence", label: "Liquidity Evidence Pack" },
+  { id: "incentive-evidence", label: "Liquidity Impact Pack" },
   { id: "custom", label: "Custom scope" },
 ];
 
@@ -115,7 +116,7 @@ export function buildRequestReportPack({
   const requestMarkdown = [
     "# Request Report",
     "",
-    `Generated: ${generatedAt}`,
+    `Generated: ${formatUtcDateTime(generatedAt)}`,
     `Project: Superchain Liquidity Ops`,
     `Name: ${name}`,
     `Organization: ${organization}`,

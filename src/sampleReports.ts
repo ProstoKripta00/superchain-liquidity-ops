@@ -1,4 +1,5 @@
 import { buildProtocolMiniReport } from "./reportGenerator";
+import { formatUtcDateTime } from "./dateFormat";
 import type { DexMarket, ProtocolScan } from "./types";
 
 export type SampleReportId =
@@ -72,14 +73,14 @@ const sampleDefinitions: SampleReportDefinition[] = [
     id: "aerodrome-incentive-evidence",
     protocolId: "aerodrome",
     protocolName: "Aerodrome",
-    title: "Aerodrome Deeper Evidence Pack Example",
-    serviceType: "Deeper Evidence Pack",
+    title: "Aerodrome Deeper Impact Pack Example",
+    serviceType: "Deeper Impact Pack",
     audience: "Ecosystem teams, growth leads, and protocol contributors",
     fallbackSegment: "Base liquidity hub",
     fallbackSummary:
-      "A deeper evidence example that packages activity, fee visibility, market quality, source limits, and decision-ready next steps.",
+      "A deeper impact example that packages activity, fee visibility, market quality, source limits, and decision-ready next steps.",
     sampleUse:
-      "Attach this example when pitching a deeper paid report, liquidity review, or post-program evidence work.",
+      "Attach this example when pitching a deeper paid report, liquidity impact report, or post-program operator memo.",
   },
 ];
 
@@ -155,8 +156,8 @@ function buildSampleReport(
   const markdown = [
     `# ${definition.title}`,
     "",
-    `Generated: ${miniReport.generatedAt}`,
-    `Data refresh: ${scan.updatedAt}`,
+    `Generated: ${formatUtcDateTime(miniReport.generatedAt)}`,
+    `Data refresh: ${formatUtcDateTime(scan.updatedAt)}`,
     "",
     "## Delivery Example Context",
     "",
@@ -204,7 +205,7 @@ function buildFallbackSampleReport(
   const markdown = [
     `# ${definition.title}`,
     "",
-    `Generated: ${generatedAt}`,
+    `Generated: ${formatUtcDateTime(generatedAt)}`,
     "Example status: Delivery example because live scanner data is not available for this protocol in the current snapshot.",
     "",
     "## Executive Summary",
