@@ -262,9 +262,9 @@ function buildHandoffSummary(
     `Status: ${scan.status}, health score ${scan.score}/100, grade ${scan.healthScore.grade}`,
     `Protocol markets: ${protocolMarkets.length}`,
     `Scope markets: ${scopedMarkets.length}`,
-    `30d protocol volume: ${usd.format(scan.volume30dUsd)}`,
+    `30d protocol volume: ${formatOptionalUsd(scan.volume30dUsd)}`,
     `30d protocol fees: ${formatOptionalUsd(scan.fees30dUsd)}`,
-    `Scope 30d volume: ${usd.format(totals.volume30d)}`,
+    `Scope 30d volume: ${formatOptionalUsd(totals.volume30d)}`,
     `Scope 30d fees: ${formatOptionalUsd(totals.fees30d)}`,
     `Recommendation: ${scan.healthScore.recommendation}`,
     `Next action: ${scan.nextAction}`,
@@ -283,8 +283,10 @@ function csvCell(value: string) {
   return `"${value.replace(/"/g, '""')}"`;
 }
 
-function formatOptionalUsd(value: number | null) {
-  return value === null ? "Unavailable" : usd.format(value);
+function formatOptionalUsd(value: number | null | undefined) {
+  return typeof value === "number" && Number.isFinite(value)
+    ? usd.format(value)
+    : "Unavailable";
 }
 
 function formatBytes(length: number) {

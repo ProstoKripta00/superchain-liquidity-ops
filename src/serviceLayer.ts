@@ -289,6 +289,8 @@ function buildClientBrief(
   ].join("\n");
 }
 
-function formatUsd(value: number | null) {
-  return value === null ? "unavailable" : usd.format(value);
+function formatUsd(value: number | null | undefined) {
+  return typeof value === "number" && Number.isFinite(value)
+    ? usd.format(value)
+    : "unavailable";
 }

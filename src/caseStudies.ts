@@ -109,7 +109,7 @@ export function buildPublicCaseStudies({
           { label: "Health score", value: `${scan.score}/100` },
           { label: "Grade", value: scan.healthScore.grade },
           { label: "Data confidence", value: `${scan.healthScore.confidence}/100` },
-          { label: "30d volume", value: usd.format(scan.volume30dUsd) },
+          { label: "30d volume", value: formatOptionalUsd(scan.volume30dUsd) },
           { label: "30d fees", value: formatOptionalUsd(scan.fees30dUsd) },
           { label: "7d trend", value: formatOptionalPct(scan.weightedChange7dPct) },
         ]
@@ -168,14 +168,14 @@ export function buildPublicCaseStudiesJson(caseStudies: PublicCaseStudy[]) {
 
 function buildFindings(scan: ProtocolScan) {
   const findings = [
-    `${scan.name} has ${usd.format(scan.volume30dUsd)} in matched 30d DEX volume across ${scan.marketCount} markets.`,
+    `${scan.name} has ${formatOptionalUsd(scan.volume30dUsd)} in matched 30d DEX volume across ${scan.marketCount} markets.`,
     `The scanner classifies the protocol as "${scan.status}" with ${scan.healthScore.confidence}/100 data confidence.`,
   ];
 
   if (scan.fees30dUsd === null) {
     findings.push("Protocol-level 30d fee attribution is unavailable in the public feed and should be disclosed.");
   } else {
-    findings.push(`Matched 30d fees are ${usd.format(scan.fees30dUsd)}, with fee/volume at ${formatOptionalPct(scan.feeToVolume30dPct)}.`);
+    findings.push(`Matched 30d fees are ${formatOptionalUsd(scan.fees30dUsd)}, with fee/volume at ${formatOptionalPct(scan.feeToVolume30dPct)}.`);
   }
 
   if ((scan.weightedChange7dPct ?? 0) < 0) {
@@ -195,7 +195,7 @@ function buildFallbackFindings(definition: CaseStudyDefinition) {
   return [
     `${definition.protocolName} should be evaluated with 30d volume, 30d fees, fee/volume, 7d trend, and source freshness.`,
     "The final case study should separate live facts from recommendations.",
-    "The output should answer the decision question before asking for a deeper paid report or monitoring workflow.",
+    "The output should answer the decision question before asking for a 7-day paid pilot or recurring monitoring engagement.",
   ];
 }
 
@@ -289,12 +289,16 @@ function buildMarkdown({
   ].join("\n");
 }
 
-function formatOptionalUsd(value: number | null) {
-  return value === null ? "Unavailable" : usd.format(value);
+function formatOptionalUsd(value: number | null | undefined) {
+  return typeof value === "number" && Number.isFinite(value)
+    ? usd.format(value)
+    : "Unavailable";
 }
 
-function formatOptionalPct(value: number | null) {
-  return value === null ? "Unavailable" : `${pct.format(value)}%`;
+function formatOptionalPct(value: number | null | undefined) {
+  return typeof value === "number" && Number.isFinite(value)
+    ? `${pct.format(value)}%`
+    : "Unavailable";
 }
 
 function slugify(value: string) {

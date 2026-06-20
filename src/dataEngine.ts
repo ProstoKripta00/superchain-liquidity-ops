@@ -22,7 +22,9 @@ export function toNumber(value: unknown): number {
 }
 
 export function sumNullable(values: Array<number | null | undefined>): number | null {
-  const numbers = values.filter((value): value is number => typeof value === "number");
+  const numbers = values.filter(
+    (value): value is number => typeof value === "number" && Number.isFinite(value),
+  );
   return numbers.length === 0 ? null : numbers.reduce((sum, value) => sum + value, 0);
 }
 
@@ -33,6 +35,8 @@ export function ratioPct(
   if (
     typeof numerator !== "number" ||
     typeof denominator !== "number" ||
+    !Number.isFinite(numerator) ||
+    !Number.isFinite(denominator) ||
     denominator === 0
   ) {
     return null;
@@ -45,7 +49,11 @@ export function weightedAverage(
   values: Array<{ value: number | null | undefined; weight: number | null | undefined }>,
 ): number | null {
   const valid = values.filter((item): item is { value: number; weight: number } =>
-    typeof item.value === "number" && typeof item.weight === "number" && item.weight > 0,
+    typeof item.value === "number" &&
+    typeof item.weight === "number" &&
+    Number.isFinite(item.value) &&
+    Number.isFinite(item.weight) &&
+    item.weight > 0,
   );
   const weightSum = valid.reduce((sum, item) => sum + item.weight, 0);
 

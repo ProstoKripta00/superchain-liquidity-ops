@@ -265,7 +265,7 @@ function buildLiveMetrics(scan: ProtocolScan): SampleReportMetric[] {
   return [
     { label: "Health score", value: `${scan.score}/100` },
     { label: "Grade", value: scan.healthScore.grade },
-    { label: "30d volume", value: compactUsd.format(scan.volume30dUsd) },
+    { label: "30d volume", value: formatOptionalUsd(scan.volume30dUsd) },
     { label: "30d fees", value: formatOptionalUsd(scan.fees30dUsd) },
     { label: "7d trend", value: formatOptionalPct(scan.weightedChange7dPct) },
     { label: "Markets", value: String(scan.marketCount) },
@@ -287,10 +287,14 @@ function findProtocolScan(
   });
 }
 
-function formatOptionalUsd(value: number | null) {
-  return value === null ? "Unavailable" : compactUsd.format(value);
+function formatOptionalUsd(value: number | null | undefined) {
+  return typeof value === "number" && Number.isFinite(value)
+    ? compactUsd.format(value)
+    : "Unavailable";
 }
 
-function formatOptionalPct(value: number | null) {
-  return value === null ? "Unavailable" : `${pct.format(value)}%`;
+function formatOptionalPct(value: number | null | undefined) {
+  return typeof value === "number" && Number.isFinite(value)
+    ? `${pct.format(value)}%`
+    : "Unavailable";
 }

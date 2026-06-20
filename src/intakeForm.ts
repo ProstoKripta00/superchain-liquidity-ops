@@ -160,7 +160,7 @@ export function buildIntakePack({
   const status = missingFields.length === 0 ? "Ready" : missingFields.length <= 2 ? "Needs scope" : "Draft";
   const title = `${protocol} intake form`;
   const nextSteps = [
-    "Confirm whether the scope is public or private before opening a GitHub issue.",
+    "Confirm whether the scope is public or private before opening a public request.",
     "Refresh live Superchain data before preparing the final report.",
     "Confirm payment method and deadline outside the public dashboard.",
     "Deliver Markdown, CSV and JSON artifacts from the same live snapshot.",

@@ -375,7 +375,7 @@ export const seedWorkspaceState: WorkspaceState = {
       organizationId: "org-superchain-ops",
       actorUserId: "user-admin",
       label: "Workspace ready",
-      detail: "Client portal, operator queue and admin readiness checks are enabled in demo mode.",
+      detail: "Client workspace, operator queue and admin readiness checks are enabled in demo mode.",
       createdAt: nowIso,
     },
   ],

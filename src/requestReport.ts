@@ -38,7 +38,7 @@ export type RequestReportPack = {
 export const REQUEST_TYPES: Array<{ id: RequestReportType; label: string }> = [
   { id: "diagnostic", label: "7-day Liquidity Impact Report" },
   { id: "monitoring", label: "Monthly monitoring" },
-  { id: "incentive-evidence", label: "DAO / incentive evidence pack" },
+  { id: "incentive-evidence", label: "Liquidity Evidence Pack" },
   { id: "custom", label: "Custom scope" },
 ];
 
@@ -119,8 +119,6 @@ export function buildRequestReportPack({
     "",
     `- Package: ${requestTypeLabel}`,
     `- Timeline: ${form.requestType === "diagnostic" ? "7 days" : offer?.timeline ?? salesKit.timeline}`,
-    `- Launch status: ${salesKit.status}`,
-    `- Readiness score: ${salesKit.readinessScore}/100`,
     "",
     "## Need",
     "",
@@ -152,15 +150,6 @@ export function buildRequestReportPack({
     "",
     ...intakeChecklist.map((item) => `- [ ] ${item}`),
     "",
-    "## Lead Context",
-    "",
-    `- Selected lead: ${selectedLead?.protocolName ?? "Not selected"}`,
-    `- Lead status: ${selectedLead?.status ?? "Not selected"}`,
-    `- Contact confidence: ${
-      selectedLead ? `${selectedLead.enrichmentConfidence}/100` : "Not selected"
-    }`,
-    `- Recommended offer: ${selectedLead?.recommendedOfferName ?? "Not selected"}`,
-    "",
   ].join("\n");
   const requestPayload = {
     generatedAt,
@@ -184,22 +173,11 @@ export function buildRequestReportPack({
           acceptanceCriteria: offer.acceptanceCriteria,
         }
       : null,
-    launch: {
-      status: salesKit.status,
-      readinessScore: salesKit.readinessScore,
+    publicScope: {
       targetProtocol: salesKit.targetProtocol,
+      selectedLead: selectedLead?.protocolName ?? null,
+      recommendedOffer: selectedLead?.recommendedOfferName ?? offer?.name ?? null,
     },
-    lead: selectedLead
-      ? {
-          id: selectedLead.id,
-          protocolName: selectedLead.protocolName,
-          status: selectedLead.status,
-          contactTarget: selectedLead.contactTarget,
-          contactUrl: selectedLead.contactUrl,
-          enrichmentStatus: selectedLead.enrichmentStatus,
-          enrichmentConfidence: selectedLead.enrichmentConfidence,
-        }
-      : null,
   };
   const requestJson = JSON.stringify(requestPayload, null, 2);
   const telegramCopy = [
@@ -216,10 +194,10 @@ export function buildRequestReportPack({
   const contactRoutes = [
     {
       id: "github-issue",
-      label: "GitHub issue",
-      value: "Open a structured request in the public repository",
+      label: "Public request",
+      value: "Open a structured public request",
       href: githubIssueUrl,
-      note: "Best route for public scope, questions and reproducible delivery notes.",
+      note: "Use only when the buyer is comfortable with a public scope.",
     },
     {
       id: "github-profile",

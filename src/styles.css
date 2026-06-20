@@ -6716,6 +6716,19 @@ select {
     grid-template-columns: 1fr;
   }
 
+  .opHeader {
+    position: static;
+    gap: 12px;
+    min-height: auto;
+    padding: 14px 18px;
+  }
+
+  .opMark {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+  }
+
   .opHeader,
   .brandBlock,
   .brandBlock strong,
@@ -6736,6 +6749,14 @@ select {
 
   .topNav {
     justify-content: flex-start;
+    max-height: 96px;
+    overflow: hidden;
+  }
+
+  .topNav a {
+    min-height: 30px;
+    padding: 0 10px;
+    font-size: 12px;
   }
 
   .main {
@@ -6749,7 +6770,7 @@ select {
   }
 
   h1 {
-    font-size: 34px;
+    font-size: 31px;
     line-height: 1.04;
   }
 

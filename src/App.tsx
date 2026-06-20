@@ -1483,8 +1483,6 @@ function App() {
           <a href="#methodology">Methodology</a>
           <a href="#pricing">Pricing</a>
           <a className="navCta" href="#request-report">Request 7-day report</a>
-          <a href="#/app">Client portal</a>
-          <a href="#sources">Sources</a>
         </nav>
       </header>
 
@@ -1500,7 +1498,6 @@ function App() {
             </p>
             <div className="heroActions">
               <a href="#request-report">Request 7-day report</a>
-              <a href="#/app">Open client portal</a>
               <a href="#case-studies">View sample case</a>
             </div>
             <small>
@@ -1548,11 +1545,11 @@ function App() {
             <span>{metricsAreLoading ? "Loading public data" : liveState.title}</span>
           </div>
           <div className="metricRail">
-            <Metric icon={<BarChart3 />} label="24h DEX volume" value={metricsAreLoading ? "Loading" : compactUsd.format(totals.volume24h)} />
-            <Metric icon={<Layers3 />} label="30d DEX volume" value={metricsAreLoading ? "Loading" : compactUsd.format(totals.volume30d)} />
+            <Metric icon={<BarChart3 />} label="24h DEX volume" value={metricsAreLoading ? "Loading" : formatUsd(totals.volume24h)} />
+            <Metric icon={<Layers3 />} label="30d DEX volume" value={metricsAreLoading ? "Loading" : formatUsd(totals.volume30d)} />
             <Metric icon={<CircleDollarSign />} label="30d fees" value={metricsAreLoading ? "Loading" : formatOptionalUsd(totals.fees30d)} />
             <Metric icon={<Gauge />} label="Fee / volume" value={metricsAreLoading ? "Loading" : formatOptionalPct(totals.feeToVolume)} />
-            <Metric icon={<TrendingUp />} label="7d market trend" value={metricsAreLoading ? "Loading" : `${pct.format(totals.weightedChange7d)}%`} />
+            <Metric icon={<TrendingUp />} label="7d market trend" value={metricsAreLoading ? "Loading" : formatOptionalPct(totals.weightedChange7d)} />
             <Metric icon={<Radar />} label="Watchlist markets" value={metricsAreLoading ? "Loading" : String(totals.watchCount)} />
           </div>
         </section>
@@ -1591,7 +1588,7 @@ function App() {
                         {scan.networks.join(", ")} / {scan.marketCount} markets
                       </small>
                     </span>
-                    <strong>{compactUsd.format(scan.volume30dUsd)}</strong>
+                    <strong>{formatUsd(scan.volume30dUsd)}</strong>
                     <strong>{formatOptionalUsd(scan.fees30dUsd)}</strong>
                     <ProtocolStatus value={scan.status} />
                   </button>
@@ -1932,7 +1929,7 @@ function App() {
                         {market.network} / {market.category} / {market.slug}
                       </small>
                     </span>
-                    <strong>{compactUsd.format(market.volume24hUsd)}</strong>
+                    <strong>{formatUsd(market.volume24hUsd)}</strong>
                     <strong>{formatOptionalUsd(market.volume7dUsd)}</strong>
                     <strong>{formatOptionalUsd(market.volume30dUsd)}</strong>
                     <strong>{formatOptionalUsd(market.fees30dUsd)}</strong>
@@ -1961,7 +1958,7 @@ function App() {
                   <div className="focusGrid">
                     <Stat label="Network" value={selectedMarket.network} />
                     <Stat label="Category" value={selectedMarket.category} />
-                    <Stat label="24h volume" value={compactUsd.format(selectedMarket.volume24hUsd)} />
+                    <Stat label="24h volume" value={formatUsd(selectedMarket.volume24hUsd)} />
                     <Stat label="7d change" value={formatOptionalPct(selectedMarket.change7dPct)} />
                     <Stat label="30d fee / volume" value={formatOptionalPct(selectedMarket.feeToVolume30dPct)} />
                     <Stat label="DefiLlama slug" value={selectedMarket.slug} />
@@ -2245,7 +2242,6 @@ function FooterSection() {
         <a href="#methodology">Methodology</a>
         <a href="#sources">Sources</a>
         <a href="#request-report">Request report</a>
-        <a href="#/app">Client portal</a>
       </nav>
     </footer>
   );
@@ -2695,7 +2691,7 @@ function RequestReportSection({
               rel="noreferrer"
             >
               <GitBranch size={17} />
-              Open GitHub issue
+              Open public request
               <ExternalLink size={15} />
             </a>
           </div>
@@ -2933,7 +2929,7 @@ function IntakeFormSection({
                 rel="noreferrer"
               >
                 <GitBranch size={17} />
-                Open public issue
+                Open public request
                 <ExternalLink size={15} />
               </a>
             )}
@@ -3122,7 +3118,7 @@ function IntakeFormSection({
               />
             </label>
             <label className="intakePublicFlag">
-              Public GitHub issue OK
+              Public request OK
               <input
                 checked={form.publicIssueOk}
                 type="checkbox"
@@ -4369,7 +4365,7 @@ function ReportsSection({
                   </div>
                   <div>
                     <span>30d volume</span>
-                    <strong>{compactUsd.format(selectedItem.scan.volume30dUsd)}</strong>
+                    <strong>{formatUsd(selectedItem.scan.volume30dUsd)}</strong>
                   </div>
                   <div>
                     <span>30d fees</span>
@@ -5139,12 +5135,20 @@ function getLiveState(snapshot: LiquiditySnapshot | null, error: string | null) 
   };
 }
 
-function formatOptionalUsd(value: number | null) {
-  return value === null ? "Unavailable" : compactUsd.format(value);
+function formatUsd(value: number | null | undefined) {
+  return typeof value === "number" && Number.isFinite(value)
+    ? compactUsd.format(value)
+    : "Unavailable";
 }
 
-function formatOptionalPct(value: number | null) {
-  return value === null ? "Unavailable" : `${pct.format(value)}%`;
+function formatOptionalUsd(value: number | null | undefined) {
+  return formatUsd(value);
+}
+
+function formatOptionalPct(value: number | null | undefined) {
+  return typeof value === "number" && Number.isFinite(value)
+    ? `${pct.format(value)}%`
+    : "Unavailable";
 }
 
 function serviceStatusClass(value: ServiceOffer["status"]) {
@@ -5233,7 +5237,7 @@ function buildProtocolSummary(scan: ProtocolScan) {
     `Segment: ${scan.segment}`,
     `Networks: ${scan.networks.join(", ")}`,
     `Markets matched: ${scan.marketCount}`,
-    `30d volume: ${compactUsd.format(scan.volume30dUsd)}`,
+    `30d volume: ${formatUsd(scan.volume30dUsd)}`,
     `30d fees: ${formatOptionalUsd(scan.fees30dUsd)}`,
     `7d weighted trend: ${formatOptionalPct(scan.weightedChange7dPct)}`,
     `Fee / volume: ${formatOptionalPct(scan.feeToVolume30dPct)}`,

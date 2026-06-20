@@ -6,14 +6,14 @@ Product: Superchain Liquidity Ops
 ## Client
 
 - Protocol / project: Example Protocol
-- Team / company: Example DAO Growth
+- Team / company: Example Protocol Growth
 - Contact name: Growth lead
 - Contact route: Telegram, email, X, Discord, or GitHub
 - Role: Growth / liquidity owner
 
 ## Scope
 
-- Decision supported: DAO / incentive evidence
+- Decision supported: Liquidity impact evidence
 - Chains: OP Mainnet, Base
 - Metrics: TVL, DEX volume, fees, source audit
 - Deliverable format: Full export pack

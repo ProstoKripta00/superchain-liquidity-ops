@@ -142,16 +142,20 @@ function asBullets(items: string[]) {
   return items.length > 0 ? items.map((item) => `- ${item}`) : ["- None"];
 }
 
-function formatUsd(value: number) {
-  return usd.format(value);
+function formatUsd(value: number | null | undefined) {
+  return typeof value === "number" && Number.isFinite(value)
+    ? usd.format(value)
+    : "Unavailable";
 }
 
-function formatOptionalUsd(value: number | null) {
-  return value === null ? "Unavailable" : usd.format(value);
+function formatOptionalUsd(value: number | null | undefined) {
+  return formatUsd(value);
 }
 
-function formatOptionalPct(value: number | null) {
-  return value === null ? "Unavailable" : `${pct.format(value)}%`;
+function formatOptionalPct(value: number | null | undefined) {
+  return typeof value === "number" && Number.isFinite(value)
+    ? `${pct.format(value)}%`
+    : "Unavailable";
 }
 
 function escapeTableCell(value: string) {

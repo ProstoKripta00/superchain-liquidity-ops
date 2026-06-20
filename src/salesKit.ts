@@ -293,7 +293,7 @@ function buildProposalMarkdown({
     "# Superchain Liquidity Ops Proposal",
     "",
     `Generated: ${generatedAt}`,
-    `Launch status: ${status}`,
+    `Sales package status: ${status}`,
     `Client / protocol: ${targetProtocol}`,
     `Package: ${offer?.name ?? "Service package"}`,
     `Price range: ${offer?.priceLabel ?? "Quote after scope"}`,

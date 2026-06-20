@@ -20,7 +20,7 @@
     },
     {
       "id": "incentive-evidence-pack",
-      "title": "DAO / Incentive Evidence Pack Sample",
+      "title": "Liquidity Evidence Pack Sample",
       "format": "markdown",
       "path": "samples/incentive-evidence-pack-sample.md",
       "useCase": "Show decision-ready evidence structure."

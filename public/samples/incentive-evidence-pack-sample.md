@@ -1,13 +1,13 @@
-# DAO / Incentive Evidence Pack Sample
+# Liquidity Evidence Pack Sample
 
 Generated: static sample
 Product: Superchain Liquidity Ops
-Service: DAO / Incentive Evidence Pack
-Audience: Protocol teams, ecosystem operators, DAO contributors, and growth leads
+Service: Liquidity Evidence Pack
+Audience: Protocol teams, ecosystem operators, liquidity owners, and growth leads
 
 ## Decision Question
 
-Did a liquidity or incentives program create measurable Superchain outcomes across DEX volume, fee output, market quality, and source-backed evidence?
+Did a liquidity program create measurable Superchain outcomes across DEX volume, fee output, market quality, and source-backed evidence?
 
 ## Evidence Table
 
@@ -32,4 +32,4 @@ The evidence pack should separate facts, limits, and recommendations. If a metri
 
 ## Delivery Boundary
 
-This sample is not a funding claim by itself. It is a format for preparing reproducible evidence from public sources and agreed scope.
+This sample is not a growth guarantee or investment recommendation. It is a format for preparing reproducible evidence from public sources and agreed scope.
