@@ -6968,10 +6968,10 @@ select {
 
 .portalAuthShell {
   display: grid;
-  grid-template-columns: minmax(0, 620px) minmax(260px, 360px);
+  grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr);
   gap: 18px;
   align-items: start;
-  width: min(1060px, calc(100% - 36px));
+  width: min(1180px, calc(100% - 36px));
   margin: 42px auto;
 }
 
@@ -6986,6 +6986,11 @@ select {
 
 .portalAuthPanel {
   padding: 28px;
+}
+
+.portalPublicPreview {
+  overflow: hidden;
+  border-top: 8px solid #ff0421;
 }
 
 .portalAuthPanel > span,
@@ -7006,6 +7011,74 @@ select {
   max-width: 58ch;
   color: #555555;
   line-height: 1.55;
+}
+
+.portalAuthCtaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 22px 0;
+}
+
+.portalAuthCtaRow .portalPrimaryAction,
+.portalAuthCtaRow .portalSecondaryAction {
+  margin-top: 0;
+}
+
+.portalPreviewGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.portalPreviewGrid article {
+  display: grid;
+  gap: 8px;
+  min-height: 164px;
+  padding: 16px;
+  color: #101010;
+  background: #f7f7f4;
+  border: 1px solid #e4e4e0;
+  border-radius: 14px;
+}
+
+.portalPreviewGrid svg {
+  color: #ff0421;
+}
+
+.portalPreviewGrid strong {
+  font-size: 1rem;
+  line-height: 1.15;
+}
+
+.portalPreviewGrid span {
+  color: #565656;
+  font-weight: 750;
+  line-height: 1.35;
+}
+
+.portalWorkspacePreview {
+  display: grid;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 18px;
+  color: #ffffff;
+  background: #101010;
+  border-radius: 16px;
+}
+
+.portalWorkspacePreview span {
+  color: #ffb3bd;
+  font-size: 12px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.portalWorkspacePreview strong {
+  max-width: 56ch;
+  font-size: 1.1rem;
+  line-height: 1.25;
 }
 
 .portalAuthTabs {
@@ -7039,6 +7112,13 @@ select {
   padding: 22px;
 }
 
+.portalLoginPanel p {
+  margin: 0;
+  color: #555555;
+  font-weight: 750;
+  line-height: 1.45;
+}
+
 .portalAuthAside span,
 .portalSetupList span {
   display: block;
@@ -7048,6 +7128,14 @@ select {
   border-radius: 12px;
   font-weight: 800;
   line-height: 1.35;
+}
+
+.portalLoginChecklist {
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 1px solid #e4e4e0;
 }
 
 .portalAuthMessage,

@@ -681,12 +681,54 @@ function WorkspaceAuthGate({
       </header>
 
       <main className="portalAuthShell">
-        <section className="portalAuthPanel">
-          <span>Production login</span>
-          <h1>Client workspace is connected to Supabase.</h1>
+        <section className="portalAuthPanel portalPublicPreview">
+          <span>See the product first</span>
+          <h1>Liquidity reports before the private workspace.</h1>
           <p>
-            Sign in with an invited account to load organizations, requests, reports, private
-            files, messages and audit log from Postgres and Storage.
+            Anyone can review the public scanner, sample reports, pricing and methodology first.
+            The client workspace is only for invited teams after a report is scoped or paid.
+          </p>
+
+          <div className="portalAuthCtaRow">
+            <a className="portalPrimaryAction" href="./">
+              <Home size={17} />
+              View public site
+            </a>
+            <a className="portalSecondaryAction" href="./#request-report">
+              <Send size={17} />
+              Request pilot report
+            </a>
+          </div>
+
+          <div className="portalPreviewGrid">
+            <article>
+              <BarChart3 size={18} />
+              <strong>Live OP / Base signals</strong>
+              <span>DEX TVL, fees, weak markets and source-backed evidence.</span>
+            </article>
+            <article>
+              <FileCheck2 size={18} />
+              <strong>Sample report pack</strong>
+              <span>Markdown memo, CSV evidence, manifest and delivery notes.</span>
+            </article>
+            <article>
+              <ShieldCheck size={18} />
+              <strong>Private handoff</strong>
+              <span>Signed files, client messages and operator-only drafts after login.</span>
+            </article>
+          </div>
+
+          <div className="portalWorkspacePreview">
+            <span>After a client is invited</span>
+            <strong>Aerodrome-style workspace: requests, files, payment status and messages.</strong>
+          </div>
+        </section>
+
+        <aside className="portalAuthAside portalLoginPanel">
+          <strong>Client login</strong>
+          <p>
+            Use this only if you already have an invited report workspace. New buyers should start
+            from the public site or request form.
           </p>
 
           <div className="portalAuthTabs">
@@ -709,7 +751,7 @@ function WorkspaceAuthGate({
               onClick={() => onChangeMode("reset")}
               type="button"
             >
-              Reset password
+              Reset
             </button>
           </div>
 
@@ -755,14 +797,12 @@ function WorkspaceAuthGate({
           </button>
 
           {authMessage ? <p className="portalAuthMessage">{authMessage}</p> : null}
-        </section>
 
-        <aside className="portalAuthAside">
-          <strong>Backend checklist</strong>
-          <span>Supabase Auth session persistence</span>
-          <span>Postgres Row Level Security</span>
-          <span>Private Storage bucket: report-files</span>
-          <span>Signed URLs for report files</span>
+          <div className="portalLoginChecklist">
+            <span>Supabase Auth</span>
+            <span>Private Storage</span>
+            <span>Client-only report access</span>
+          </div>
         </aside>
       </main>
     </div>
