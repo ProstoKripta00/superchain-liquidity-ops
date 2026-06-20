@@ -705,7 +705,7 @@ select {
 .scannerHead,
 .protocolRow {
   display: grid;
-  grid-template-columns: 54px minmax(190px, 1fr) 120px 110px 140px;
+  grid-template-columns: 64px minmax(190px, 1fr) 120px 110px 140px;
   gap: 12px;
   align-items: center;
 }
@@ -774,6 +774,71 @@ select {
   margin-top: 2px;
   color: #ffccd2;
   font-size: 10px;
+}
+
+.protocolLogo {
+  position: relative;
+  display: inline-grid;
+  width: 52px;
+  height: 52px;
+  place-items: center;
+  color: #ffffff;
+  background: #0f0f0f;
+  border: 1px solid rgba(15, 15, 15, 0.12);
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 4px rgba(255, 255, 255, 0.08);
+}
+
+.protocolLogo img,
+.protocolLogoFallback {
+  grid-area: 1 / 1;
+}
+
+.protocolLogo img {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  padding: 5px;
+  background: #ffffff;
+  border-radius: 999px;
+}
+
+.protocolLogoFallback {
+  font-size: 13px;
+  font-weight: 950;
+  letter-spacing: 0;
+}
+
+.protocolLogoScore {
+  position: absolute;
+  right: -7px;
+  bottom: -5px;
+  display: grid;
+  width: 27px;
+  height: 27px;
+  place-items: center;
+  color: #ffffff;
+  background: #0f0f0f;
+  border: 2px solid #ffffff;
+  border-radius: 999px;
+  font-weight: 950;
+}
+
+.protocolLogoScore strong,
+.protocolLogoScore small {
+  line-height: 1;
+}
+
+.protocolLogoScore strong {
+  align-self: end;
+  font-size: 10px;
+}
+
+.protocolLogoScore small {
+  align-self: start;
+  margin: 1px 0 0;
+  color: #ffccd2;
+  font-size: 7px;
 }
 
 .grade-a {

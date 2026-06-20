@@ -1571,7 +1571,7 @@ function App() {
           <div className="scannerGrid">
             <div className="scannerList">
               <div className="scannerHead">
-                <span>Score</span>
+                <span>DEX</span>
                 <span>Protocol</span>
                 <span>30d volume</span>
                 <span>30d fees</span>
@@ -1584,10 +1584,7 @@ function App() {
                     key={scan.id}
                     onClick={() => setSelectedProtocolId(scan.id)}
                   >
-                    <span className={`scorePill grade-${scan.healthScore.grade.toLowerCase()}`}>
-                      <strong>{scan.score}</strong>
-                      <small>{scan.healthScore.grade}</small>
-                    </span>
+                    <ProtocolLogo scan={scan} />
                     <span>
                       <strong>{scan.name}</strong>
                       <small>
@@ -4932,12 +4929,42 @@ function Health({ value }: { value: DexMarket["health"] }) {
   return <span className={`health ${value.toLowerCase().replace(" ", "-")}`}>{value}</span>;
 }
 
+function ProtocolLogo({ scan }: { scan: ProtocolScan }) {
+  return (
+    <span className={`protocolLogo grade-${scan.healthScore.grade.toLowerCase()}`}>
+      <span className="protocolLogoFallback">{initials(scan.name)}</span>
+      <img
+        alt=""
+        loading="lazy"
+        onError={(event) => {
+          event.currentTarget.style.display = "none";
+        }}
+        referrerPolicy="no-referrer"
+        src={scan.logoUrl}
+      />
+      <span className="protocolLogoScore">
+        <strong>{scan.score}</strong>
+        <small>{scan.healthScore.grade}</small>
+      </span>
+    </span>
+  );
+}
+
 function ProtocolStatus({ value }: { value: ProtocolScan["status"] }) {
   return (
     <span className={`protocolStatus ${value.toLowerCase().replace(/\s+/g, "-")}`}>
       {value}
     </span>
   );
+}
+
+function initials(value: string) {
+  return value
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() ?? "")
+    .join("");
 }
 
 function HealthScoreBreakdown({ scan }: { scan: ProtocolScan }) {

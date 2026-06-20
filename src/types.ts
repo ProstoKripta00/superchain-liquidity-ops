@@ -99,16 +99,20 @@ export type DexMarket = {
 export type ProtocolProfile = {
   id: string;
   name: string;
+  logoUrl: string;
   slugs: string[];
   segment: string;
   thesis: string;
+  websiteUrl: string;
 };
 
 export type ProtocolScan = {
   id: string;
   name: string;
+  logoUrl: string;
   segment: string;
   thesis: string;
+  websiteUrl: string;
   slugs: string[];
   networks: SuperchainNetwork[];
   marketIds: string[];

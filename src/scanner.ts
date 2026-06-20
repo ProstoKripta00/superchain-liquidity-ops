@@ -70,8 +70,10 @@ function buildProtocolScan(
   return {
     id: profile.id,
     name: profile.name,
+    logoUrl: profile.logoUrl,
     segment: profile.segment,
     thesis: profile.thesis,
+    websiteUrl: profile.websiteUrl,
     slugs: profile.slugs,
     networks,
     marketIds: matchedMarkets.map((market) => market.id),
