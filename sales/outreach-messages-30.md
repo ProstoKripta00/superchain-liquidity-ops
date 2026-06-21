@@ -3,12 +3,13 @@
 Use these as first-touch messages. Keep the first contact short. Send the site link only after the first sentence makes the value clear.
 
 Site: https://prostokripta00.github.io/superchain-liquidity-ops/
+Payment: OP / USDT / USDC
 
 ## Standard close
 
 If they reply with interest:
 
-> I can prepare a one-page sample scope first. The paid pilot is small: $500 fixed for a weak-market or mini evidence report, or $750/mo for recurring Superchain monitoring. Delivery is usually 3-5 days, with source links, CSV evidence, and a short action summary.
+> I can prepare a one-page sample scope first. The paid pilot is small: $500 fixed for a weak-market or mini evidence report, or $750/mo for recurring Superchain monitoring. Delivery is usually 3-5 days, with source links, CSV evidence, and a short action summary. Payment can be made in OP, USDT, or USDC.
 
 ## Messages
 
