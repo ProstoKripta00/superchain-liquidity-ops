@@ -3,6 +3,7 @@
 Generated: 2026-06-21 Europe/Minsk from public DefiLlama data captured at 2026-06-20T22:29:50Z.
 
 Site: https://prostokripta00.github.io/superchain-liquidity-ops/
+First 10 sample scopes: ./sample-scopes-first-10.md
 
 ## Data sources
 
@@ -22,20 +23,22 @@ Tier B is the enrichment wave. These are worth contacting after checking the cur
 
 Tier C is the monitoring wave. Keep them in the CRM, but do not spend the first outreach day on them unless we already have a direct contact.
 
-## First outreach order
+## First paid-pilot outreach order
 
-1. Aerodrome - Base - $17.6B 30d volume - $9.7M 30d fees - +25.24% 7d trend - 7-day Liquidity Impact Report - Official X @aerodromefi
-2. Uniswap - Base, Optimism, Unichain, Zora - $11.1B 30d volume - $24.1M 30d fees - +1.17% 7d trend - 7-day Liquidity Impact Report - Official X @Uniswap
-3. PancakeSwap - Base - $3.9B 30d volume - $590.7K 30d fees - -10.53% 7d trend - 7-day Liquidity Impact Report - Official X @PancakeSwap
-4. Hanji Protocol - Base - $89.8M 30d volume - $8.9K 30d fees - -68.93% 7d trend - Weak Market Diagnostic - Official X @HanjiProtocol
-5. Curve - Base, Optimism, Unichain - $82.0M 30d volume - $179.6K 30d fees - -61.68% 7d trend - Superchain Market Monitoring - Official X @CurveFinance
-6. Clober - Base - $12.0M 30d volume - $1.2K 30d fees - -55.41% 7d trend - Weak Market Diagnostic - Official X @CloberDEX
-7. Velodrome - Optimism, Mode, Unichain - $325.6M 30d volume - $152.6K 30d fees - +15.49% 7d trend - Superchain Market Monitoring - Official X @VelodromeFi
-8. ElfomoFi - Base - $187.8M 30d volume - $15.8K 30d fees - +33.00% 7d trend - Mini Liquidity Evidence Pack - Official X @elfomo_fi
-9. SushiSwap - Base, Optimism - $36.8M 30d volume - $5.5K 30d fees - +34.36% 7d trend - Superchain Market Monitoring - Official X @SushiSwap
-10. Metric - Base - $1.0B 30d volume - fee feed unavailable - -15.91% 7d trend - 7-day Liquidity Impact Report - verify @Metricxyz before contact
+This order prioritizes mid-size teams, visible weakness, and projects more likely to buy a small fixed-scope report before the largest DEX brands.
+
+1. Hanji Protocol - Base - $89.8M 30d volume - $8.9K 30d fees - -68.93% 7d trend - Weak Market Diagnostic - Official X @HanjiProtocol
+2. Clober - Base - $12.0M 30d volume - $1.2K 30d fees - -55.41% 7d trend - Weak Market Diagnostic - Official X @CloberDEX
+3. ElfomoFi - Base - $187.8M 30d volume - $15.8K 30d fees - +33.00% 7d trend - Mini Liquidity Evidence Pack - Official X @elfomo_fi
+4. Metric - Base - $1.0B 30d volume - fee feed unavailable - -15.91% 7d trend - Liquidity Impact Report - verify @Metricxyz before contact
+5. SushiSwap - Base, Optimism - $36.8M 30d volume - $5.5K 30d fees - +34.36% 7d trend - Superchain Market Monitoring - Official X @SushiSwap
+6. Velodrome - Optimism, Mode, Unichain - $325.6M 30d volume - $152.6K 30d fees - +15.49% 7d trend - Superchain Market Monitoring - Official X @VelodromeFi
+7. PancakeSwap - Base - $3.9B 30d volume - $590.7K 30d fees - -10.53% 7d trend - Liquidity Impact Report - Official X @PancakeSwap
+8. Aerodrome - Base - $17.6B 30d volume - $9.7M 30d fees - +25.24% 7d trend - Liquidity Impact Report - Official X @aerodromefi
+9. Curve - Base, Optimism, Unichain - $82.0M 30d volume - $179.6K 30d fees - -61.68% 7d trend - Superchain Market Monitoring - Official X @CurveFinance
+10. Uniswap - Base, Optimism, Unichain, Zora - $11.1B 30d volume - $24.1M 30d fees - +1.17% 7d trend - Liquidity Impact Report - Official X @Uniswap
 11. Maverick Protocol - Base - $19.6M 30d volume - $7.3K 30d fees - -52.32% 7d trend - Weak Market Diagnostic - Official X @mavprotocol
-12. Tessera V - Base - $569.6M 30d volume - fee feed unavailable - -29.05% 7d trend - 7-day Liquidity Impact Report - manual contact discovery required
+12. Tessera V - Base - $569.6M 30d volume - fee feed unavailable - -29.05% 7d trend - Liquidity Impact Report - manual contact discovery required
 
 ## Enrichment wave
 

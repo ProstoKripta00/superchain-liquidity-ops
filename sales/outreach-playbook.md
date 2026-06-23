@@ -7,15 +7,26 @@ PDF example: https://prostokripta00.github.io/superchain-liquidity-ops/examples/
 Lead list: ./lead-targets-30.md
 CSV: ./lead-targets-30.csv
 Message bank: ./outreach-messages-30.md
+First 10 sample scopes: ./sample-scopes-first-10.md
+
+Note: the CSV is kept in data-score order. Use the "First 10 targets" section below for the real paid-pilot outreach order.
 
 ## What we are selling
 
-Primary offer: 7-day Liquidity Impact Report.
+Primary offer:
+A fixed-scope Liquidity Impact Report for one protocol, DEX, chain, or market.
 
-Price:
-- $500 pilot for the first report.
-- $1,500 standard report after the pilot.
-- $750/mo monitoring for teams that want recurring coverage.
+Pilot:
+- $500 fixed.
+- Delivered in 3-5 business days.
+- Based on the latest 7d and 30d public liquidity data.
+
+Standard follow-up:
+- From $1,500 if the pilot is useful.
+- Scoped around a wider market, more chains, or deeper source checks.
+
+Recurring monitoring:
+- From $750/mo for teams that want monthly Superchain coverage.
 
 Accepted payment:
 - OP
@@ -27,10 +38,19 @@ Recommended payment terms for unknown teams:
 - 50% before final delivery of the full export pack.
 - For small $500 pilots, accept full upfront if they are comfortable.
 
-Delivery:
-- 3-5 days for the first paid report.
-- Public-source data only.
-- Output includes PDF summary, CSV evidence, source links, and action notes.
+Output:
+- PDF decision memo.
+- CSV evidence.
+- Source links.
+- Data limitations.
+- 3-5 action notes.
+
+Source stack:
+- DefiLlama and other public market data.
+- Protocol/source links where available.
+- DEX or pool-level references where available.
+- Timestamped CSV exports.
+- Clear limitations so the buyer knows what the data can and cannot prove.
 
 ## Who buys this
 
@@ -55,31 +75,32 @@ Strong sales reasons:
 - The first report can become recurring monitoring if they like the format.
 
 The strongest pain angles:
-- "Your fee output looks light relative to visible volume."
+- "Your fee output may need a clearer source-backed explanation relative to visible volume."
 - "Your 7d volume moved sharply and needs a clean explanation."
 - "Your Superchain footprint is spread across chains and needs one view."
 - "Your pool activity is visible, but not packaged into a decision memo."
 
 ## First 10 targets
 
-Send the first batch to these before touching the full 30:
+Send the first real paid-pilot batch in this order before touching the full 30:
 
-1. Aerodrome
-2. Uniswap
-3. PancakeSwap
-4. Hanji Protocol
-5. Curve
-6. Clober
-7. Velodrome
-8. ElfomoFi
-9. SushiSwap
-10. Metric
+1. Hanji Protocol
+2. Clober
+3. ElfomoFi
+4. Metric
+5. SushiSwap
+6. Velodrome
+7. PancakeSwap
+8. Aerodrome
+9. Curve
+10. Uniswap
 
 Why these first:
 - Clear Superchain/Base/OP footprint.
 - Visible volume or visible weakness.
 - Strong reason to buy a source-backed report.
-- They are easier to pitch without a long explanation.
+- Mid-size and visibly weak markets are more likely to buy first than the biggest DEX brands.
+- Large names still matter for credibility, but the first paid pilot is more likely from a mid-size team.
 
 ## Outreach workflow
 
@@ -89,7 +110,8 @@ Why these first:
 4. If there is no reply after 48 hours, send the email version if a public team email/contact form exists.
 5. If there is no reply after 3-4 days, send follow-up 1.
 6. If there is no reply after 7 days, send follow-up 2 and move the lead to "cold".
-7. If they reply, do not over-explain. Offer a one-page sample scope and ask which market/chain they care about most.
+7. If they reply, do not over-explain. Send a one-page sample scope and ask which market/chain they care about most.
+8. Use `sales/sample-scopes-first-10.md` for the first batch instead of writing scopes from scratch.
 
 CRM fields to track:
 - Protocol
@@ -108,7 +130,7 @@ Use this when you do not know the exact buyer.
 ```text
 Hi {Protocol} team - I was reviewing public {chain} liquidity data and saw a useful report angle around {pain_angle}.
 
-I am building Superchain Liquidity Ops, a source-backed reporting workflow for OP/Base/Superchain liquidity decisions. The paid pilot is a 7-day Liquidity Impact Report with volume, fees, weak markets, CSV evidence, source links, and next actions.
+I am building Superchain Liquidity Ops, a source-backed reporting workflow for OP/Base/Superchain liquidity decisions. The paid pilot is a fixed-scope Liquidity Impact Report with volume, fees, weak markets, CSV evidence, source links, and next actions.
 
 Could I send a short sample scope for {Protocol}?
 ```
@@ -118,7 +140,7 @@ Shorter version for X:
 ```text
 Hi {Protocol} team - I reviewed public {chain} liquidity data and saw a useful report angle around {pain_angle}.
 
-We package this into a 7-day Liquidity Impact Report: volume, fees, weak markets, CSV evidence, source links, next actions.
+Superchain Liquidity Ops packages this into a fixed-scope Liquidity Impact Report: volume, fees, weak markets, CSV evidence, source links, next actions.
 
 Can I send a short sample scope?
 ```
@@ -132,10 +154,10 @@ Hi {Protocol} team,
 
 I reviewed public {chain} liquidity data and saw a useful report angle around {pain_angle}.
 
-I am building Superchain Liquidity Ops: a source-backed reporting workflow for OP/Base/Superchain teams. The output is a short 7-day Liquidity Impact Report with volume, fee output, weak-market notes, CSV evidence, source links, and recommended next actions.
+I am building Superchain Liquidity Ops: a source-backed reporting workflow for OP/Base/Superchain teams. The output is a short Liquidity Impact Report with volume, fee output, weak-market notes, CSV evidence, source links, limitations, and recommended next actions.
 
-Pilot price: $500.
-Delivery: 3-5 days.
+Pilot: $500 fixed.
+Delivery: 3-5 business days, based on the latest 7d / 30d public liquidity data.
 Payment: OP, USDT, or USDC.
 
 Example report:
@@ -163,7 +185,7 @@ Send after 7 days.
 ```text
 Last note from me on this.
 
-If liquidity reporting is not a priority right now, no worries. If it becomes useful later, the smallest starting point is a $500 7-day Liquidity Impact Report for one market or one chain.
+If liquidity reporting is not a priority right now, no worries. If it becomes useful later, the smallest starting point is a $500 Liquidity Impact Report for one market or one chain, delivered in 3-5 business days from the latest 7d / 30d public data.
 
 Site:
 https://prostokripta00.github.io/superchain-liquidity-ops/
@@ -186,7 +208,7 @@ I can send a one-page scope with:
 If they ask for price:
 
 ```text
-The first paid pilot is $500 fixed. Standard reports after that are $1,500, and recurring monitoring starts at $750/mo.
+The first paid pilot is $500 fixed. Standard follow-up reports start from $1,500 if the pilot is useful, and recurring monitoring starts at $750/mo.
 
 For the pilot I usually do 50% upfront and 50% before final delivery, paid in OP, USDT, or USDC.
 ```
@@ -203,6 +225,14 @@ If they ask "why should we trust you":
 Fair question. The workflow is public-source only: all claims link back to source data, and the output includes CSV evidence so your team can verify the numbers.
 
 I can start with a one-page scope before any payment so you can judge whether the report would be useful.
+```
+
+If they ask "why pay for public data":
+
+```text
+Because your team does not need another dashboard. You need a short source-backed memo that explains what changed, what looks weak, what looks strong, and what action to take next.
+
+The data is public. The paid work is the source audit, clean decision memo, CSV evidence, limitations, weak-market review, and action notes.
 ```
 
 If they ask for a free report:
