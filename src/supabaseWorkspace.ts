@@ -146,16 +146,29 @@ export async function loadSupabaseWorkspaceState(): Promise<WorkspaceLoadResult>
     throw new Error("No client organization is linked to the current Supabase profile.");
   }
 
+  if (isSeedWorkspaceProfile(currentProfile)) {
+    throw new Error("Demo workspace profiles are disabled on the public production site.");
+  }
+
   const fileRows = filterReportFilesForProfile(
     (filesResult.data ?? []) as ReportFileRow[],
     currentProfile,
   );
   const fileUrlMap = await buildSignedFileUrlMap(fileRows);
 
+  const organizationRows = (organizationsResult.data ?? []) as OrganizationRow[];
+  const currentOrganization = organizationRows.find(
+    (organization) => organization.id === currentProfile.organization_id,
+  );
+
+  if (currentOrganization && isSeedWorkspaceOrganization(currentOrganization)) {
+    throw new Error("Demo workspace data is disabled on the public production site.");
+  }
+
   const state = scopeStateForProfile(
     {
       users: profileRows.map(profileFromRow),
-      organizations: ((organizationsResult.data ?? []) as OrganizationRow[]).map(organizationFromRow),
+      organizations: organizationRows.map(organizationFromRow),
       requests: ((requestsResult.data ?? []) as RequestRow[]).map(requestFromRow),
       reports: ((reportsResult.data ?? []) as ReportRow[]).map((report) =>
         reportFromRow(
@@ -196,6 +209,22 @@ function scopeStateForProfile(
     ),
     activity: state.activity.filter((activity) => activity.organizationId === organizationId),
   };
+}
+
+function isSeedWorkspaceProfile(profile: ProfileRow) {
+  const email = profile.email.toLowerCase();
+
+  return (
+    email === "maya@example.protocol" ||
+    email === "operator@superchainops.local" ||
+    email === "admin@superchainops.local"
+  );
+}
+
+function isSeedWorkspaceOrganization(organization: OrganizationRow) {
+  const name = organization.name.toLowerCase();
+
+  return name.includes("demo growth workspace") || name.includes("example protocol growth");
 }
 
 async function getCurrentProfile(profiles: ProfileRow[]) {
