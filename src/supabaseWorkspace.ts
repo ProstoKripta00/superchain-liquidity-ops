@@ -1,7 +1,6 @@
 import { requireSupabase, supabaseReportBucket } from "./supabaseClient";
 import { formatUtcDateTime } from "./dateFormat";
 import {
-  seedWorkspaceState,
   isWorkspacePaymentCleared,
   type NewWorkspaceClientInput,
   type NewWorkspaceReportInput,
@@ -138,30 +137,64 @@ export async function loadSupabaseWorkspaceState(): Promise<WorkspaceLoadResult>
 
   const profileRows = (profilesResult.data ?? []) as ProfileRow[];
   const currentProfile = await getCurrentProfile(profileRows);
+
+  if (!currentProfile) {
+    throw new Error("No workspace profile found for the current Supabase user.");
+  }
+
+  if (currentProfile.role === "client" && !currentProfile.organization_id) {
+    throw new Error("No client organization is linked to the current Supabase profile.");
+  }
+
   const fileRows = filterReportFilesForProfile(
     (filesResult.data ?? []) as ReportFileRow[],
     currentProfile,
   );
   const fileUrlMap = await buildSignedFileUrlMap(fileRows);
 
-  const state: WorkspaceState = {
-    users: profileRows.map(profileFromRow),
-    organizations: ((organizationsResult.data ?? []) as OrganizationRow[]).map(organizationFromRow),
-    requests: ((requestsResult.data ?? []) as RequestRow[]).map(requestFromRow),
-    reports: ((reportsResult.data ?? []) as ReportRow[]).map((report) =>
-      reportFromRow(
-        report,
-        fileRows.filter((file) => file.report_id === report.id),
-        fileUrlMap,
+  const state = scopeStateForProfile(
+    {
+      users: profileRows.map(profileFromRow),
+      organizations: ((organizationsResult.data ?? []) as OrganizationRow[]).map(organizationFromRow),
+      requests: ((requestsResult.data ?? []) as RequestRow[]).map(requestFromRow),
+      reports: ((reportsResult.data ?? []) as ReportRow[]).map((report) =>
+        reportFromRow(
+          report,
+          fileRows.filter((file) => file.report_id === report.id),
+          fileUrlMap,
+        ),
       ),
-    ),
-    messages: ((messagesResult.data ?? []) as MessageRow[]).map(messageFromRow),
-    activity: ((activityResult.data ?? []) as ActivityRow[]).map(activityFromRow),
-  };
+      messages: ((messagesResult.data ?? []) as MessageRow[]).map(messageFromRow),
+      activity: ((activityResult.data ?? []) as ActivityRow[]).map(activityFromRow),
+    },
+    currentProfile,
+  );
 
   return {
     mode: "supabase",
-    state: hydrateEmptyState(state),
+    state,
+  };
+}
+
+function scopeStateForProfile(
+  state: WorkspaceState,
+  profile: ProfileRow,
+): WorkspaceState {
+  if (profile.role === "operator" || profile.role === "admin") {
+    return state;
+  }
+
+  const organizationId = profile.organization_id;
+
+  return {
+    users: state.users.filter((user) => user.id === profile.id),
+    organizations: state.organizations.filter((organization) => organization.id === organizationId),
+    requests: state.requests.filter((request) => request.organizationId === organizationId),
+    reports: state.reports.filter((report) => report.organizationId === organizationId),
+    messages: state.messages.filter(
+      (message) => message.organizationId === organizationId && message.visibility === "Client",
+    ),
+    activity: state.activity.filter((activity) => activity.organizationId === organizationId),
   };
 }
 
@@ -682,18 +715,6 @@ function activityFromRow(row: ActivityRow): WorkspaceActivity {
     label: row.label,
     detail: row.detail ?? "",
     createdAt: row.created_at,
-  };
-}
-
-function hydrateEmptyState(state: WorkspaceState): WorkspaceState {
-  return {
-    users: state.users.length > 0 ? state.users : seedWorkspaceState.users,
-    organizations:
-      state.organizations.length > 0 ? state.organizations : seedWorkspaceState.organizations,
-    requests: state.requests,
-    reports: state.reports,
-    messages: state.messages,
-    activity: state.activity,
   };
 }
 

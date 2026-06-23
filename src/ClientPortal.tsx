@@ -154,6 +154,7 @@ export function ClientPortal() {
   );
   const [backendError, setBackendError] = useState("");
   const [session, setSession] = useState<Session | null>(null);
+  const [workspaceLoaded, setWorkspaceLoaded] = useState(!hasSupabaseConfig);
   const [authMode, setAuthMode] = useState<AuthMode>("sign-in");
   const [authBusy, setAuthBusy] = useState(false);
   const [authMessage, setAuthMessage] = useState("");
@@ -220,6 +221,7 @@ export function ClientPortal() {
 
       setSession(data.session);
       setBackendStatus(data.session ? "checking" : "ready");
+      setWorkspaceLoaded(!data.session);
     });
 
     const {
@@ -227,6 +229,7 @@ export function ClientPortal() {
     } = supabase.auth.onAuthStateChange((_event, nextSession) => {
       setSession(nextSession);
       setBackendStatus(nextSession ? "checking" : "ready");
+      setWorkspaceLoaded(!nextSession);
     });
 
     return () => {
@@ -237,11 +240,13 @@ export function ClientPortal() {
 
   const refreshWorkspace = useCallback(async () => {
     if (!hasSupabaseConfig || !session) {
+      setWorkspaceLoaded(!hasSupabaseConfig);
       return;
     }
 
     setBackendStatus("checking");
     setBackendError("");
+    setWorkspaceLoaded(false);
 
     try {
       const result = await loadSupabaseWorkspaceState();
@@ -260,9 +265,11 @@ export function ClientPortal() {
         return result.state.users[0]?.id ?? current;
       });
       setBackendStatus("ready");
+      setWorkspaceLoaded(true);
     } catch (error) {
       setBackendStatus("error");
       setBackendError(error instanceof Error ? error.message : String(error));
+      setWorkspaceLoaded(false);
     }
   }, [session]);
 
@@ -496,6 +503,7 @@ export function ClientPortal() {
       setState(loadWorkspaceState());
       setActiveUserId(seedWorkspaceState.users[0]?.id ?? "user-client");
       setBackendStatus("ready");
+      setWorkspaceLoaded(false);
     } catch (error) {
       setBackendStatus("error");
       setBackendError(error instanceof Error ? error.message : String(error));
@@ -512,6 +520,17 @@ export function ClientPortal() {
         authMode={authMode}
         onChangeMode={setAuthMode}
         onSubmit={submitAuth}
+      />
+    );
+  }
+
+  if (hasSupabaseConfig && session && !workspaceLoaded) {
+    return (
+      <WorkspaceLoadingGate
+        error={backendError}
+        onRefresh={refreshWorkspace}
+        onSignOut={signOut}
+        status={backendStatus}
       />
     );
   }
@@ -720,7 +739,7 @@ function WorkspaceAuthGate({
 
           <div className="portalWorkspacePreview">
             <span>After a client is invited</span>
-            <strong>Aerodrome-style workspace: requests, files, payment status and messages.</strong>
+            <strong>Example protocol workspace: requests, files, payment status and messages.</strong>
           </div>
         </section>
 
@@ -804,6 +823,69 @@ function WorkspaceAuthGate({
             <span>Client-only report access</span>
           </div>
         </aside>
+      </main>
+    </div>
+  );
+}
+
+function WorkspaceLoadingGate({
+  error,
+  onRefresh,
+  onSignOut,
+  status,
+}: {
+  error: string;
+  onRefresh: () => void;
+  onSignOut: () => void;
+  status: BackendStatus;
+}) {
+  const hasError = status === "error" || Boolean(error);
+
+  return (
+    <div className="portalApp">
+      <header className="portalHeader">
+        <div className="portalBrand">
+          <div className="portalMark">OP</div>
+          <div>
+            <strong>Superchain Liquidity Ops</strong>
+            <span>Client workspace</span>
+          </div>
+        </div>
+        <a className="portalHeaderLink" href="./">
+          Public site
+        </a>
+      </header>
+
+      <main className="portalAuthShell">
+        <section className="portalAuthPanel portalPublicPreview">
+          <span>{hasError ? "Workspace access check" : "Loading workspace"}</span>
+          <h1>
+            {hasError
+              ? "This workspace is not ready for this account."
+              : "Preparing your private report workspace."}
+          </h1>
+          <p>
+            {hasError
+              ? "The public scanner, methodology, pricing and report examples are still available while access is checked."
+              : "Private report requests, files and messages only appear after the invited workspace has loaded."}
+          </p>
+
+          <div className="portalAuthCtaRow">
+            <a className="portalPrimaryAction" href="./">
+              <Home size={17} />
+              View public site
+            </a>
+            <button className="portalSecondaryAction" onClick={onRefresh} type="button">
+              <RefreshCcw size={17} />
+              Retry workspace
+            </button>
+            <button className="portalSecondaryAction" onClick={onSignOut} type="button">
+              Sign out
+            </button>
+          </div>
+
+          {hasError ? <p className="portalErrorText">{error}</p> : null}
+        </section>
       </main>
     </div>
   );
