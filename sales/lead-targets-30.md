@@ -66,7 +66,8 @@ This order prioritizes mid-size teams, visible weakness, and projects more likel
 
 ## Notes before sending
 
+- Refresh live 7d / 30d data on the same day before using any "sharp move", "drop", or "fee context" angle.
 - Verify each official social route before sending. DefiLlama metadata can lag or point to a broader brand account.
 - Do not open with "we found a problem." Open with "we prepared a source-backed report angle."
 - The strongest paid offer is not a dashboard login. It is a short report with CSV evidence, source links, and next actions.
-- Start with X DM. If there is no response in 48 hours, enrich official email or Discord and send the email version.
+- Start with the short X/Telegram DM from `sales/outreach-messages-30.md`. If there is no response in 48 hours, enrich official email or Discord and send the email version.

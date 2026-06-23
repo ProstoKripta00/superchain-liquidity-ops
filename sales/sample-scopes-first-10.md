@@ -165,7 +165,7 @@ Deliverables:
 - Source links.
 - 3-5 action notes.
 
-Price: $500 fixed pilot for one report, or $750/mo for recurring monitoring.
+Price: $500 fixed pilot for one report. Lightweight monthly watchlist from $750/mo; full monthly reporting from $1,500/mo.
 
 Timeline: first report in 3-5 business days.
 
@@ -194,7 +194,7 @@ Deliverables:
 - Source links and limitations.
 - 3-5 action notes.
 
-Price: $500 fixed pilot for one report, or $750/mo for recurring monitoring.
+Price: $500 fixed pilot for one report. Lightweight monthly watchlist from $750/mo; full monthly reporting from $1,500/mo.
 
 Timeline: first report in 3-5 business days.
 
@@ -280,7 +280,7 @@ Deliverables:
 - Source links.
 - 3-5 action notes.
 
-Price: $500 fixed pilot for one report, or $750/mo for recurring monitoring.
+Price: $500 fixed pilot for one report. Lightweight monthly watchlist from $750/mo; full monthly reporting from $1,500/mo.
 
 Timeline: first report in 3-5 business days.
 

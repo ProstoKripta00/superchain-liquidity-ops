@@ -26,7 +26,8 @@ Standard follow-up:
 - Scoped around a wider market, more chains, or deeper source checks.
 
 Recurring monitoring:
-- From $750/mo for teams that want monthly Superchain coverage.
+- Lightweight monthly watchlist from $750/mo.
+- Full monthly reporting from $1,500/mo.
 
 Accepted payment:
 - OP
@@ -105,13 +106,14 @@ Why these first:
 ## Outreach workflow
 
 1. Open the lead in `sales/lead-targets-30.csv`.
-2. Verify official X, Discord, docs, or contact page manually before sending.
-3. Send a short X/Telegram/Discord DM first.
-4. If there is no reply after 48 hours, send the email version if a public team email/contact form exists.
-5. If there is no reply after 3-4 days, send follow-up 1.
-6. If there is no reply after 7 days, send follow-up 2 and move the lead to "cold".
-7. If they reply, do not over-explain. Send a one-page sample scope and ask which market/chain they care about most.
-8. Use `sales/sample-scopes-first-10.md` for the first batch instead of writing scopes from scratch.
+2. Refresh the live data and pain angle on the same day before sending.
+3. Verify official X, Discord, docs, or contact page manually before sending.
+4. Send a short X/Telegram/Discord DM first.
+5. If there is no reply after 48 hours, send the email version if a public team email/contact form exists.
+6. If there is no reply after 3-4 days, send follow-up 1.
+7. If there is no reply after 7 days, send follow-up 2 and move the lead to "cold".
+8. If they reply, do not over-explain. Send a one-page sample scope and ask which market/chain they care about most.
+9. Use `sales/sample-scopes-first-10.md` for the first batch instead of writing scopes from scratch.
 
 CRM fields to track:
 - Protocol
@@ -205,10 +207,26 @@ I can send a one-page scope with:
 4. fixed price in OP/USDT/USDC.
 ```
 
+If they say "yes, send the scope":
+
+```text
+Great. Here is the narrow paid-pilot scope:
+
+Scope: {protocol} / {chain_or_market}
+Output: PDF memo, CSV evidence, source links, limitations, and 3-5 action notes.
+Price: $500 fixed.
+Delivery: 3-5 business days based on latest 7d / 30d public liquidity data.
+Payment: OP, USDT, or USDC.
+
+Should I scope this around {option_a} only, or {option_a} + {option_b}?
+```
+
 If they ask for price:
 
 ```text
-The first paid pilot is $500 fixed. Standard follow-up reports start from $1,500 if the pilot is useful, and recurring monitoring starts at $750/mo.
+The first paid pilot is $500 fixed. Standard follow-up reports start from $1,500 if the pilot is useful.
+
+For recurring work, the lightweight monthly watchlist starts at $750/mo, and full monthly reporting starts at $1,500/mo.
 
 For the pilot I usually do 50% upfront and 50% before final delivery, paid in OP, USDT, or USDC.
 ```
@@ -255,6 +273,7 @@ I can keep the message short and send only the sample scope.
 
 - Do not send more than 10 first-touch messages per day from a new account.
 - Do not send identical copy to every team; always change the chain and pain angle.
+- Do refresh the live 7d / 30d data before every first-touch message.
 - Do not say "we found a problem" in the first line.
 - Do not promise returns, TVL growth, or incentive success.
 - Do not claim private client traction that does not exist.

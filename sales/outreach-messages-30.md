@@ -5,11 +5,85 @@ Use these as first-touch messages. Keep the first contact short. Send the site l
 Site: https://prostokripta00.github.io/superchain-liquidity-ops/
 Payment: OP / USDT / USDC
 
+Important:
+Do not send in file order. Use the paid-pilot order from `sales/outreach-playbook.md`:
+Hanji, Clober, ElfomoFi, Metric, SushiSwap, Velodrome, PancakeSwap, Aerodrome, Curve, Uniswap.
+
+Before every first-touch message:
+- Refresh the live 7d / 30d data.
+- Confirm the pain angle still holds.
+- Use the shortest DM first.
+- Send PDF, price, and site link only after they show interest.
+
 ## Standard close
 
 If they reply with interest:
 
-> I can prepare a one-page sample scope first. The paid pilot is small: $500 fixed for a weak-market or mini evidence report, or $750/mo for recurring Superchain monitoring. Delivery is usually 3-5 business days based on the latest 7d / 30d public liquidity data, with source links, CSV evidence, and a short action summary. Payment can be made in OP, USDT, or USDC.
+> I can prepare a one-page sample scope first. The paid pilot is small: $500 fixed for a weak-market or mini evidence report. Lightweight monthly watchlist starts at $750/mo; full monthly reporting starts at $1,500/mo. Delivery is usually 3-5 business days based on the latest 7d / 30d public liquidity data, with source links, CSV evidence, and a short action summary. Payment can be made in OP, USDT, or USDC.
+
+## First 10 Short DMs
+
+Use these before the longer messages below.
+
+### 1. Hanji Protocol
+
+```text
+Hi Hanji team - I noticed a sharp 7d move in public Base DEX data and mapped a short diagnostic scope around it. Can I send the one-page scope?
+```
+
+### 2. Clober
+
+```text
+Hi Clober team - I noticed a sharp 7d move in public Base DEX data and mapped a short weak-market diagnostic around it. Can I send the one-page scope?
+```
+
+### 3. ElfomoFi
+
+```text
+Hi ElfomoFi team - I saw a Base market reporting angle around volume, fee context, and source-backed evidence. Can I send a one-page mini-scope?
+```
+
+### 4. Metric
+
+```text
+Hi Metric team - I saw visible Base volume where fee attribution and source limits could use a cleaner operator memo. Can I send the one-page scope?
+```
+
+### 5. SushiSwap
+
+```text
+Hi Sushi team - I mapped a short Base/Optimism liquidity monitoring scope using public Superchain data. Can I send the one-page scope?
+```
+
+### 6. Velodrome
+
+```text
+Hi Velodrome team - I mapped a short Superchain monitoring scope across Optimism, Mode, and Unichain public DEX data. Can I send the one-page scope?
+```
+
+### 7. PancakeSwap
+
+```text
+Hi PancakeSwap team - I saw a Base liquidity reporting angle around volume, fee context, and source-backed evidence. Can I send the one-page scope?
+```
+
+### 8. Aerodrome
+
+```text
+Hi Aerodrome team - I mapped a short Base liquidity impact scope around volume, fee context, weak markets, and source-backed action notes. Can I send it?
+```
+
+### 9. Curve
+
+```text
+Hi Curve team - I saw a Superchain monitoring angle across Base, Optimism, and Unichain public DEX data. Can I send a one-page scope?
+```
+
+### 10. Uniswap
+
+```text
+Hi Uniswap team - I mapped a concise Superchain liquidity impact scope across Base, Optimism, Unichain, and Zora public data. Can I send it?
+```
 
 ## Messages
 
@@ -106,7 +180,8 @@ I reviewed public Base, Optimism, and Unichain DEX data and saw a sharp 7d volum
 
 Superchain Liquidity Ops turns public DEX data into recurring monitoring: volume, fees, weak markets, CSV evidence, and next actions.
 
-Pilot: $750/mo.
+Lightweight monthly watchlist: from $750/mo.
+Full monthly reporting: from $1,500/mo.
 First report delivery: 3-5 business days based on the latest 7d / 30d public liquidity data.
 
 Open to me sending a one-page sample scope?
@@ -144,7 +219,8 @@ I reviewed public Optimism, Mode, and Unichain DEX data and saw a strong use cas
 
 Superchain Liquidity Ops produces recurring monitoring with volume, fee output, weak markets, CSV evidence, and next actions.
 
-Pilot: $750/mo.
+Lightweight monthly watchlist: from $750/mo.
+Full monthly reporting: from $1,500/mo.
 First report delivery: 3-5 business days based on the latest 7d / 30d public liquidity data.
 
 Open to me sending a one-page sample scope?
@@ -182,7 +258,8 @@ I reviewed public Base and Optimism DEX data and saw that fee output may need a 
 
 Superchain Liquidity Ops turns public Superchain DEX data into a report with volume, fees, weak-market notes, CSV evidence, and next actions.
 
-Pilot: $750/mo.
+Lightweight monthly watchlist: from $750/mo.
+Full monthly reporting: from $1,500/mo.
 First report delivery: 3-5 business days based on the latest 7d / 30d public liquidity data.
 
 Open to me sending a one-page sample scope?
@@ -302,7 +379,8 @@ I reviewed public Base and Optimism DEX data and saw that fee output may need a 
 
 Superchain Liquidity Ops prepares monitoring reports with volume, fees, weak markets, CSV evidence, and next actions.
 
-Pilot: $750/mo.
+Lightweight monthly watchlist: from $750/mo.
+Full monthly reporting: from $1,500/mo.
 First report delivery: 3-5 business days based on the latest 7d / 30d public liquidity data.
 
 Open to me sending a one-page sample scope?
@@ -359,7 +437,8 @@ I reviewed public Base, Optimism, and Mode DEX data and saw a clear use case for
 
 Superchain Liquidity Ops prepares recurring monitoring reports with volume, fees, weak markets, CSV evidence, and next actions.
 
-Pilot: $750/mo.
+Lightweight monthly watchlist: from $750/mo.
+Full monthly reporting: from $1,500/mo.
 First report delivery: 3-5 business days based on the latest 7d / 30d public liquidity data.
 
 Open to me sending a one-page sample scope?
@@ -397,7 +476,8 @@ I reviewed public Base and Optimism DEX data and saw recent volume weakness.
 
 Superchain Liquidity Ops prepares monitoring reports with volume, fee context, weak markets, CSV evidence, and next actions.
 
-Pilot: $750/mo.
+Lightweight monthly watchlist: from $750/mo.
+Full monthly reporting: from $1,500/mo.
 First report delivery: 3-5 business days based on the latest 7d / 30d public liquidity data.
 
 Open to me sending a one-page sample scope?
@@ -473,7 +553,8 @@ I reviewed public Base, Optimism, and Mode DEX data and saw a useful angle for o
 
 Superchain Liquidity Ops prepares monitoring reports with volume, fees, weak markets, CSV evidence, and next actions.
 
-Pilot: $750/mo.
+Lightweight monthly watchlist: from $750/mo.
+Full monthly reporting: from $1,500/mo.
 First report delivery: 3-5 business days based on the latest 7d / 30d public liquidity data.
 
 Open to me sending a one-page sample scope?
