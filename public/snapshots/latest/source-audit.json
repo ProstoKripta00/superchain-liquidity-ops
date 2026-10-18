@@ -5,7 +5,7 @@
     "url": "https://api.llama.fi/v2/chains",
     "state": "ok",
     "message": "Chain TVL loaded",
-    "updatedAt": "2026-10-17T11:21:09.772Z"
+    "updatedAt": "2026-10-18T11:56:10.610Z"
   },
   {
     "id": "llama-dexs-OP Mainnet",
@@ -13,7 +13,7 @@
     "url": "https://api.llama.fi/overview/dexs/OP%20Mainnet?excludeTotalDataChart=true&excludeTotalDataChartBreakdown=true",
     "state": "ok",
     "message": "10 live DEX markets loaded",
-    "updatedAt": "2026-10-17T11:21:09.772Z"
+    "updatedAt": "2026-10-18T11:56:10.610Z"
   },
   {
     "id": "llama-fees-OP Mainnet",
@@ -21,7 +21,7 @@
     "url": "https://api.llama.fi/overview/fees/OP%20Mainnet?excludeTotalDataChart=true&excludeTotalDataChartBreakdown=true",
     "state": "ok",
     "message": "Chain fee totals loaded",
-    "updatedAt": "2026-10-17T11:21:09.772Z"
+    "updatedAt": "2026-10-18T11:56:10.610Z"
   },
   {
     "id": "llama-dexs-Base",
@@ -29,7 +29,7 @@
     "url": "https://api.llama.fi/overview/dexs/Base?excludeTotalDataChart=true&excludeTotalDataChartBreakdown=true",
     "state": "ok",
     "message": "7 live DEX markets loaded",
-    "updatedAt": "2026-10-17T11:21:09.772Z"
+    "updatedAt": "2026-10-18T11:56:10.610Z"
   },
   {
     "id": "llama-fees-Base",
@@ -37,7 +37,7 @@
     "url": "https://api.llama.fi/overview/fees/Base?excludeTotalDataChart=true&excludeTotalDataChartBreakdown=true",
     "state": "ok",
     "message": "Chain fee totals loaded",
-    "updatedAt": "2026-10-17T11:21:09.772Z"
+    "updatedAt": "2026-10-18T11:56:10.610Z"
   },
   {
     "id": "llama-dexs-Unichain",
@@ -45,7 +45,7 @@
     "url": "https://api.llama.fi/overview/dexs/Unichain?excludeTotalDataChart=true&excludeTotalDataChartBreakdown=true",
     "state": "ok",
     "message": "6 live DEX markets loaded",
-    "updatedAt": "2026-10-17T11:21:09.772Z"
+    "updatedAt": "2026-10-18T11:56:10.610Z"
   },
   {
     "id": "llama-fees-Unichain",
@@ -53,7 +53,7 @@
     "url": "https://api.llama.fi/overview/fees/Unichain?excludeTotalDataChart=true&excludeTotalDataChartBreakdown=true",
     "state": "ok",
     "message": "Chain fee totals loaded",
-    "updatedAt": "2026-10-17T11:21:09.772Z"
+    "updatedAt": "2026-10-18T11:56:10.610Z"
   },
   {
     "id": "llama-dexs-Mode",
@@ -61,7 +61,7 @@
     "url": "https://api.llama.fi/overview/dexs/Mode?excludeTotalDataChart=true&excludeTotalDataChartBreakdown=true",
     "state": "ok",
     "message": "7 live DEX markets loaded",
-    "updatedAt": "2026-10-17T11:21:09.772Z"
+    "updatedAt": "2026-10-18T11:56:10.610Z"
   },
   {
     "id": "llama-fees-Mode",
@@ -69,7 +69,7 @@
     "url": "https://api.llama.fi/overview/fees/Mode?excludeTotalDataChart=true&excludeTotalDataChartBreakdown=true",
     "state": "ok",
     "message": "Chain fee totals loaded",
-    "updatedAt": "2026-10-17T11:21:09.772Z"
+    "updatedAt": "2026-10-18T11:56:10.610Z"
   },
   {
     "id": "llama-dexs-Zora",
@@ -77,7 +77,7 @@
     "url": "https://api.llama.fi/overview/dexs/Zora?excludeTotalDataChart=true&excludeTotalDataChartBreakdown=true",
     "state": "ok",
     "message": "2 live DEX markets loaded",
-    "updatedAt": "2026-10-17T11:21:09.772Z"
+    "updatedAt": "2026-10-18T11:56:10.610Z"
   },
   {
     "id": "llama-fees-Zora",
@@ -85,6 +85,6 @@
     "url": "https://api.llama.fi/overview/fees/Zora?excludeTotalDataChart=true&excludeTotalDataChartBreakdown=true",
     "state": "ok",
     "message": "Chain fee totals loaded",
-    "updatedAt": "2026-10-17T11:21:09.772Z"
+    "updatedAt": "2026-10-18T11:56:10.610Z"
   }
 ]
