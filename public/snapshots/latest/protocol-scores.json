@@ -10,10 +10,10 @@
       "Zora"
     ],
     "marketCount": 8,
-    "volume30dUsd": 10188458883.47,
-    "fees30dUsd": 15021579.22,
-    "feeToVolume30dPct": 0.14743720705759897,
-    "weightedChange7dPct": 50.35112852631762,
+    "volume30dUsd": 10150579269.09,
+    "fees30dUsd": 14766948,
+    "feeToVolume30dPct": 0.14547886981157337,
+    "weightedChange7dPct": 112.14643362164364,
     "strongMarkets": 6,
     "watchMarkets": 0,
     "atRiskMarkets": 2,
@@ -25,7 +25,7 @@
       "https://defillama.com/protocol/uniswap-v3",
       "https://defillama.com/protocol/uniswap-v2"
     ],
-    "updatedAt": "2026-10-18T11:56:10.610Z"
+    "updatedAt": "2026-10-19T14:19:14.408Z"
   },
   {
     "id": "velodrome",
@@ -37,10 +37,10 @@
       "Unichain"
     ],
     "marketCount": 6,
-    "volume30dUsd": 523235708.55,
-    "fees30dUsd": 378962.24,
-    "feeToVolume30dPct": 0.07242667765359265,
-    "weightedChange7dPct": 46.15605132958104,
+    "volume30dUsd": 514326204.20000005,
+    "fees30dUsd": 375146.65,
+    "feeToVolume30dPct": 0.07293943939401562,
+    "weightedChange7dPct": 33.6946261939292,
     "strongMarkets": 2,
     "watchMarkets": 1,
     "atRiskMarkets": 3,
@@ -52,7 +52,7 @@
       "https://defillama.com/protocol/velodrome-v2",
       "https://defillama.com/protocol/velodrome-v1"
     ],
-    "updatedAt": "2026-10-18T11:56:10.610Z"
+    "updatedAt": "2026-10-19T14:19:14.408Z"
   },
   {
     "id": "pancakeswap",
@@ -62,10 +62,10 @@
       "Base"
     ],
     "marketCount": 1,
-    "volume30dUsd": 2959674797,
-    "fees30dUsd": 428339,
-    "feeToVolume30dPct": 0.014472502196328296,
-    "weightedChange7dPct": 55.28,
+    "volume30dUsd": 2891254279,
+    "fees30dUsd": 419369,
+    "feeToVolume30dPct": 0.014504742908501546,
+    "weightedChange7dPct": 34.48,
     "strongMarkets": 1,
     "watchMarkets": 0,
     "atRiskMarkets": 0,
@@ -75,7 +75,7 @@
     "sourceUrls": [
       "https://defillama.com/protocol/pancakeswap-amm-v3"
     ],
-    "updatedAt": "2026-10-18T11:56:10.610Z"
+    "updatedAt": "2026-10-19T14:19:14.408Z"
   },
   {
     "id": "aerodrome",
@@ -85,20 +85,44 @@
       "Base"
     ],
     "marketCount": 1,
-    "volume30dUsd": 15372453255,
-    "fees30dUsd": 9937944,
-    "feeToVolume30dPct": 0.06464774252455517,
-    "weightedChange7dPct": 16.23,
+    "volume30dUsd": 15264506226,
+    "fees30dUsd": 9800952,
+    "feeToVolume30dPct": 0.06420746177368031,
+    "weightedChange7dPct": 4.07,
     "strongMarkets": 1,
     "watchMarkets": 0,
     "atRiskMarkets": 0,
-    "score": 71,
+    "score": 69,
     "confidence": 55,
-    "status": "Ready for report",
+    "status": "Monitor",
     "sourceUrls": [
       "https://defillama.com/protocol/aerodrome-slipstream"
     ],
-    "updatedAt": "2026-10-18T11:56:10.610Z"
+    "updatedAt": "2026-10-19T14:19:14.408Z"
+  },
+  {
+    "id": "kim-exchange",
+    "name": "KIM Exchange",
+    "segment": "Mode-native DEX",
+    "networks": [
+      "Mode"
+    ],
+    "marketCount": 2,
+    "volume30dUsd": 145906.14,
+    "fees30dUsd": 334.29,
+    "feeToVolume30dPct": 0.22911304486569242,
+    "weightedChange7dPct": 790.0539929944003,
+    "strongMarkets": 0,
+    "watchMarkets": 1,
+    "atRiskMarkets": 1,
+    "score": 55,
+    "confidence": 75,
+    "status": "Monitor",
+    "sourceUrls": [
+      "https://defillama.com/protocol/kim-exchange-v3",
+      "https://defillama.com/protocol/kim-exchange-v2"
+    ],
+    "updatedAt": "2026-10-19T14:19:14.408Z"
   },
   {
     "id": "sushiswap",
@@ -108,20 +132,20 @@
       "OP Mainnet"
     ],
     "marketCount": 1,
-    "volume30dUsd": 2775517,
-    "fees30dUsd": 786.9900000000001,
-    "feeToVolume30dPct": 0.028354717337346527,
-    "weightedChange7dPct": 10.31,
+    "volume30dUsd": 2748690,
+    "fees30dUsd": 782.1300000000001,
+    "feeToVolume30dPct": 0.028454645667572553,
+    "weightedChange7dPct": 73.11,
     "strongMarkets": 0,
     "watchMarkets": 1,
     "atRiskMarkets": 0,
-    "score": 50,
+    "score": 52,
     "confidence": 55,
     "status": "Monitor",
     "sourceUrls": [
       "https://defillama.com/protocol/sushiswap-v3"
     ],
-    "updatedAt": "2026-10-18T11:56:10.610Z"
+    "updatedAt": "2026-10-19T14:19:14.408Z"
   },
   {
     "id": "curve",
@@ -132,10 +156,10 @@
       "Unichain"
     ],
     "marketCount": 2,
-    "volume30dUsd": 8760010.32,
-    "fees30dUsd": 2174.8,
-    "feeToVolume30dPct": 0.024826454770660592,
-    "weightedChange7dPct": -71.01,
+    "volume30dUsd": 8559390.32,
+    "fees30dUsd": 2125.53,
+    "feeToVolume30dPct": 0.024832726637473875,
+    "weightedChange7dPct": -89.36,
     "strongMarkets": 0,
     "watchMarkets": 0,
     "atRiskMarkets": 2,
@@ -145,31 +169,7 @@
     "sourceUrls": [
       "https://defillama.com/protocol/curve-dex"
     ],
-    "updatedAt": "2026-10-18T11:56:10.610Z"
-  },
-  {
-    "id": "kim-exchange",
-    "name": "KIM Exchange",
-    "segment": "Mode-native DEX",
-    "networks": [
-      "Mode"
-    ],
-    "marketCount": 2,
-    "volume30dUsd": 156855.14,
-    "fees30dUsd": 337.05,
-    "feeToVolume30dPct": 0.21487979290955975,
-    "weightedChange7dPct": -88.93273977378108,
-    "strongMarkets": 0,
-    "watchMarkets": 0,
-    "atRiskMarkets": 2,
-    "score": 43,
-    "confidence": 75,
-    "status": "Low signal",
-    "sourceUrls": [
-      "https://defillama.com/protocol/kim-exchange-v3",
-      "https://defillama.com/protocol/kim-exchange-v2"
-    ],
-    "updatedAt": "2026-10-18T11:56:10.610Z"
+    "updatedAt": "2026-10-19T14:19:14.408Z"
   },
   {
     "id": "balancer",
@@ -179,19 +179,19 @@
       "Mode"
     ],
     "marketCount": 1,
-    "volume30dUsd": 3847.6600000000003,
-    "fees30dUsd": 9.620000000000003,
-    "feeToVolume30dPct": 0.2500220913490278,
-    "weightedChange7dPct": -84.87,
+    "volume30dUsd": 3940.66,
+    "fees30dUsd": 9.880000000000004,
+    "feeToVolume30dPct": 0.2507194226347872,
+    "weightedChange7dPct": -15.7,
     "strongMarkets": 0,
     "watchMarkets": 0,
     "atRiskMarkets": 1,
-    "score": 41,
+    "score": 44,
     "confidence": 55,
     "status": "Low signal",
     "sourceUrls": [
       "https://defillama.com/protocol/balancer-v2"
     ],
-    "updatedAt": "2026-10-18T11:56:10.610Z"
+    "updatedAt": "2026-10-19T14:19:14.408Z"
   }
 ]
