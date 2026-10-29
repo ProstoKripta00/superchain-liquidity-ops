@@ -1,0 +1,31 @@
+{
+  "generatedAt": "2026-10-29T13:55:52.779Z",
+  "product": "Superchain Liquidity Ops",
+  "snapshotVersion": 1,
+  "degraded": false,
+  "counts": {
+    "markets": 31,
+    "chains": 5,
+    "protocols": 8,
+    "sources": 11,
+    "sourceIssues": 0
+  },
+  "metrics": {
+    "totalVolume30dUsd": 28991502654.31,
+    "totalFees30dUsd": 22269755.019999996,
+    "readyProtocols": 2,
+    "watchMarkets": 20
+  },
+  "files": {
+    "manifest": "manifest.json",
+    "marketImpact": "market-impact.csv",
+    "protocolScores": "protocol-scores.json",
+    "sourceAudit": "source-audit.json",
+    "scopeSummary": "scope-summary.json"
+  },
+  "notes": [
+    "Generated from public DefiLlama endpoints.",
+    "Unavailable values are preserved as null.",
+    "This snapshot is analytics infrastructure, not an investment recommendation."
+  ]
+}
