@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-30T13:49:29.877Z",
+  "generatedAt": "2026-10-31T13:16:57.156Z",
   "product": "Superchain Liquidity Ops",
   "snapshotVersion": 1,
   "degraded": false,
@@ -11,10 +11,10 @@
     "sourceIssues": 0
   },
   "metrics": {
-    "totalVolume30dUsd": 29144822929.910004,
-    "totalFees30dUsd": 22584133.6,
+    "totalVolume30dUsd": 28968541335.65,
+    "totalFees30dUsd": 22614105.900000006,
     "readyProtocols": 3,
-    "watchMarkets": 17
+    "watchMarkets": 18
   },
   "files": {
     "manifest": "manifest.json",
