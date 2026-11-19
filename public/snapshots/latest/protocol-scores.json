@@ -10,14 +10,14 @@
       "Zora"
     ],
     "marketCount": 8,
-    "volume30dUsd": 7779307872.5199995,
-    "fees30dUsd": 13936109.71,
-    "feeToVolume30dPct": 0.17914331118361548,
-    "weightedChange7dPct": 30.119062014320043,
-    "strongMarkets": 2,
-    "watchMarkets": 4,
+    "volume30dUsd": 7864613915.25,
+    "fees30dUsd": 13991714.16,
+    "feeToVolume30dPct": 0.1779071968538615,
+    "weightedChange7dPct": 76.81567796454385,
+    "strongMarkets": 5,
+    "watchMarkets": 1,
     "atRiskMarkets": 2,
-    "score": 92,
+    "score": 98,
     "confidence": 100,
     "status": "Ready for report",
     "sourceUrls": [
@@ -25,7 +25,7 @@
       "https://defillama.com/protocol/uniswap-v4",
       "https://defillama.com/protocol/uniswap-v2"
     ],
-    "updatedAt": "2026-11-18T16:09:41.300Z"
+    "updatedAt": "2026-11-19T16:16:56.349Z"
   },
   {
     "id": "curve",
@@ -37,20 +37,43 @@
       "Unichain"
     ],
     "marketCount": 3,
-    "volume30dUsd": 1216219320.45,
-    "fees30dUsd": 1751115.21,
-    "feeToVolume30dPct": 0.14398021644254827,
-    "weightedChange7dPct": -43.54865277900585,
+    "volume30dUsd": 1216112791.45,
+    "fees30dUsd": 26408.43,
+    "feeToVolume30dPct": 0.0021715444641045674,
+    "weightedChange7dPct": -2.7729070737487143,
     "strongMarkets": 1,
     "watchMarkets": 1,
     "atRiskMarkets": 1,
-    "score": 78,
+    "score": 75,
     "confidence": 95,
     "status": "Ready for report",
     "sourceUrls": [
       "https://defillama.com/protocol/curve-dex"
     ],
-    "updatedAt": "2026-11-18T16:09:41.300Z"
+    "updatedAt": "2026-11-19T16:16:56.349Z"
+  },
+  {
+    "id": "aerodrome",
+    "name": "Aerodrome",
+    "segment": "Base liquidity hub",
+    "networks": [
+      "Base"
+    ],
+    "marketCount": 1,
+    "volume30dUsd": 4732619852,
+    "fees30dUsd": 1772795,
+    "feeToVolume30dPct": 0.03745906190311945,
+    "weightedChange7dPct": 37.17,
+    "strongMarkets": 1,
+    "watchMarkets": 0,
+    "atRiskMarkets": 0,
+    "score": 74,
+    "confidence": 55,
+    "status": "Ready for report",
+    "sourceUrls": [
+      "https://defillama.com/protocol/aerodrome-slipstream"
+    ],
+    "updatedAt": "2026-11-19T16:16:56.349Z"
   },
   {
     "id": "velodrome",
@@ -62,10 +85,10 @@
       "Unichain"
     ],
     "marketCount": 5,
-    "volume30dUsd": 95477182.64000002,
-    "fees30dUsd": 51952.11,
-    "feeToVolume30dPct": 0.054413115849770315,
-    "weightedChange7dPct": -68.77617450586096,
+    "volume30dUsd": 76767210.51,
+    "fees30dUsd": 44136.55,
+    "feeToVolume30dPct": 0.05749401301256166,
+    "weightedChange7dPct": -56.480447730874566,
     "strongMarkets": 0,
     "watchMarkets": 0,
     "atRiskMarkets": 5,
@@ -76,7 +99,7 @@
       "https://defillama.com/protocol/velodrome-v3",
       "https://defillama.com/protocol/velodrome-v2"
     ],
-    "updatedAt": "2026-11-18T16:09:41.300Z"
+    "updatedAt": "2026-11-19T16:16:56.349Z"
   },
   {
     "id": "pancakeswap",
@@ -86,43 +109,20 @@
       "Base"
     ],
     "marketCount": 1,
-    "volume30dUsd": 3099091332,
-    "fees30dUsd": 406212,
-    "feeToVolume30dPct": 0.013107454943506002,
-    "weightedChange7dPct": 12.38,
+    "volume30dUsd": 3114998014,
+    "fees30dUsd": 406807,
+    "feeToVolume30dPct": 0.013059623093551033,
+    "weightedChange7dPct": 2.57,
     "strongMarkets": 1,
     "watchMarkets": 0,
     "atRiskMarkets": 0,
-    "score": 69,
+    "score": 67,
     "confidence": 55,
     "status": "Monitor",
     "sourceUrls": [
       "https://defillama.com/protocol/pancakeswap-amm-v3"
     ],
-    "updatedAt": "2026-11-18T16:09:41.300Z"
-  },
-  {
-    "id": "aerodrome",
-    "name": "Aerodrome",
-    "segment": "Base liquidity hub",
-    "networks": [
-      "Base"
-    ],
-    "marketCount": 1,
-    "volume30dUsd": 5095297688,
-    "fees30dUsd": 2002636,
-    "feeToVolume30dPct": 0.03930361134181489,
-    "weightedChange7dPct": -35.47,
-    "strongMarkets": 0,
-    "watchMarkets": 1,
-    "atRiskMarkets": 0,
-    "score": 61,
-    "confidence": 55,
-    "status": "Monitor",
-    "sourceUrls": [
-      "https://defillama.com/protocol/aerodrome-slipstream"
-    ],
-    "updatedAt": "2026-11-18T16:09:41.300Z"
+    "updatedAt": "2026-11-19T16:16:56.349Z"
   },
   {
     "id": "kim-exchange",
@@ -132,10 +132,10 @@
       "Mode"
     ],
     "marketCount": 2,
-    "volume30dUsd": 74776.32,
-    "fees30dUsd": 181.79,
-    "feeToVolume30dPct": 0.24311172306954926,
-    "weightedChange7dPct": -88.09846972410516,
+    "volume30dUsd": 72223.32,
+    "fees30dUsd": 181.14999999999998,
+    "feeToVolume30dPct": 0.25081926447025693,
+    "weightedChange7dPct": -60.941741005536706,
     "strongMarkets": 0,
     "watchMarkets": 0,
     "atRiskMarkets": 2,
@@ -146,7 +146,7 @@
       "https://defillama.com/protocol/kim-exchange-v3",
       "https://defillama.com/protocol/kim-exchange-v2"
     ],
-    "updatedAt": "2026-11-18T16:09:41.300Z"
+    "updatedAt": "2026-11-19T16:16:56.349Z"
   },
   {
     "id": "sushiswap",
@@ -156,10 +156,10 @@
       "OP Mainnet"
     ],
     "marketCount": 1,
-    "volume30dUsd": 2081610,
-    "fees30dUsd": 546.4599999999999,
-    "feeToVolume30dPct": 0.02625179548522537,
-    "weightedChange7dPct": -85.28,
+    "volume30dUsd": 2038042,
+    "fees30dUsd": 531.0699999999999,
+    "feeToVolume30dPct": 0.026057853567296452,
+    "weightedChange7dPct": -84.65,
     "strongMarkets": 0,
     "watchMarkets": 0,
     "atRiskMarkets": 1,
@@ -169,6 +169,6 @@
     "sourceUrls": [
       "https://defillama.com/protocol/sushiswap-v3"
     ],
-    "updatedAt": "2026-11-18T16:09:41.300Z"
+    "updatedAt": "2026-11-19T16:16:56.349Z"
   }
 ]
