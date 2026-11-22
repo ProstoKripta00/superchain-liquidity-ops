@@ -1,0 +1,173 @@
+[
+  {
+    "id": "uniswap",
+    "name": "Uniswap",
+    "segment": "Core Superchain liquidity venue",
+    "networks": [
+      "Base",
+      "OP Mainnet",
+      "Unichain",
+      "Zora"
+    ],
+    "marketCount": 8,
+    "volume30dUsd": 8228000477.74,
+    "fees30dUsd": 14301252.06,
+    "feeToVolume30dPct": 0.17381199841553913,
+    "weightedChange7dPct": -48.386351011540754,
+    "strongMarkets": 0,
+    "watchMarkets": 2,
+    "atRiskMarkets": 6,
+    "score": 79,
+    "confidence": 100,
+    "status": "Ready for report",
+    "sourceUrls": [
+      "https://defillama.com/protocol/uniswap-v3",
+      "https://defillama.com/protocol/uniswap-v4",
+      "https://defillama.com/protocol/uniswap-v2"
+    ],
+    "updatedAt": "2026-11-22T15:01:40.945Z"
+  },
+  {
+    "id": "aerodrome",
+    "name": "Aerodrome",
+    "segment": "Base liquidity hub",
+    "networks": [
+      "Base"
+    ],
+    "marketCount": 1,
+    "volume30dUsd": 3904780195,
+    "fees30dUsd": 1147369,
+    "feeToVolume30dPct": 0.029383702608131057,
+    "weightedChange7dPct": 10.89,
+    "strongMarkets": 1,
+    "watchMarkets": 0,
+    "atRiskMarkets": 0,
+    "score": 69,
+    "confidence": 55,
+    "status": "Monitor",
+    "sourceUrls": [
+      "https://defillama.com/protocol/aerodrome-slipstream"
+    ],
+    "updatedAt": "2026-11-22T15:01:40.945Z"
+  },
+  {
+    "id": "velodrome",
+    "name": "Velodrome",
+    "segment": "OP-aligned liquidity hub",
+    "networks": [
+      "Mode",
+      "OP Mainnet",
+      "Unichain"
+    ],
+    "marketCount": 5,
+    "volume30dUsd": 34683821.43000001,
+    "fees30dUsd": 18898.630000000005,
+    "feeToVolume30dPct": 0.05448831536092936,
+    "weightedChange7dPct": -74.93358224785727,
+    "strongMarkets": 0,
+    "watchMarkets": 0,
+    "atRiskMarkets": 5,
+    "score": 69,
+    "confidence": 100,
+    "status": "Monitor",
+    "sourceUrls": [
+      "https://defillama.com/protocol/velodrome-v3",
+      "https://defillama.com/protocol/velodrome-v2"
+    ],
+    "updatedAt": "2026-11-22T15:01:40.945Z"
+  },
+  {
+    "id": "pancakeswap",
+    "name": "PancakeSwap",
+    "segment": "Cross-chain DEX",
+    "networks": [
+      "Base"
+    ],
+    "marketCount": 1,
+    "volume30dUsd": 3197143953,
+    "fees30dUsd": 414159,
+    "feeToVolume30dPct": 0.012954030412405395,
+    "weightedChange7dPct": -31.779999999999998,
+    "strongMarkets": 0,
+    "watchMarkets": 1,
+    "atRiskMarkets": 0,
+    "score": 59,
+    "confidence": 55,
+    "status": "Monitor",
+    "sourceUrls": [
+      "https://defillama.com/protocol/pancakeswap-amm-v3"
+    ],
+    "updatedAt": "2026-11-22T15:01:40.945Z"
+  },
+  {
+    "id": "sushiswap",
+    "name": "SushiSwap",
+    "segment": "Cross-chain DEX",
+    "networks": [
+      "OP Mainnet"
+    ],
+    "marketCount": 1,
+    "volume30dUsd": 1898542,
+    "fees30dUsd": 475.38,
+    "feeToVolume30dPct": 0.025039214302343585,
+    "weightedChange7dPct": 27.74,
+    "strongMarkets": 0,
+    "watchMarkets": 1,
+    "atRiskMarkets": 0,
+    "score": 52,
+    "confidence": 55,
+    "status": "Monitor",
+    "sourceUrls": [
+      "https://defillama.com/protocol/sushiswap-v3"
+    ],
+    "updatedAt": "2026-11-22T15:01:40.945Z"
+  },
+  {
+    "id": "curve",
+    "name": "Curve",
+    "segment": "Stable liquidity venue",
+    "networks": [
+      "OP Mainnet",
+      "Unichain"
+    ],
+    "marketCount": 2,
+    "volume30dUsd": 7223048.99,
+    "fees30dUsd": 1569.97,
+    "feeToVolume30dPct": 0.021735557964144447,
+    "weightedChange7dPct": -62.34737640343763,
+    "strongMarkets": 0,
+    "watchMarkets": 0,
+    "atRiskMarkets": 2,
+    "score": 50,
+    "confidence": 75,
+    "status": "Monitor",
+    "sourceUrls": [
+      "https://defillama.com/protocol/curve-dex"
+    ],
+    "updatedAt": "2026-11-22T15:01:40.945Z"
+  },
+  {
+    "id": "kim-exchange",
+    "name": "KIM Exchange",
+    "segment": "Mode-native DEX",
+    "networks": [
+      "Mode"
+    ],
+    "marketCount": 2,
+    "volume30dUsd": 74665.15,
+    "fees30dUsd": 191.95999999999998,
+    "feeToVolume30dPct": 0.25709450794647837,
+    "weightedChange7dPct": -47.366536905102315,
+    "strongMarkets": 0,
+    "watchMarkets": 0,
+    "atRiskMarkets": 2,
+    "score": 43,
+    "confidence": 75,
+    "status": "Low signal",
+    "sourceUrls": [
+      "https://defillama.com/protocol/kim-exchange-v3",
+      "https://defillama.com/protocol/kim-exchange-v2"
+    ],
+    "updatedAt": "2026-11-22T15:01:40.945Z"
+  }
+]
