@@ -10,14 +10,14 @@
       "Zora"
     ],
     "marketCount": 8,
-    "volume30dUsd": 8107402353.35,
-    "fees30dUsd": 14184427.1,
-    "feeToVolume30dPct": 0.1749564963201679,
-    "weightedChange7dPct": -15.803620413693984,
-    "strongMarkets": 2,
+    "volume30dUsd": 8148509920.36,
+    "fees30dUsd": 14232164,
+    "feeToVolume30dPct": 0.1746597125008007,
+    "weightedChange7dPct": -30.94971253424691,
+    "strongMarkets": 3,
     "watchMarkets": 3,
-    "atRiskMarkets": 3,
-    "score": 83,
+    "atRiskMarkets": 2,
+    "score": 84,
     "confidence": 100,
     "status": "Ready for report",
     "sourceUrls": [
@@ -25,7 +25,7 @@
       "https://defillama.com/protocol/uniswap-v4",
       "https://defillama.com/protocol/uniswap-v2"
     ],
-    "updatedAt": "2026-11-23T18:57:35.362Z"
+    "updatedAt": "2026-11-24T18:37:13.328Z"
   },
   {
     "id": "velodrome",
@@ -37,21 +37,21 @@
       "Unichain"
     ],
     "marketCount": 5,
-    "volume30dUsd": 31993032.77,
-    "fees30dUsd": 17732.71,
-    "feeToVolume30dPct": 0.05542678659907489,
-    "weightedChange7dPct": -10.158641338534157,
+    "volume30dUsd": 30191869.19,
+    "fees30dUsd": 17207.439999999995,
+    "feeToVolume30dPct": 0.056993622659505146,
+    "weightedChange7dPct": 6.388448542579287,
     "strongMarkets": 1,
     "watchMarkets": 1,
     "atRiskMarkets": 3,
-    "score": 72,
+    "score": 77,
     "confidence": 100,
     "status": "Ready for report",
     "sourceUrls": [
       "https://defillama.com/protocol/velodrome-v3",
       "https://defillama.com/protocol/velodrome-v2"
     ],
-    "updatedAt": "2026-11-23T18:57:35.362Z"
+    "updatedAt": "2026-11-24T18:37:13.328Z"
   },
   {
     "id": "aerodrome",
@@ -61,20 +61,20 @@
       "Base"
     ],
     "marketCount": 1,
-    "volume30dUsd": 3798213627,
-    "fees30dUsd": 1083224,
-    "feeToVolume30dPct": 0.028519301607992466,
-    "weightedChange7dPct": -18.720000000000002,
-    "strongMarkets": 0,
-    "watchMarkets": 1,
+    "volume30dUsd": 3695021738,
+    "fees30dUsd": 1029970,
+    "feeToVolume30dPct": 0.027874531546260687,
+    "weightedChange7dPct": 35.58,
+    "strongMarkets": 1,
+    "watchMarkets": 0,
     "atRiskMarkets": 0,
-    "score": 62,
+    "score": 72,
     "confidence": 55,
-    "status": "Monitor",
+    "status": "Ready for report",
     "sourceUrls": [
       "https://defillama.com/protocol/aerodrome-slipstream"
     ],
-    "updatedAt": "2026-11-23T18:57:35.362Z"
+    "updatedAt": "2026-11-24T18:37:13.328Z"
   },
   {
     "id": "pancakeswap",
@@ -84,20 +84,44 @@
       "Base"
     ],
     "marketCount": 1,
-    "volume30dUsd": 3215495080,
-    "fees30dUsd": 414667,
-    "feeToVolume30dPct": 0.01289589906634222,
-    "weightedChange7dPct": -33.21,
-    "strongMarkets": 0,
-    "watchMarkets": 1,
+    "volume30dUsd": 3268940335,
+    "fees30dUsd": 420788,
+    "feeToVolume30dPct": 0.012872305911940116,
+    "weightedChange7dPct": -4.01,
+    "strongMarkets": 1,
+    "watchMarkets": 0,
     "atRiskMarkets": 0,
-    "score": 59,
+    "score": 67,
     "confidence": 55,
     "status": "Monitor",
     "sourceUrls": [
       "https://defillama.com/protocol/pancakeswap-amm-v3"
     ],
-    "updatedAt": "2026-11-23T18:57:35.362Z"
+    "updatedAt": "2026-11-24T18:37:13.328Z"
+  },
+  {
+    "id": "kim-exchange",
+    "name": "KIM Exchange",
+    "segment": "Mode-native DEX",
+    "networks": [
+      "Mode"
+    ],
+    "marketCount": 2,
+    "volume30dUsd": 70588.15,
+    "fees30dUsd": 186.55,
+    "feeToVolume30dPct": 0.26427948600437895,
+    "weightedChange7dPct": 578.3132493272595,
+    "strongMarkets": 0,
+    "watchMarkets": 0,
+    "atRiskMarkets": 2,
+    "score": 54,
+    "confidence": 75,
+    "status": "Monitor",
+    "sourceUrls": [
+      "https://defillama.com/protocol/kim-exchange-v3",
+      "https://defillama.com/protocol/kim-exchange-v2"
+    ],
+    "updatedAt": "2026-11-24T18:37:13.328Z"
   },
   {
     "id": "curve",
@@ -108,44 +132,20 @@
       "Unichain"
     ],
     "marketCount": 2,
-    "volume30dUsd": 7199050.89,
-    "fees30dUsd": 1553.97,
-    "feeToVolume30dPct": 0.02158576211981744,
-    "weightedChange7dPct": -30.27931275123963,
+    "volume30dUsd": 7263263.89,
+    "fees30dUsd": 1572.71,
+    "feeToVolume30dPct": 0.021652937629944767,
+    "weightedChange7dPct": -52,
     "strongMarkets": 0,
-    "watchMarkets": 1,
-    "atRiskMarkets": 1,
-    "score": 51,
-    "confidence": 75,
+    "watchMarkets": 0,
+    "atRiskMarkets": 2,
+    "score": 49,
+    "confidence": 67,
     "status": "Monitor",
     "sourceUrls": [
       "https://defillama.com/protocol/curve-dex"
     ],
-    "updatedAt": "2026-11-23T18:57:35.362Z"
-  },
-  {
-    "id": "kim-exchange",
-    "name": "KIM Exchange",
-    "segment": "Mode-native DEX",
-    "networks": [
-      "Mode"
-    ],
-    "marketCount": 2,
-    "volume30dUsd": 74668.15,
-    "fees30dUsd": 193.07,
-    "feeToVolume30dPct": 0.2585707560720334,
-    "weightedChange7dPct": -63.84316543265101,
-    "strongMarkets": 0,
-    "watchMarkets": 0,
-    "atRiskMarkets": 2,
-    "score": 43,
-    "confidence": 75,
-    "status": "Low signal",
-    "sourceUrls": [
-      "https://defillama.com/protocol/kim-exchange-v3",
-      "https://defillama.com/protocol/kim-exchange-v2"
-    ],
-    "updatedAt": "2026-11-23T18:57:35.362Z"
+    "updatedAt": "2026-11-24T18:37:13.328Z"
   },
   {
     "id": "sushiswap",
@@ -155,19 +155,19 @@
       "OP Mainnet"
     ],
     "marketCount": 1,
-    "volume30dUsd": 1974356,
-    "fees30dUsd": 470.15000000000003,
-    "feeToVolume30dPct": 0.023812828081663084,
-    "weightedChange7dPct": -33.01,
+    "volume30dUsd": 2068797,
+    "fees30dUsd": 475.23,
+    "feeToVolume30dPct": 0.022971321014096602,
+    "weightedChange7dPct": -76.04,
     "strongMarkets": 0,
-    "watchMarkets": 1,
-    "atRiskMarkets": 0,
-    "score": 42,
+    "watchMarkets": 0,
+    "atRiskMarkets": 1,
+    "score": 40,
     "confidence": 55,
     "status": "Low signal",
     "sourceUrls": [
       "https://defillama.com/protocol/sushiswap-v3"
     ],
-    "updatedAt": "2026-11-23T18:57:35.362Z"
+    "updatedAt": "2026-11-24T18:37:13.328Z"
   }
 ]
